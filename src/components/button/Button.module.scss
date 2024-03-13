@@ -1,0 +1,14 @@
+@import "@/styles/var.scss";
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 4.2rem;
+  box-sizing: border-box;
+  border-radius: 1rem;
+  color: $color;
+  border: 1px solid $color;
+  font-size: 0.875em;
+  padding: 0 2rem;
+}

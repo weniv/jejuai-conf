@@ -1,0 +1,64 @@
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  color: var(--color-surface);
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 1.2rem;
+  text-align: left;
+  gap: 2.4rem;
+
+  & .title {
+    display: flex;
+    flex-grow: 1;
+    gap: 1em;
+    align-items: center;
+  }
+  &:hover .icon {
+    background-color: rgba(var(--rgb-primary), 0.05);
+    border-color: rgba(var(--rgb-primary), 0.5);
+
+    & svg {
+      fill: var(--color-primary);
+    }
+  }
+}
+
+.strong {
+  color: var(--color-primary);
+  font-size: 1.3em;
+  font-weight: 600;
+}
+
+.item {
+  align-items: flex-start;
+  border-radius: 1.6rem;
+  border: 1px solid var(--color-gray-lv2);
+  background-color: var(--color-background);
+  padding: 1.2rem;
+}
+
+.panel {
+  font-size: 1em;
+  width: 100%;
+  height: panelHeight;
+  overflow: hidden;
+  line-height: 175%;
+  transition: height 0.3s;
+
+  // @ts-ignore
+  & > div[data-name="panel-inner"] {
+    padding: 1.2rem;
+  }
+}
+
+.panelheight {
+}

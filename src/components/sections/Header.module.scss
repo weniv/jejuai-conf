@@ -1,0 +1,60 @@
+@import "@/styles/var.scss";
+
+.header {
+  background-color: $color2;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+
+  z-index: 100;
+  position: sticky;
+  top: 0;
+  width: 100%;
+
+  & > div {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    height: $headerHeight;
+
+    h1 img {
+      max-width: 25vw;
+    }
+  }
+  .links {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+
+    a {
+      display: inline-flex;
+      padding: 0.5em 1em;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    & > div {
+      height: auto;
+      padding: 0.8rem 0;
+      font-size: 0.85em;
+    }
+    .links {
+      gap: 0.5em;
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .pc {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .mobile {
+    display: none !important;
+  }
+}

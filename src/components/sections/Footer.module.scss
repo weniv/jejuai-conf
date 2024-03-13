@@ -1,0 +1,21 @@
+@import "@/styles/var.scss";
+
+.footer {
+  color: var(--color-gray-lv3);
+  text-align: center;
+  font-size: 0.875em;
+  background-color: var(--color-gray-lv1);
+  padding: fcSize(30, 52);
+
+  p {
+    word-break: keep-all;
+  }
+}
+.logos {
+  margin-top: 2.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}

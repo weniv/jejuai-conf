@@ -1,0 +1,10 @@
+$headerHeight: 7rem;
+$maxW: 1200;
+$maxWidth: 79rem;
+
+$color: #6df2cc;
+$color2: #160e26;
+
+@function fcSize($min, $max) {
+  @return clamp($min * 0.1rem, (100vw / $maxW) * $max, $max * 0.1rem);
+}

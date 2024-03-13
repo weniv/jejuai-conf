@@ -1,0 +1,49 @@
+@import "@/styles/var.scss";
+
+.chat {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.icon {
+  flex-shrink: 0;
+  width: fcSize(28, 40);
+  height: fcSize(28, 40);
+  border-radius: 50%;
+
+  .ai & {
+    background-color: $color;
+  }
+
+  .you & {
+    background-color: var(--color-gray-lv3);
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  line-height: 1.8;
+
+  ul {
+    margin: 1em;
+    li {
+      list-style: disc;
+    }
+  }
+  a {
+    margin-top: 2em;
+  }
+}
+
+.color {
+  color: $color;
+}
+
+.solidBtn {
+  background-color: var(--color-surface);
+  color: var(--color-background);
+  border: 0;
+}

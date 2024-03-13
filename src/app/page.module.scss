@@ -1,0 +1,14 @@
+@import "@/styles/var.scss";
+
+.intro {
+  background-color: $color2;
+
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.location {
+  background-color: var(--color-gray-lv1);
+}

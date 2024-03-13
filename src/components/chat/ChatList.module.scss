@@ -1,0 +1,9 @@
+@import "@/styles/var.scss";
+
+.chatlist {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: fcSize(40, 52);
+  margin: auto;
+}
