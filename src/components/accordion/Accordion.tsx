@@ -1,6 +1,15 @@
 interface FAQ {
   question: string;
-  answer: string;
+  answer: string | Aanswer;
+}
+
+interface Aanswer {
+  string: string[];
+  link: Link[];
+}
+interface Link {
+  url: string;
+  text: string;
 }
 
 type Props = {
