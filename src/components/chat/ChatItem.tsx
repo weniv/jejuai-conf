@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import styles from "./ChatItem.module.scss";
 import Link from "next/link";
 import Button from "../button/Button";
+import Image from "next/image";
 
 type Props = {
   content: any;
@@ -15,7 +16,20 @@ type Props = {
 const ChatItem = ({ content, speaker, className, variant }: Props) => {
   return (
     <div className={`${styles.chat} ${styles[speaker]} ${className}`}>
-      <div className={styles.icon}></div>
+      <div className={styles.icon}>
+        <Image
+          src={
+            speaker === "you"
+              ? "/images/icon-you.svg"
+              : variant === "intro"
+              ? "/images/icon-ai2.svg"
+              : "/images/icon-ai.svg"
+          }
+          alt=""
+          width={40}
+          height={40}
+        />
+      </div>
 
       <div className={styles.content}>
         <strong className={variant === "intro" ? styles.color : ""}>
@@ -40,6 +54,7 @@ const ChatItem = ({ content, speaker, className, variant }: Props) => {
                     as="a"
                     href={item.link}
                     className={variant !== "intro" ? styles.solidBtn : ""}
+                    target="_blank"
                   >
                     {item.text}
                   </Button>

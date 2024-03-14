@@ -1,8 +1,17 @@
+@import "@/styles/var.scss";
+
 .accordion {
   display: flex;
   flex-direction: column;
   gap: 1em;
-  color: var(--color-surface);
+
+  li {
+    align-items: flex-start;
+    border-radius: 1.6rem;
+    border: 1px solid var(--color-gray-lv2);
+    background-color: var(--color-background);
+    padding: fcSize(10, 12);
+  }
 }
 
 .button {
@@ -12,53 +21,92 @@
   font-size: 1em;
   font-weight: 500;
   cursor: pointer;
-  padding: 1.2rem;
+  padding: fcSize(10, 12);
   text-align: left;
-  gap: 2.4rem;
+  border-radius: 0.8rem;
+  gap: fcSize(10, 24);
 
   & .title {
     display: flex;
     flex-grow: 1;
-    gap: 1em;
+    gap: 0.8em;
     align-items: center;
+    flex-wrap: wrap;
+
+    @media screen and (max-width: 640px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.2em;
+      word-break: keep-all;
+    }
+
+    strong {
+      font-size: fcSize(18, 24);
+      font-weight: 600;
+    }
+  }
+
+  .icon {
+    display: inline-flex;
+    width: 3.2rem;
+    height: 3.2rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-gray-lv2);
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: rotate 0.3s, background-color 0.3s, border-color 0.3s;
+
+    &,
+    svg {
+      transition: all 0.3s;
+    }
   }
   &:hover .icon {
-    background-color: rgba(var(--rgb-primary), 0.05);
-    border-color: rgba(var(--rgb-primary), 0.5);
+    background-color: rgba($color, 0.05);
+    border-color: $color;
 
     & svg {
-      fill: var(--color-primary);
+      fill: $color;
     }
   }
 }
-
-.strong {
-  color: var(--color-primary);
-  font-size: 1.3em;
-  font-weight: 600;
-}
-
-.item {
-  align-items: flex-start;
-  border-radius: 1.6rem;
-  border: 1px solid var(--color-gray-lv2);
-  background-color: var(--color-background);
-  padding: 1.2rem;
-}
-
 .panel {
   font-size: 1em;
   width: 100%;
-  height: panelHeight;
   overflow: hidden;
   line-height: 175%;
+  height: 0;
+  animation: opacity 0.3s 0.6s both;
   transition: height 0.3s;
 
-  // @ts-ignore
-  & > div[data-name="panel-inner"] {
+  & > div {
+    box-sizing: border-box;
     padding: 1.2rem;
   }
 }
 
-.panelheight {
+@keyframes opacity {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.active .icon {
+  rotate: -540deg;
+}
+.links {
+  display: flex;
+  gap: 1em;
+  margin-top: 0.8em;
+  flex-wrap: wrap;
+}
+.link {
+  display: flex;
+  word-break: keep-all;
+  line-height: 1;
+  font-weight: bold;
+  box-shadow: inset 0 -0.5em rgba($color, 0.5);
 }

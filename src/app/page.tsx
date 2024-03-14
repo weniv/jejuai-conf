@@ -12,14 +12,16 @@ export default function Home() {
   return (
     <>
       <main className="">
-        <Section id="section1" className={styles.intro}>
+        <Section id="section1" className={`section ${styles.intro}`}>
           <Intro chatlist={data.intro} />
         </Section>
         {MENU.map((v, i) => (
           <Section
             key={i}
             id={`section${i + 2}`}
-            className={v.pc === "찾아오시는 길" ? styles.location : ""}
+            className={`section ${
+              v.pc === "찾아오시는 길" ? styles.location : ""
+            }`}
           >
             {/* "행사 소개", "프로그램 안내", "찾아오시는 길", "FAQ"} */}
             {v.pc === "행사 소개" && <Info chatlist={data.info} />}

@@ -7,13 +7,14 @@ type Props = {
   as?: "a";
   href?: string;
   className?: string;
+  target?: string;
 };
-const Button = ({ children, as, href = "#", className }: Props) => {
+const Button = ({ children, as, href = "#", className, target }: Props) => {
   const style = `${styles.btn} ${className}`;
 
   if (as === "a") {
     return (
-      <Link href={href} className={style}>
+      <Link href={href} className={style} target={target}>
         {children}
       </Link>
     );

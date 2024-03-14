@@ -10,13 +10,11 @@
   width: fcSize(28, 40);
   height: fcSize(28, 40);
   border-radius: 50%;
-
-  .ai & {
-    background-color: $color;
-  }
-
-  .you & {
-    background-color: var(--color-gray-lv3);
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
