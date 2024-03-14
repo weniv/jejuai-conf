@@ -11,4 +11,12 @@
   border: 1px solid $color;
   font-size: 0.875em;
   padding: 0 2rem;
+  transition: all 0.3s;
+  @media (hover: hover) {
+    &:hover {
+      background-color: rgba($color, 0.9);
+      color: $color2;
+      font-weight: 500;
+    }
+  }
 }
