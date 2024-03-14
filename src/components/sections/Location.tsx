@@ -12,6 +12,7 @@ const Location = ({ address }: { address: string }) => {
           center={LAT_LNG}
           style={{ width: "100%", height: "100%" }}
           level={4}
+          zoomable={false}
         >
           <MapMarker // 마커를 생성합니다
             position={LAT_LNG}
