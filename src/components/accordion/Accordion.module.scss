@@ -62,12 +62,14 @@
       transition: all 0.3s;
     }
   }
-  &:hover .icon {
-    background-color: rgba($color, 0.05);
-    border-color: $color;
+  @media (hover: hover) {
+    &:hover .icon {
+      background-color: rgba($color, 0.05);
+      border-color: $color;
 
-    & svg {
-      fill: $color;
+      & svg {
+        fill: $color;
+      }
     }
   }
 }

@@ -43,9 +43,11 @@
 
     transition: all 0.2s;
 
-    &:hover {
-      background-color: var(--color-surface);
-      color: var(--color-background);
+    @media (hover: hover) {
+      &:hover {
+        background-color: var(--color-surface);
+        color: var(--color-background);
+      }
     }
   }
 }
