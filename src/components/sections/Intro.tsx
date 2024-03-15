@@ -1,15 +1,13 @@
 "use client";
-import { useState } from "react";
+
+import ArrowSVG from "../accordion/ArrowSVG";
 import ChatList from "../chat/ChatList";
 import styles from "./Intro.module.scss";
 
 type Props = { chatlist: any };
 
-import useIntersectionObservation from "@/utils/useIntersectionObservation";
-
 const Intro = ({ chatlist }: Props) => {
-  const [activeId, setActiveId] = useState("section1");
-  useIntersectionObservation(setActiveId, ".section");
+  const times = [1000, 1000 + 4000, 1000 + 4000 + 2000];
 
   return (
     <div className={`${styles.intro} max-wrap2`}>
@@ -20,7 +18,13 @@ const Intro = ({ chatlist }: Props) => {
         <div className="image-distortion" id="transparent"></div>
       </div>
 
-      {chatlist && <ChatList chatlist={chatlist} variant="intro" />}
+      {chatlist && (
+        <ChatList chatlist={chatlist} variant="intro" times={times} />
+      )}
+
+      <span className={styles.arrow}>
+        <ArrowSVG />
+      </span>
     </div>
   );
 };
