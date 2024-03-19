@@ -4,7 +4,7 @@ import { Info } from "@/components/sections/Info";
 import { Program } from "@/components/sections/Program";
 import { Location } from "@/components/sections/Location";
 import { FAQ } from "@/components/sections/FAQ";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 
 export default function Home() {
   return (

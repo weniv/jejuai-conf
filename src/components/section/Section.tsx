@@ -9,7 +9,7 @@ interface SectionProps {
 }
 export default function Section({ id, className, children }: SectionProps) {
   return (
-    <section id={id} className={`${styles.section} ${className}`}>
+    <section id={id} className={`section ${styles.section} ${className}`}>
       {children}
     </section>
   );
