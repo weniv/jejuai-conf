@@ -53,8 +53,9 @@ export const ChatItemTyping = ({ data, type = "ai", last }: ChatItemProps) => {
     case "object":
       content = Typing(
         `${data[0].string}<br/>
-              <span class="list">${data[1]?.ul[0]}</span><br/>
-              <span class="list">${data[1]?.ul[1]}</span><br/>`
+        <span class="list">${data[1]?.ul[0]}</span><br/>
+        <span class="list">${data[1]?.ul[1]}</span><br/>
+        ${data[2].string}`
       );
       break;
     default:

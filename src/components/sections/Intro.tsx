@@ -33,17 +33,23 @@ export const Intro = ({ id, data, className }: SectionProps) => {
 
   return (
     <Section id={id} className={`${className} ${styles.intro}`}>
-      <div className="max-wrap">
+      <div className={`max-wrap2 ${styles.introWrap}`}>
         <Glitch />
-        {isSkip ? (
-          <ChatList data={data} />
-        ) : (
-          <ChatListTyping data={data} onClickSkip={onClickSkip} times={times} />
-        )}
-        <a href="#section2" className={styles.arrow}>
-          <ArrowSVG />
-        </a>
+        <div className={styles.grow}>
+          {isSkip ? (
+            <ChatList data={data} />
+          ) : (
+            <ChatListTyping
+              data={data}
+              onClickSkip={onClickSkip}
+              times={times}
+            />
+          )}
+        </div>
       </div>
+      <a href="#section2" className={styles.arrow}>
+        <ArrowSVG />
+      </a>
     </Section>
   );
 };

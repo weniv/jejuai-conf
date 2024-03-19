@@ -1,10 +1,10 @@
+@import "@/styles/var.scss";
 .glitch {
   position: relative;
   width: 1145px;
   max-width: 100%;
   aspect-ratio: 1145/132;
   margin: 0 auto fcSize(40, 124);
-  margin-bottom: 8rem;
 
   @media screen and (max-width: 640px) {
     width: 100%;

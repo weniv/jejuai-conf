@@ -28,7 +28,7 @@
     height: 100%;
     gap: 1em;
 
-    a:not(:last-child) {
+    a:not([target]) {
       display: inline-flex;
       align-items: center;
       justify-content: center;
