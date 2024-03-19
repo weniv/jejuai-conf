@@ -4,7 +4,10 @@
     { "pc": "찾아오시는 길", "mobile": "위치" },
     { "pc": "FAQ" }
   ],
-  "headerLink": null,
+  "headerLink": {
+    "link": null,
+    "text": null
+  },
   "address": "제주 제주시 중앙로 217 제주창조경제혁신센터 3층 J-SPACE",
   "intro": [
     {

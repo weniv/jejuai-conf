@@ -52,7 +52,7 @@ const Header = ({}: Props) => {
             </Link>
           ))}
 
-          {LINK && (
+          {LINK.link && (
             <Button
               as="a"
               href={LINK.link}
