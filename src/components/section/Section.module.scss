@@ -1,0 +1,14 @@
+@import "@/styles/var.scss";
+
+.section {
+  padding-top: $headerHeight;
+  margin-top: calc($headerHeight * -1);
+  margin-bottom: $headerHeight;
+
+  box-sizing: border-box;
+
+  & > div:first-child {
+    padding: fcSize(60, 80) 0;
+    box-sizing: border-box;
+  }
+}

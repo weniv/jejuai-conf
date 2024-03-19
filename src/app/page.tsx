@@ -1,36 +1,27 @@
-import Intro from "@/components/sections/Intro";
-import Faq from "../components/sections/Faq";
-import Section from "../components/sections/Section";
-
-import styles from "./page.module.scss";
 import data from "@/data/data.json";
-import Location from "@/components/sections/Location";
-import Info from "@/components/sections/Info";
-const MENU = data.menu;
+import { Intro } from "@/components/sections/Intro";
+import { Info } from "@/components/sections/Info";
+import { Program } from "@/components/sections/Program";
+import { Location } from "@/components/sections/Location";
+import { FAQ } from "@/components/sections/FAQ";
+import { Fragment, useState } from "react";
 
 export default function Home() {
   return (
-    <>
-      <main className="">
-        <Section id="section1" className={`section ${styles.intro}`}>
-          <Intro chatlist={data.intro} />
-        </Section>
-        {MENU.map((v, i) => (
-          <Section
-            key={i}
-            id={`section${i + 2}`}
-            className={`section ${
-              v.pc === "찾아오시는 길" ? styles.location : ""
-            }`}
-          >
-            {/* "행사 소개", "프로그램 안내", "찾아오시는 길", "FAQ"} */}
-            {v.pc === "행사 소개" && <Info chatlist={data.info} />}
-            {v.pc === "프로그램 안내" && <>프로그램 안내</>}
-            {v.pc === "찾아오시는 길" && <Location address={data.address} />}
-            {v.pc === "FAQ" && <Faq faqlist={data.faq} />}
-          </Section>
-        ))}
-      </main>
-    </>
+    <main>
+      <Intro id="section1" data={data.intro} />
+      {data.menu.map((v, i) => (
+        <Fragment key={i}>
+          {v.pc === "행사 소개" && (
+            <Info id={`section${i + 2}`} data={data.info} />
+          )}
+          {v.pc === "프로그램 안내" && <Program id={`section${i + 2}`} />}
+          {v.pc === "찾아오시는 길" && (
+            <Location id={`section${i + 2}`} address={data.address} />
+          )}
+          {v.pc === "FAQ" && <FAQ id={`section${i + 2}`} data={data.faq} />}
+        </Fragment>
+      ))}
+    </main>
   );
 }

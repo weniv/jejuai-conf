@@ -1,32 +1,49 @@
 "use client";
-
-import ArrowSVG from "../accordion/ArrowSVG";
-import ChatList from "../chat/ChatList";
 import styles from "./Intro.module.scss";
+import Section from "../section/Section";
+import { Glitch } from "../glitch/Glitch";
+import ArrowSVG from "../accordion/ArrowSVG";
+import { ChatList } from "../chat/ChatList";
+import { ChatListTyping } from "../chat/ChatListTyping";
+import { useEffect, useState } from "react";
 
-type Props = { chatlist: any };
+interface SectionProps {
+  id?: string;
+  className?: string;
+  data?: any;
+}
 
-const Intro = ({ chatlist }: Props) => {
+export const Intro = ({ id, data, className }: SectionProps) => {
+  const [isSkip, setIsSkip] = useState(false);
+
+  const onClickSkip = () => {
+    setIsSkip(true);
+    sessionStorage.setItem("isSkip1", "y");
+  };
+
   const times = [1000, 1000 + 4000, 1000 + 4000 + 2000];
 
+  useEffect(() => {
+    const session =
+      typeof window !== "undefined" && sessionStorage.getItem("isSkip1")
+        ? true
+        : false;
+    setIsSkip(session);
+  }, []);
+
   return (
-    <div className={`${styles.intro} max-wrap2`}>
-      <div className="image-glitch">
-        <div className="image-distortion" id="base"></div>
-        <div className="image-distortion" id="red"></div>
-        <div className="image-distortion" id="cyan"></div>
-        <div className="image-distortion" id="transparent"></div>
+    <Section id={id} className={`${className} ${styles.intro}`}>
+      <div>
+        <Glitch />
+        {isSkip ? (
+          <ChatList data={data} />
+        ) : (
+          <ChatListTyping data={data} onClickSkip={onClickSkip} times={times} />
+        )}
+        <a href="#section2" className={styles.arrow}>
+          <ArrowSVG />
+        </a>
       </div>
-
-      {chatlist && (
-        <ChatList chatlist={chatlist} variant="intro" times={times} />
-      )}
-
-      <span className={styles.arrow}>
-        <ArrowSVG />
-      </span>
-    </div>
+    </Section>
   );
 };
-
-export default Intro;

@@ -1,14 +1,19 @@
-"use client";
+import Section from "../section/Section";
+import Accordion from "../accordion/Accordion";
 
-import Accordion from "@/components/accordion/Accordion";
+interface SectionProps {
+  id?: string;
+  className?: string;
+  data: any;
+}
 
-const Faq = ({ faqlist }: { faqlist: any }) => {
+export const FAQ = ({ id, className, data }: SectionProps) => {
   return (
-    <div className="max-wrap">
-      <h3 className="section-title">FAQ</h3>
-      <Accordion data={faqlist} />
-    </div>
+    <Section id={id} className={className}>
+      <div className="max-wrap">
+        <h3 className="section-title">FAQ</h3>
+        <Accordion data={data} />
+      </div>
+    </Section>
   );
 };
-
-export default Faq;

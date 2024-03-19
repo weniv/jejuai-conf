@@ -1,3 +1,9 @@
+"use client";
+
+import Link from "next/link";
+import styles from "./Accordion.module.scss";
+import ArrowSVG from "./ArrowSVG";
+
 interface FAQ {
   question: string;
   answer: string | Aanswer;
@@ -16,9 +22,6 @@ type Props = {
   data: FAQ[];
 };
 
-import Link from "next/link";
-import styles from "./Accordion.module.scss";
-import ArrowSVG from "./ArrowSVG";
 const Accordion = ({ data }: Props) => {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const target = e.currentTarget;

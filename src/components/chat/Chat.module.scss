@@ -1,0 +1,111 @@
+@import "@/styles/var.scss";
+
+.chatlist {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: fcSize(40, 52);
+  margin: auto;
+}
+
+.wrap {
+  margin: 0 auto;
+  width: fit-content;
+  min-width: 7em;
+  position: relative;
+  padding-bottom: 6rem;
+}
+.chat {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.ai {
+  strong {
+    color: $color;
+  }
+}
+.you {
+  strong {
+    color: #fff;
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  width: fcSize(28, 40);
+  height: fcSize(28, 40);
+  border-radius: 50%;
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  line-height: 1.8;
+
+  ul {
+    li {
+      display: block;
+    }
+    margin: 0;
+  }
+  a {
+    margin-top: 2em;
+  }
+}
+
+.solidBtn {
+  background-color: var(--color-surface);
+  color: var(--color-background);
+  border: 0;
+}
+
+.fadeIn {
+  opacity: 0;
+  animation: opacity 0.5s ease both;
+}
+
+@keyframes opacity {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.fadeOut {
+  animation: fadeOut 0.5s ease both;
+}
+
+.skipBtn {
+  color: var(--color-gray-lv3);
+  font-size: 0.9em;
+  text-decoration: underline;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  99% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    display: none;
+  }
+}

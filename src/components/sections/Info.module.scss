@@ -1,16 +1,11 @@
 .info {
   min-height: 100vh;
-  padding-top: 7rem;
-  .ai strong {
+
+  strong {
     color: var(--color-surface);
   }
-}
 
-.fadeIn {
-  opacity: 0;
-  transition: opacity 0.5s ease; /* 0.5초 동안 opacity를 변화시킵니다. */
-}
-
-.show {
-  opacity: 1;
+  ul {
+    width: 100%;
+  }
 }

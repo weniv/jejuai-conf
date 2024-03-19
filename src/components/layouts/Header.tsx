@@ -52,9 +52,16 @@ const Header = ({}: Props) => {
             </Link>
           ))}
 
-          <Button as="a" href={LINK.link} className={styles.pc} target="_blank">
-            {LINK.text}
-          </Button>
+          {LINK && (
+            <Button
+              as="a"
+              href={LINK.link}
+              className={styles.pc}
+              target="_blank"
+            >
+              {LINK.text}
+            </Button>
+          )}
         </div>
       </div>
     </header>
