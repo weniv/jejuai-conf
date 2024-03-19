@@ -33,7 +33,7 @@ export const Intro = ({ id, data, className }: SectionProps) => {
 
   return (
     <Section id={id} className={`${className} ${styles.intro}`}>
-      <div>
+      <div className="max-wrap">
         <Glitch />
         {isSkip ? (
           <ChatList data={data} />
