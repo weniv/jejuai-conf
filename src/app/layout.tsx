@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
 import "../styles/globals.scss";
+import localFont from "next/font/local";
+import type { Metadata } from "next";
 import { ReactNode } from "react";
 import Header from "../components/layouts/Header";
 import Footer from "../components/layouts/Footer";
@@ -10,6 +11,27 @@ const DESCRIPTION =
   "AI, 모두를 위한 미래, 지식을 넘어 혁신으로 <2024 제주 AI Conference>";
 const LINK = "https://www.jejuai.kr";
 const OGIMG = "/images/OG.png";
+
+const pretendard = localFont({
+  src: [
+    {
+      path: "./font/Pretendard-Regular.woff",
+      weight: "400",
+      style: "normal",
+    },
+
+    {
+      path: "./font/Pretendard-SemiBold.woff",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "./font/Pretendard-Bold.woff",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+});
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -49,7 +71,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="ko-KR">
+    <html lang="ko-KR" className={pretendard.className}>
       <body>
         <Header />
         {children}
