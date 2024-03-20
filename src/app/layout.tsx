@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "../styles/globals.scss";
 import { ReactNode } from "react";
 import Header from "../components/layouts/Header";
 import Footer from "../components/layouts/Footer";
 import Script from "next/script";
-
-const inter = Inter({ subsets: ["latin"] });
 
 const TITLE = "제주 AI 컨퍼런스";
 const DESCRIPTION =
@@ -53,7 +50,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko-KR">
-      <body className={inter.className}>
+      <body>
         <Header />
         {children}
         <Footer />
