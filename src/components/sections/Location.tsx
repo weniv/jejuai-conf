@@ -2,6 +2,7 @@ import Section from "../section/Section";
 
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import styles from "./Location.module.scss";
+import CopyBtn from "../copy/CopyBtn";
 
 interface SectionProps {
   id?: string;
@@ -15,7 +16,11 @@ export const Location = ({ id, className, address }: SectionProps) => {
     <Section id={id} className={`${className} ${styles.mapWrap}`}>
       <div className="max-wrap">
         <h3 className="section-title">찾아오시는 길</h3>
-        <p className={styles.address}>{address}</p>
+        <p className={styles.address}>
+          {address}
+          {address && <CopyBtn text={address} />}
+        </p>
+
         <div className={styles.map}>
           <Map
             center={LAT_LNG}

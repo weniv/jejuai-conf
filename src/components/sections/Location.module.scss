@@ -19,6 +19,10 @@
 .address {
   text-align: center;
   word-break: keep-all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
 }
 
 .links {
