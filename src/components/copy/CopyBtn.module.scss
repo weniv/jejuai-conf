@@ -10,14 +10,32 @@
   justify-content: center;
   background-color: var(--color-background);
 
+  transition: all 0.3s;
+
   &.click {
-    border: 1px solid rgba(var(--rgb-primary), 0.5);
-    background-color: var(--color-activation);
-    img {
+    border-color: $color;
+    background-color: rgba($color, 1);
+    svg {
       animation: rotate 0.15s both;
     }
   }
+  @media (hover: hover) {
+    &:hover:not(.click) {
+      border-color: $color;
+      background-color: rgba($color, 0.5);
+    }
+  }
   svg {
-    width: 80%;
+    fill: $color2;
+    width: 85%;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: scaleX(-1);
+  }
+  to {
+    transform: scaleX(1);
   }
 }
