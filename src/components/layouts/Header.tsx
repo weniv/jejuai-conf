@@ -25,6 +25,7 @@ const Header = ({}: Props) => {
               alt="JEJU AI CONFERENCE"
               width={280}
               height={32}
+              priority={true}
             />
           </a>
         </h1>
