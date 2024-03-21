@@ -13,6 +13,12 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
+      - name: access to secrets
+        run: |
+          echo "NEXT_PUBLIC_KAKAO_APP_JS_KEY=$NEXT_PUBLIC_KAKAO_APP_JS_KEY" >> .env
+        env:
+          NEXT_PUBLIC_KAKAO_APP_JS_KEY: ${{secrets.NEXT_PUBLIC_KAKAO_APP_JS_KEY}}
+
       - name: Install and Build 🔧
         run: |
           yarn install
@@ -21,7 +27,6 @@ jobs:
       - name: Deploy 🚀
         uses: peaceiris/actions-gh-pages@v3
         with:
-          KAKAO_APP_JS_KEY: ${{secrets.KAKAO_APP_JS_KEY}}
           github_token: ${{ secrets.ACCESS_GITHUB_TOKEN }}
           publish_dir: ./out
           publish_branch: gh-pages
