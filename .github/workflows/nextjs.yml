@@ -13,16 +13,17 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
+      - name: Install 🔧
+        run: yarn install
+
       - name: access to secrets
         run: |
-          echo "NEXT_PUBLIC_KAKAO_APP_JS_KEY=$NEXT_PUBLIC_KAKAO_APP_JS_KEY" >> .env
+          echo "NEXT_PUBLIC_KAKAO_APP_JS_KEY=$NEXT_PUBLIC_KAKAO_APP_JS_KEY" > .env
         env:
           NEXT_PUBLIC_KAKAO_APP_JS_KEY: ${{secrets.NEXT_PUBLIC_KAKAO_APP_JS_KEY}}
 
-      - name: Install and Build 🔧
-        run: |
-          yarn install
-          yarn build && touch ./out/.nojekyll
+      - name: Build 🔧
+        run: yarn build && touch ./out/.nojekyll
 
       - name: Deploy 🚀
         uses: peaceiris/actions-gh-pages@v3
