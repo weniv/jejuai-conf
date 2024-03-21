@@ -3,7 +3,7 @@ import { Intro } from "@/components/sections/Intro";
 import { Info } from "@/components/sections/Info";
 import { Program } from "@/components/sections/Program";
 import { Location } from "@/components/sections/Location";
-import { FAQ } from "@/components/sections/FAQ";
+import { Faq } from "@/components/sections/Faq";
 import { Fragment } from "react";
 
 export default function Home() {
@@ -19,7 +19,7 @@ export default function Home() {
           {v.pc === "찾아오시는 길" && (
             <Location id={`section${i + 2}`} address={data.address} />
           )}
-          {v.pc === "FAQ" && <FAQ id={`section${i + 2}`} data={data.faq} />}
+          {v.pc === "FAQ" && <Faq id={`section${i + 2}`} data={data.faq} />}
         </Fragment>
       ))}
     </main>

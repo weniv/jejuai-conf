@@ -7,7 +7,7 @@ interface SectionProps {
   data: any;
 }
 
-export const FAQ = ({ id, className, data }: SectionProps) => {
+export const Faq = ({ id, className, data }: SectionProps) => {
   return (
     <Section id={id} className={className}>
       <div className="max-wrap">

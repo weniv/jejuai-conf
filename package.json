@@ -1,4 +1,5 @@
 {
+  "homepage": "https://jejuai.kr",
   "name": "jejuai-conf",
   "version": "0.1.0",
   "private": true,
@@ -6,8 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "deploy": "next build && touch out/.nojekyll && git add -f out/ && git commit -m 'deploy to gh-pages' && git subtree push --prefix out origin gh-pages"
+    "lint": "next lint"
   },
   "dependencies": {
     "@vanilla-extract/css": "^1.14.1",
