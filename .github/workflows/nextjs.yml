@@ -18,13 +18,10 @@ jobs:
           yarn install
           yarn build && touch ./out/.nojekyll
 
-      - name: Set Secrets and Change Dir
-        run: | # Secrets needed on the server
-          echo "KAKAO_APP_JS_KEY=${{secrets.KAKAO_APP_JS_KEY}}" >> .env.production
-
       - name: Deploy 🚀
         uses: peaceiris/actions-gh-pages@v3
         with:
+          KAKAO_APP_JS_KEY: ${{secrets.KAKAO_APP_JS_KEY}}
           github_token: ${{ secrets.ACCESS_GITHUB_TOKEN }}
           publish_dir: ./out
           publish_branch: gh-pages
