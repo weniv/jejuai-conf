@@ -37,12 +37,13 @@ export const Intro = ({ id, data, className }: SectionProps) => {
         <Glitch />
         <div className={styles.grow}>
           {isSkip ? (
-            <ChatList data={data} />
+            <ChatList data={data} intro />
           ) : (
             <ChatListTyping
               data={data}
               onClickSkip={onClickSkip}
               times={times}
+              intro
             />
           )}
         </div>

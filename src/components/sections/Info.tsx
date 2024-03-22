@@ -5,12 +5,23 @@ import { ChatList } from "../chat/ChatList";
 import styles from "./Info.module.scss";
 import { ChatListTyping } from "../chat/ChatListTyping";
 import { useEffect, useState } from "react";
+import useIntersectionObservation from "@/utils/useIntersectionObservation";
 interface SectionProps {
   id?: string;
   data?: any;
 }
 export const Info = ({ id, data }: SectionProps) => {
   const [isSkip, setIsSkip] = useState(false);
+  const [activeId, setActiveId] = useState("section1");
+  useIntersectionObservation(setActiveId, ".section");
+
+  const [isShow, setIsShow] = useState(false);
+
+  useEffect(() => {
+    if (activeId === "section2") {
+      setIsShow(true);
+    }
+  }, [activeId]);
 
   const onClickSkip = () => {
     setIsSkip(true);
@@ -42,7 +53,15 @@ export const Info = ({ id, data }: SectionProps) => {
         {isSkip ? (
           <ChatList data={data} />
         ) : (
-          <ChatListTyping data={data} onClickSkip={onClickSkip} times={times} />
+          <>
+            {isShow && (
+              <ChatListTyping
+                data={data}
+                onClickSkip={onClickSkip}
+                times={times}
+              />
+            )}
+          </>
         )}
       </div>
     </Section>

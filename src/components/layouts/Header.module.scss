@@ -45,7 +45,7 @@
     }
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1023px) {
     & > div {
       height: auto;
       font-size: 0.85em;
@@ -59,13 +59,13 @@
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1023px) {
   .pc {
     display: none !important;
   }
 }
 
-@media screen and (min-width: 769px) {
+@media screen and (min-width: 1024px) {
   .mobile {
     display: none !important;
   }

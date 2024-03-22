@@ -5,8 +5,14 @@ interface ChatListProps {
   data?: any;
   onClickSkip?: any;
   times: number[];
+  intro?: boolean;
 }
-export const ChatListTyping = ({ data, times, onClickSkip }: ChatListProps) => {
+export const ChatListTyping = ({
+  data,
+  times,
+  onClickSkip,
+  intro,
+}: ChatListProps) => {
   const [showItems, setShowItems] = useState<boolean[]>(
     new Array(data.length).fill(false)
   );
@@ -44,7 +50,7 @@ export const ChatListTyping = ({ data, times, onClickSkip }: ChatListProps) => {
                     {chat.ai ? (
                       <ChatItemTyping
                         data={chat.ai}
-                        type="ai"
+                        type={intro ? "ai2" : "ai"}
                         last={data.length === index + 1}
                       />
                     ) : (

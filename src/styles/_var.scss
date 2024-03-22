@@ -3,6 +3,7 @@ $maxWidth: 79rem;
 
 $color: #6df2cc;
 $color2: #160e26;
+$color3: #9b6ae5;
 
 @function fcSize($min, $max) {
   @return clamp($min * 0.1rem, (100vw / $maxW) * $max, $max * 0.1rem);

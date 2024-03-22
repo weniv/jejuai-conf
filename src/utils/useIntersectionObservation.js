@@ -22,8 +22,8 @@ const useIntersectionObservation = (setActiveId, contentsClass) => {
     threshold: 가시성
     */
     const observer = new IntersectionObserver(callback, {
-      rootMargin: "-180px 0px 0px -180px",
-      threshold: [0, 0.5, 1],
+      // rootMargin: "-180px 0px -180px 0px",
+      threshold: [0.4, 1],
     });
 
     const contents = [...document.querySelectorAll(contentsClass)];

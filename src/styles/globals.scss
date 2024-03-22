@@ -256,6 +256,10 @@ img {
     background-color: #fff;
     margin-right: 0.5em;
     vertical-align: middle;
+
+    #section2 & {
+      background-color: $color2;
+    }
   }
   & ~ .list {
     margin: 0 0 1rem 0;

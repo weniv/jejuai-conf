@@ -1,2 +1,29 @@
+@import "@/styles/var.scss";
+
 .program {
+  background-color: rgba($color, 0.4);
+}
+
+.all {
+  display: flex;
+  gap: 6rem;
+
+  & > div {
+    flex-basis: 0;
+    flex-grow: 1;
+
+    ul {
+      grid-template-rows: repeat(2, 24rem) auto repeat(3, 24rem);
+    }
+  }
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  font-size: 0.9em;
+  height: 4em;
+  border-radius: 1rem;
 }

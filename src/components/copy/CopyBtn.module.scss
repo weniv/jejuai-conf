@@ -28,7 +28,7 @@
     }
   }
   svg {
-    fill: $color2;
+    fill: var(--color-surface);
     width: 2rem;
     height: 2rem;
   }

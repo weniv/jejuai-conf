@@ -29,11 +29,6 @@ export const ChatItem = ({ data, type = "ai" }: ChatItemProps) => {
       content = data.map((item: any, index: number) => (
         <Fragment key={index}>
           {item.string && <p>{item.string}</p>}
-          {item.link && (
-            <a href={item.link} target="_blank" className="link-btn">
-              {item.text}
-            </a>
-          )}
           {item.ul && (
             <ul>
               {item.ul.map((li: string, index: number) => (
@@ -42,6 +37,16 @@ export const ChatItem = ({ data, type = "ai" }: ChatItemProps) => {
                 </li>
               ))}
             </ul>
+          )}
+          {item.link && (
+            <Button
+              as="a"
+              href={item.link.url}
+              target="_blank"
+              className="link-btn"
+            >
+              {item.link.text}
+            </Button>
           )}
         </Fragment>
       ));

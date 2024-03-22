@@ -1,0 +1,23 @@
+@import "@/styles/var.scss";
+
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  button {
+    border: 0;
+    width: 5em;
+    height: 2.4em;
+    border-radius: 2rem;
+    border: 1px solid rgba(var(--rgb-surface), 0.3);
+    color: var(--rgb-surface);
+
+    &[aria-selected="true"] {
+      border-color: $color2;
+      background-color: $color2;
+      color: #fff;
+    }
+  }
+}

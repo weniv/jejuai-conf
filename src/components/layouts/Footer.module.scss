@@ -22,6 +22,18 @@
   img {
     width: auto;
     height: 3rem;
+    &.ris {
+      aspect-ratio: 166/46;
+    }
+    &.ccei {
+      aspect-ratio: 193/32;
+    }
+    &.gdg {
+      aspect-ratio: 229/31;
+    }
+    &.weniv {
+      aspect-ratio: 144/30;
+    }
   }
 
   @media screen and (max-width: 768px) {

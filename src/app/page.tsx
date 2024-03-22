@@ -15,7 +15,9 @@ export default function Home() {
           {v.pc === "행사 소개" && (
             <Info id={`section${i + 2}`} data={data.info} />
           )}
-          {v.pc === "프로그램 안내" && <Program id={`section${i + 2}`} />}
+          {v.pc === "프로그램 안내" && (
+            <Program id={`section${i + 2}`} data={data.program} />
+          )}
           {v.pc === "찾아오시는 길" && (
             <Location id={`section${i + 2}`} address={data.address} />
           )}
