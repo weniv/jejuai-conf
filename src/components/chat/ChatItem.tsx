@@ -9,7 +9,7 @@ interface ChatItemProps {
 }
 
 export const ChatItem = ({ data, type = "ai" }: ChatItemProps) => {
-  const chatName = type === "ai" ? "Conf AI" : "You";
+  const chatName = type === "you" ? "You" : "Conf AI";
   let imgSrc;
   switch (type) {
     case "ai":
@@ -70,7 +70,9 @@ export const ChatItem = ({ data, type = "ai" }: ChatItemProps) => {
   }
 
   return (
-    <div className={`${styles.chat} ${type === "ai" ? styles.ai : styles.you}`}>
+    <div
+      className={`${styles.chat} ${type === "you" ? styles.you : styles.ai}`}
+    >
       <div className={styles.icon}>
         <Image src={imgSrc} alt="" width={40} height={40} />
       </div>
