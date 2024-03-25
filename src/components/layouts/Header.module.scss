@@ -10,10 +10,14 @@
   top: 0;
   width: 100%;
 
+  [class^="max-wrap2"] {
+    max-width: calc(100% - 2rem);
+  }
   & > div {
     height: 100%;
     display: flex;
     align-items: center;
+
     justify-content: space-between;
 
     height: $headerHeight;
@@ -26,7 +30,7 @@
     display: flex;
     align-items: center;
     height: 100%;
-    gap: 1em;
+    gap: 0.5em;
 
     a:not([target]) {
       display: inline-flex;

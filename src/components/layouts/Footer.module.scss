@@ -24,6 +24,9 @@
     height: 3rem;
     &.ris {
       aspect-ratio: 166/46;
+      @media (prefers-color-scheme: dark) {
+        filter: invert(100%);
+      }
     }
     &.ccei {
       aspect-ratio: 193/32;

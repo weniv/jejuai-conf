@@ -5,6 +5,10 @@
   font-weight: 700;
   color: var(--color-surface);
   border-bottom: 1px solid $color2;
+
+  @media (prefers-color-scheme: dark) {
+    border-bottom-color: var(--color-gray-lv2);
+  }
   &::first-letter {
     text-transform: uppercase;
   }
@@ -47,13 +51,15 @@
       @media screen and (min-width: 501px) {
         grid-column: 1/3;
       }
-
       background-color: transparent;
       border: 2px solid var(--color-background);
       box-sizing: border-box;
       padding: fcSize(15, 20) fcSize(16, 20);
       div {
         margin: 0;
+      }
+      @media (prefers-color-scheme: dark) {
+        background-color: rgba(0, 0, 0, 0.5);
       }
     }
   }
@@ -132,7 +138,7 @@
       background-color: $color3;
     }
     &.space3 {
-      color: #fff;
+      color: var(--color-background);
       background-color: var(--color-gray-lv4);
     }
   }

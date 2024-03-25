@@ -2,6 +2,10 @@
 
 .program {
   background-color: rgba($color, 0.4);
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-gray-lv1);
+  }
 }
 
 .all {

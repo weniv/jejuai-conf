@@ -18,6 +18,11 @@
       border-color: $color2;
       background-color: $color2;
       color: #fff;
+
+      @media (prefers-color-scheme: dark) {
+        background-color: $color;
+        color: $color2;
+      }
     }
   }
 }
