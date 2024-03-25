@@ -17,13 +17,16 @@ const useIntersectionObservation = (setActiveId, contentsClass) => {
       setActiveId(visibleContent[0]?.target.id);
     };
 
+    const winWidth = window.innerWidth;
+
+    const threshold = winWidth > 640 ? [0.4, 1] : [0, 0.5, 1];
     /* option
     rootMarign:어느정도의 영역을 관찰할 것인가 px, % 사용가능 
     threshold: 가시성
     */
     const observer = new IntersectionObserver(callback, {
-      // rootMargin: "-180px 0px -180px 0px",
-      threshold: [0.4, 1],
+      rootMargin: "-80px 0px -80px 0px",
+      threshold: threshold,
     });
 
     const contents = [...document.querySelectorAll(contentsClass)];

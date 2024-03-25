@@ -24,9 +24,12 @@ export const Program = ({ id, data }: SectionProps) => {
   useEffect(() => {
     function handleResize() {
       const windowWidth = window.innerWidth;
+
       if (windowWidth < BREAK_POINT) {
+        if (day !== "Day2") {
+          setDay("Day1");
+        }
         setTabList(["Day1", "Day2"]);
-        day === "All" && setDay("Day1");
       } else {
         setTabList(["All", "Day1", "Day2"]);
       }
@@ -38,7 +41,7 @@ export const Program = ({ id, data }: SectionProps) => {
     handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [day]);
 
   return (
     <Section id={id} className={styles.program}>
