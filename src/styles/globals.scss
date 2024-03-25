@@ -247,6 +247,9 @@ img {
   display: inline-block;
   margin: 1rem 0 0 0;
 
+  position: relative;
+  padding-left: 1em;
+
   &::before {
     content: "";
     display: inline-block;
@@ -257,8 +260,12 @@ img {
     margin-right: 0.5em;
     vertical-align: middle;
 
+    position: absolute;
+    top: 0.8em;
+    left: 0;
+
     #section2 & {
-      background-color: $color2;
+      background-color: var(--color-surface);
     }
   }
   & ~ .list {

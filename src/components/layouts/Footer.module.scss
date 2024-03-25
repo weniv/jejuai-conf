@@ -10,6 +10,12 @@
   p {
     word-break: keep-all;
   }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-background);
+
+    border-top: 1px solid rgba(var(--rgb-gray-lv2), 0.5);
+  }
 }
 .logos {
   margin-top: 2.4rem;
@@ -23,19 +29,16 @@
     width: auto;
     height: 3rem;
     &.ris {
-      aspect-ratio: 166/46;
-      @media (prefers-color-scheme: dark) {
-        filter: invert(100%);
-      }
+      aspect-ratio: 260/40;
     }
     &.ccei {
-      aspect-ratio: 193/32;
+      aspect-ratio: 193/40;
     }
     &.gdg {
-      aspect-ratio: 229/31;
+      aspect-ratio: 230/40;
     }
     &.weniv {
-      aspect-ratio: 144/30;
+      aspect-ratio: 145/40;
     }
   }
 

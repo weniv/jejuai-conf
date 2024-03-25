@@ -2,7 +2,7 @@
 .glitch {
   position: relative;
   width: 1145px;
-  max-width: 100%;
+  max-width: calc(100% - 2rem);
   aspect-ratio: 1145/132;
   margin: 0 auto fcSize(40, 124);
 

@@ -10,14 +10,14 @@
 
 .all {
   display: flex;
-  gap: 6rem;
+  gap: 3rem;
 
   & > div {
     flex-basis: 0;
     flex-grow: 1;
 
     ul {
-      grid-template-rows: repeat(2, 24rem) auto repeat(3, 24rem);
+      grid-template-rows: repeat(2, 24rem) auto repeat(2, 24rem) 30rem;
     }
   }
 }
