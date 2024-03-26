@@ -68,12 +68,7 @@ export const ChatListTyping = ({
         </ul>
       )}
 
-      <button
-        id="skip"
-        type="button"
-        className={styles.skipBtn}
-        onClick={onClickSkip}
-      >
+      <button type="button" className={styles.skipBtn} onClick={onClickSkip}>
         대화 건너뛰기
       </button>
     </div>

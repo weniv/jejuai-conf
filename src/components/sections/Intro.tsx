@@ -50,6 +50,7 @@ export const Intro = ({ id, data, className }: SectionProps) => {
       </div>
       <a href="#section2" className={styles.arrow}>
         <ArrowSVG />
+        <span className="a11y-hidden">행사 소개</span>
       </a>
     </Section>
   );

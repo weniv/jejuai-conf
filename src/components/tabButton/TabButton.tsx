@@ -11,7 +11,7 @@ export const TabButton = ({
   onClickTab: any;
 }) => {
   return (
-    <div className={styles.tab}>
+    <div className={styles.tab} role="tablist">
       {tabList.map((tab, index) => (
         <button
           key={index}

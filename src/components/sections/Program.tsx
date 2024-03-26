@@ -50,23 +50,25 @@ export const Program = ({ id, data }: SectionProps) => {
 
         <TabButton onClickTab={onClickTab} day={day} tabList={tabList} />
 
-        {winWidth && winWidth > BREAK_POINT - 1 && day === "All" ? (
-          <div className={styles.all}>
-            <Timetable data={data.day1} day="Day1" />
-            <Timetable data={data.day2} day="Day2" />
-          </div>
-        ) : (
-          <>
-            {day === "Day2" ? (
-              <Timetable data={data.day2} day="Day2" />
-            ) : (
+        <div role="tabpanel">
+          {winWidth && winWidth > BREAK_POINT - 1 && day === "All" ? (
+            <div className={styles.all}>
               <Timetable data={data.day1} day="Day1" />
-            )}
-          </>
-        )}
-        <p className={styles.notice}>
-          프로그램은 상황에 따라 일부 변경될 수 있습니다.
-        </p>
+              <Timetable data={data.day2} day="Day2" />
+            </div>
+          ) : (
+            <>
+              {day === "Day2" ? (
+                <Timetable data={data.day2} day="Day2" />
+              ) : (
+                <Timetable data={data.day1} day="Day1" />
+              )}
+            </>
+          )}
+          <p className={styles.notice}>
+            프로그램은 상황에 따라 일부 변경될 수 있습니다.
+          </p>
+        </div>
       </div>
     </Section>
   );
