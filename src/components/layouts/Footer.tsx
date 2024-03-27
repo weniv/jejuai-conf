@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className={styles.footer}>
       <p>
         주관: 제주지역혁신플랫폼(RIS) 지능형서비스사업단,
-        (재)제주창조경제혁신센터, GDG Jeju, (주)위니브 | 협찬: 제주 한라수
+        (재)제주창조경제혁신센터, GDG Jeju, (주)위니브 | 후원/협찬: 리플로우, 제주 한라수
       </p>
       <div className={styles.logos}>
         <Image
