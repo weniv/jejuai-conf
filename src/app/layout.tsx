@@ -72,6 +72,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko-KR" className={pretendard.className}>
+      <link rel="preload" as="image" href="/images/logo.webp" />
+      <link rel="preload" as="image" href="/images/logo-mobile.webp" />
       <body>
         <Header />
         {children}
