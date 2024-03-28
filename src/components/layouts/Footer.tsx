@@ -39,7 +39,7 @@ const Footer = () => {
           alt=""
           width={126}
           height={40}
-          className={styles.weniv}
+          className={styles.reflow}
         />
       </div>
     </footer>

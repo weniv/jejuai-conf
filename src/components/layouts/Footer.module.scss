@@ -1,7 +1,7 @@
 @import "@/styles/var.scss";
 
 .footer {
-  color: var(--color-gray-lv3);
+  color: var(--color-gray-lv3-text);
   text-align: center;
   font-size: 0.875em;
   background-color: var(--color-gray-lv1);
@@ -26,8 +26,6 @@
   flex-wrap: wrap;
 
   img {
-    width: auto;
-    height: 3rem;
     &.ris {
       aspect-ratio: 260/40;
     }
@@ -39,6 +37,17 @@
     }
     &.weniv {
       aspect-ratio: 145/40;
+    }
+    &.reflow {
+      aspect-ratio: 126/40;
+    }
+    &.ris,
+    &.ccei,
+    &.gdg,
+    &.weniv,
+    &.reflow {
+      width: auto;
+      height: 3rem;
     }
   }
 
