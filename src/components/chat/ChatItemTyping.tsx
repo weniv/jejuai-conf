@@ -1,7 +1,6 @@
 import Image from "next/image";
 import styles from "./Chat.module.scss";
 import Typewriter from "typewriter-effect";
-import { Fragment } from "react";
 
 interface ChatItemProps {
   data?: any;

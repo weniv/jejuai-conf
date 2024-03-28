@@ -1,9 +1,10 @@
 import { Fragment, useEffect, useState } from "react";
 import styles from "./Chat.module.scss";
 import { ChatItemTyping } from "./ChatItemTyping";
+import { chatType } from "@/utils/types";
 interface ChatListProps {
-  data?: any;
-  onClickSkip?: any;
+  data?: chatType[];
+  onClickSkip?: () => void;
   times: number[];
   intro?: boolean;
 }
@@ -14,12 +15,13 @@ export const ChatListTyping = ({
   intro,
 }: ChatListProps) => {
   const [showItems, setShowItems] = useState<boolean[]>(
-    new Array(data.length).fill(false)
+    new Array(data?.length).fill(false)
   );
+
   useEffect(() => {
     const timeoutIds: NodeJS.Timeout[] = [];
 
-    data.forEach((item: any, i: number) => {
+    data?.forEach((item: chatType, i: number) => {
       const delay = times[i];
 
       const timeoutId = setTimeout(() => {
@@ -42,7 +44,7 @@ export const ChatListTyping = ({
     <div className={styles.wrap}>
       {data && (
         <ul className={styles.chatlist}>
-          {data.map((chat: any, index: number) => (
+          {data.map((chat: chatType, index: number) => (
             <Fragment key={index}>
               {showItems[index] && (
                 <li className={styles.fadeIn}>

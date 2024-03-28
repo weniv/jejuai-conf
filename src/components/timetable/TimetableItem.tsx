@@ -1,12 +1,11 @@
+import { ProgramType } from "@/utils/types";
 import styles from "./Timetable.module.scss";
 
 export default function TimetableItem({
   item,
   index,
-  day,
 }: {
-  item: any;
-  day: string;
+  item: ProgramType;
   index: number;
 }) {
   const row = item.times > 1 ? `${index - 2}/${index - 2 + item.times}` : null;

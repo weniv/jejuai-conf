@@ -8,7 +8,7 @@ export const TabButton = ({
 }: {
   day: string;
   tabList: string[];
-  onClickTab: any;
+  onClickTab: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
     <div className={styles.tab} role="tablist">

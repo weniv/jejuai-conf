@@ -1,7 +1,8 @@
+import { chatType } from "@/utils/types";
 import styles from "./Chat.module.scss";
 import { ChatItem } from "./ChatItem";
 interface ChatListProps {
-  data?: any;
+  data?: chatType[];
   intro?: boolean;
 }
 export const ChatList = ({ data, intro }: ChatListProps) => {
@@ -9,7 +10,7 @@ export const ChatList = ({ data, intro }: ChatListProps) => {
     <>
       {data && (
         <ul className={styles.chatlist}>
-          {data.map((chat: any, index: number) => (
+          {data.map((chat: chatType, index: number) => (
             <li key={index} className={styles.fadeIn}>
               <>
                 {chat.ai ? (

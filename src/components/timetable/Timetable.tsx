@@ -1,7 +1,14 @@
+import { ProgramType } from "@/utils/types";
 import styles from "./Timetable.module.scss";
 import TimetableItem from "./TimetableItem";
 
-export default function Timetable({ data, day }: { data: any; day: string }) {
+export default function Timetable({
+  data,
+  day,
+}: {
+  data?: ProgramType[];
+  day: string;
+}) {
   return (
     <div className={`${styles.fadeIn}`}>
       <h2 className={styles.tit}>
@@ -12,8 +19,8 @@ export default function Timetable({ data, day }: { data: any; day: string }) {
           day === "Day2" ? styles.column2 : styles.column3
         }`}
       >
-        {data.map((value: any, index: number) => (
-          <TimetableItem key={index} item={value} index={index} day={day} />
+        {data?.map((value: ProgramType, index: number) => (
+          <TimetableItem key={index} item={value} index={index} />
         ))}
       </ul>
     </div>

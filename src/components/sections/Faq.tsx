@@ -1,10 +1,11 @@
 import Section from "../section/Section";
 import Accordion from "../accordion/Accordion";
+import { FaqType } from "@/utils/types";
 
 interface SectionProps {
   id?: string;
   className?: string;
-  data: any;
+  data: FaqType[];
 }
 
 export const Faq = ({ id, className, data }: SectionProps) => {

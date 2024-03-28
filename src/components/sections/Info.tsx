@@ -6,9 +6,10 @@ import styles from "./Info.module.scss";
 import { ChatListTyping } from "../chat/ChatListTyping";
 import { useEffect, useState } from "react";
 import useIntersectionObservation from "@/utils/useIntersectionObservation";
+import { chatType } from "@/utils/types";
 interface SectionProps {
   id?: string;
-  data?: any;
+  data?: chatType[];
 }
 export const Info = ({ id, data }: SectionProps) => {
   const [isSkip, setIsSkip] = useState(false);

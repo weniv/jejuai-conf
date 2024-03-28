@@ -4,10 +4,11 @@ import Section from "../section/Section";
 import { TabButton } from "../tabButton/TabButton";
 import { useEffect, useState } from "react";
 import Timetable from "../timetable/Timetable";
+import { dayType } from "@/utils/types";
 
 interface SectionProps {
   id?: string;
-  data?: any;
+  data?: dayType;
 }
 
 export const Program = ({ id, data }: SectionProps) => {
@@ -53,15 +54,15 @@ export const Program = ({ id, data }: SectionProps) => {
         <div role="tabpanel">
           {winWidth && winWidth > BREAK_POINT - 1 && day === "All" ? (
             <div className={styles.all}>
-              <Timetable data={data.day1} day="Day1" />
-              <Timetable data={data.day2} day="Day2" />
+              <Timetable data={data?.day1} day="Day1" />
+              <Timetable data={data?.day2} day="Day2" />
             </div>
           ) : (
             <>
               {day === "Day2" ? (
-                <Timetable data={data.day2} day="Day2" />
+                <Timetable data={data?.day2} day="Day2" />
               ) : (
-                <Timetable data={data.day1} day="Day1" />
+                <Timetable data={data?.day1} day="Day1" />
               )}
             </>
           )}

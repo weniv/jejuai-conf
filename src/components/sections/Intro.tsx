@@ -6,11 +6,12 @@ import ArrowSVG from "../accordion/ArrowSVG";
 import { ChatList } from "../chat/ChatList";
 import { ChatListTyping } from "../chat/ChatListTyping";
 import { useEffect, useState } from "react";
+import { chatType } from "@/utils/types";
 
 interface SectionProps {
   id?: string;
   className?: string;
-  data?: any;
+  data?: chatType[];
 }
 
 export const Intro = ({ id, data, className }: SectionProps) => {
