@@ -4,7 +4,10 @@ import data from "@/data/data.json";
 const Footer = () => {
   return (
     <footer className={styles.footer}>
-      <p>{data.footer}</p>
+      <p>
+        <span>주관: {data.footer["주관"]}</span>{" "}
+        <span>후원/협찬: {data.footer["후원/협찬"]}</span>
+      </p>
       <div className={styles.logos}>
         <Image
           src="/images/RIS.svg"
@@ -40,6 +43,13 @@ const Footer = () => {
           width={126}
           height={40}
           className={styles.reflow}
+        />
+        <Image
+          src="/images/halla.svg"
+          alt=""
+          width={90}
+          height={40}
+          className={styles.halla}
         />
       </div>
     </footer>

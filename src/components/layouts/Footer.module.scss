@@ -9,6 +9,10 @@
 
   p {
     word-break: keep-all;
+
+    span {
+      display: inline-block;
+    }
   }
 
   @media (prefers-color-scheme: dark) {
@@ -41,20 +45,34 @@
     &.reflow {
       aspect-ratio: 126/40;
     }
+    &.halla {
+      aspect-ratio: 90/40;
+    }
     &.ris,
     &.ccei,
     &.gdg,
     &.weniv,
-    &.reflow {
+    &.reflow,
+    &.halla {
       width: auto;
       height: 3rem;
     }
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1023px) {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 60rem;
     margin: 2rem auto 0;
+    gap: 1rem;
+    img {
+      margin: 0 auto;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+
     max-width: 360px;
 
     gap: 1rem 2rem;
