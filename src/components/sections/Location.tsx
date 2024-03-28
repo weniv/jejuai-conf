@@ -31,7 +31,7 @@ export const Location = ({ id, className, address }: SectionProps) => {
             <MapMarker // 마커를 생성합니다
               position={LAT_LNG}
               image={{
-                src: "/images/mark.png", // 마커이미지의 주소입니다
+                src: "/images/mark.webp", // 마커이미지의 주소입니다
                 size: {
                   width: 45,
                   height: 60,
