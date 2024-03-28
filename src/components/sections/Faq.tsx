@@ -12,7 +12,7 @@ export const Faq = ({ id, className, data }: SectionProps) => {
   return (
     <Section id={id} className={className}>
       <div className="max-wrap">
-        <h3 className="section-title">FAQ</h3>
+        <h2 className="section-title">FAQ</h2>
         <Accordion data={data} />
       </div>
     </Section>

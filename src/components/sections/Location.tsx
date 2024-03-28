@@ -15,7 +15,7 @@ export const Location = ({ id, className, address }: SectionProps) => {
   return (
     <Section id={id} className={`${className} ${styles.mapWrap}`}>
       <div className="max-wrap">
-        <h3 className="section-title">찾아오시는 길</h3>
+        <h2 className="section-title">찾아오시는 길</h2>
         <p className={styles.address}>
           {address}
           {address && <CopyBtn text={address} />}

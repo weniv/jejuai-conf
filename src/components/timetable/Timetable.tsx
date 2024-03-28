@@ -11,9 +11,9 @@ export default function Timetable({
 }) {
   return (
     <div className={`${styles.fadeIn}`}>
-      <h2 className={styles.tit}>
+      <h3 className={styles.tit}>
         {day} <span>2024.04.{day === "Day1" ? "12(금)" : "13(토)"}</span>
-      </h2>
+      </h3>
       <ul
         className={`${styles.section_cont}  ${
           day === "Day2" ? styles.column2 : styles.column3

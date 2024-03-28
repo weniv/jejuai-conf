@@ -48,10 +48,10 @@ export default function TimetableItem({
         </p>
         <p className={styles.time}>{item.time}</p>
       </div>
-      <h3 className={styles.title}>
+      <h4 className={styles.title}>
         {item.title}
         {item.subtitle && <span>{item.subtitle}</span>}
-      </h3>
+      </h4>
 
       <p className={styles.speaker}>
         <strong>{item.speaker}</strong>

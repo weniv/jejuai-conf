@@ -9,7 +9,7 @@ export const Recruit = ({ id, data }: SectionProps) => {
   return (
     <Section id={id} className={styles.recruit}>
       <div className="max-wrap2">
-        <h3 className="section-title">기업 채용</h3>
+        <h2 className="section-title">기업 채용</h2>
         <p className={styles.content}>
           채용을 희망하는 기업의 채용 공고 QR을 게시하고 있습니다.
           <br />

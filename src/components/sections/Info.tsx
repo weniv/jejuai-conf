@@ -50,6 +50,7 @@ export const Info = ({ id, data }: SectionProps) => {
 
   return (
     <Section id={id} className={`max-wrap ${styles.info}`}>
+      <h2 className="a11y-hidden">행사 소개</h2>
       <div>
         {isSkip ? (
           <ChatList data={data} />

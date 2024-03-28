@@ -47,7 +47,7 @@ export const Program = ({ id, data }: SectionProps) => {
   return (
     <Section id={id} className={styles.program}>
       <div className="max-wrap2">
-        <h3 className="section-title">프로그램 안내</h3>
+        <h2 className="section-title">프로그램 안내</h2>
 
         <TabButton onClickTab={onClickTab} day={day} tabList={tabList} />
 

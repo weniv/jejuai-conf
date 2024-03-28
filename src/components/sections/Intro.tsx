@@ -36,6 +36,7 @@ export const Intro = ({ id, data, className }: SectionProps) => {
     <Section id={id} className={`${className} ${styles.intro}`}>
       <div className={`max-wrap2 ${styles.introWrap}`}>
         <Glitch />
+        <h2 className="a11y-hidden">행사 일시 장소</h2>
         <div className={styles.grow}>
           {isSkip ? (
             <ChatList data={data} intro />
