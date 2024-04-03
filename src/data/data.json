@@ -10,8 +10,8 @@
     { "pc": "FAQ" }
   ],
   "headerLink": {
-    "link": "https://weniv.link/7M0-0s",
-    "text": "참가 신청하기"
+    "link": "https://forms.gle/LDsqqq8bmAw8LST8A",
+    "text": "대기 신청하기"
   },
   "address": "제주 제주시 중앙로 217 제주창조경제혁신센터 3층 J-SPACE",
   "intro": [
@@ -33,8 +33,8 @@
         { "string": "참가에 관심이 있으시다면, 아래의 버튼을 클릭해 주세요!" },
         {
           "link": {
-            "url": "https://weniv.link/7M0-0s",
-            "text": "참가 신청하기"
+            "url": "https://forms.gle/LDsqqq8bmAw8LST8A",
+            "text": "대기 신청하기"
           }
         }
       ]
