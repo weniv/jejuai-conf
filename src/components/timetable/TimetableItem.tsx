@@ -20,7 +20,7 @@ export default function TimetableItem({
       } else {
         grid_Column = `1 / span 3`;
       }
-    } else if (item.space === "펀치룸") {
+    } else if (item.space === "라운지") {
       if (index === 10) {
         grid_Column = `3 / span 2`;
       } else {
@@ -39,9 +39,9 @@ export default function TimetableItem({
       <div className={styles.spaceTime}>
         <p
           className={`${styles.space} ${
-            item.space === "펀치룸" && styles.space2
+            item.space === "라운지" && styles.space2
           } ${item.space === "로비" && styles.space3} ${
-            item.space === "커뮤니케이션룸" && styles.space4
+            item.space === "펀치룸" && styles.space4
           }`}
         >
           {item.space}
