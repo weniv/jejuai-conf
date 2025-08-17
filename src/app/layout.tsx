@@ -8,7 +8,7 @@ import Script from "next/script";
 
 const TITLE = "제주 AI 컨퍼런스";
 const DESCRIPTION =
-  "AI, 모두를 위한 미래, 지식을 넘어 혁신으로 <2024 제주 AI Conference>";
+  "AI, 모두를 위한 미래, 지식을 넘어 혁신으로 <2025 제주 AI Conference>";
 const LINK = "https://www.jejuai.kr";
 const OGIMG = "/images/OG.png";
 
