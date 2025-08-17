@@ -2,7 +2,6 @@ import data from "@/data/data.json";
 import { Intro } from "@/components/sections/Intro";
 import { Info } from "@/components/sections/Info";
 import { Program } from "@/components/sections/Program";
-import { Recruit } from "@/components/sections/Recruit";
 import { Location } from "@/components/sections/Location";
 import { Faq } from "@/components/sections/Faq";
 import { Fragment } from "react";
@@ -19,10 +18,6 @@ export default function Home() {
           )}
           {v.pc === "프로그램 안내" && (
             <Program id={`section${i + 2}`} data={data.program as dayType} />
-          )}
-
-          {v.pc === "기업 채용" && (
-            <Recruit id={`section${i + 2}`} data={data.recruit} />
           )}
           {v.pc === "찾아오시는 길" && (
             <Location id={`section${i + 2}`} address={data.address} />
