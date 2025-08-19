@@ -41,6 +41,11 @@
     }
     &.weniv {
       aspect-ratio: 145/40;
+      transform: translateY(-2px);
+    }
+    &.modu {
+      aspect-ratio: 145/40;
+      transform: translate(-3px, -6px);
     }
     &.reflow {
       aspect-ratio: 126/40;

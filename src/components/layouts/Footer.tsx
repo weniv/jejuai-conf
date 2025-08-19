@@ -22,6 +22,20 @@ const Footer = () => {
           height={30}
           className={styles.weniv}
         />
+        <Image
+          src="/images/modu.svg"
+          alt=""
+          width={134}
+          height={30}
+          className={styles.modu}
+        />
+        <Image
+          src="/images/GDG.svg"
+          alt=""
+          width={134}
+          height={30}
+          className={styles.gdg}
+        />
       </div>
     </footer>
   );
