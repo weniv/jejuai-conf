@@ -13,59 +13,81 @@ const LINK = data.headerLink;
 
 const Header = ({}: Props) => {
   const [activeId, setActiveId] = useState("section1");
+  const [showModal, setShowModal] = useState(false);
   useIntersectionObservation(setActiveId, ".section");
 
   return (
-    <header className={styles.header}>
-      <div className="max-wrap2">
-        <h1 className={styles.pc}>
-          <a href="/">
-            <Image
-              src="images/logo.svg"
-              alt="JEJU AI CONFERENCE"
-              width={280}
-              height={32}
-              priority={true}
-            />
-          </a>
-        </h1>
+    <>
+      <header className={styles.header}>
+        <div className="max-wrap2">
+          <h1 className={styles.pc}>
+            <a href="/">
+              <Image
+                src="images/logo.svg"
+                alt="JEJU AI CONFERENCE"
+                width={280}
+                height={32}
+                priority={true}
+              />
+            </a>
+          </h1>
 
-        <div className={styles.links}>
-          <Link
-            href="/"
-            className={`${styles.mobile} ${
-              activeId === "section1" ? styles.active : ""
-            }`}
-          >
-            홈
-          </Link>
-          {MENU.map((v, i) => (
+          <div className={styles.links}>
             <Link
-              key={i}
-              href={`#section${i + 2}`}
-              className={activeId === `section${i + 2}` ? styles.active : ""}
+              href="/"
+              className={`${styles.mobile} ${
+                activeId === "section1" ? styles.active : ""
+              }`}
             >
-              <span className={styles.pc}>{v.pc}</span>
-
-              <span className={styles.mobile}>
-                {v.mobile ? v.mobile : v.pc}
-              </span>
+              홈
             </Link>
-          ))}
+            {MENU.map((v, i) => (
+              <Link
+                key={i}
+                href={`#section${i + 2}`}
+                className={activeId === `section${i + 2}` ? styles.active : ""}
+              >
+                <span className={styles.pc}>{v.pc}</span>
 
-          {LINK.link && (
-            <Button
-              as="a"
-              href={LINK.link}
-              className={styles.pc}
-              target="_blank"
-            >
-              {LINK.text}
-            </Button>
-          )}
+                <span className={styles.mobile}>
+                  {v.mobile ? v.mobile : v.pc}
+                </span>
+              </Link>
+            ))}
+
+            {LINK.link && (
+              <Button
+                as="button"
+                className={styles.pc}
+                onClick={(e: React.MouseEvent) => {
+                  e.preventDefault();
+                  setShowModal(true);
+                }}
+              >
+                {LINK.text}
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+      
+      {showModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalContent}>
+              <h3>안내</h3>
+              <p>아직 신청 기간이 아닙니다.</p>
+              <button 
+                className={styles.modalClose}
+                onClick={() => setShowModal(false)}
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

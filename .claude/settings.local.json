@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(gh pr:*)"
+      "Bash(gh pr:*)",
+      "Bash(identify:*)",
+      "Bash(git ls-tree:*)"
     ],
     "deny": [],
     "ask": []

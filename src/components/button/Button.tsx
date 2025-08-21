@@ -4,12 +4,13 @@ import { ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
-  as?: "a";
+  as?: "a" | "button";
   href?: string;
   className?: string;
   target?: string;
+  onClick?: (e: React.MouseEvent) => void;
 };
-const Button = ({ children, as, href = "#", className, target }: Props) => {
+const Button = ({ children, as, href = "#", className, target, onClick }: Props) => {
   const style = `${styles.btn} ${className}`;
 
   if (as === "a") {
@@ -20,7 +21,7 @@ const Button = ({ children, as, href = "#", className, target }: Props) => {
     );
   } else {
     return (
-      <button type="button" className={style}>
+      <button type="button" className={style} onClick={onClick}>
         {children}
       </button>
     );

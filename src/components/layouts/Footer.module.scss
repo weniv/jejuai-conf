@@ -26,69 +26,75 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
+  gap: 2.4rem;
   flex-wrap: wrap;
 
   img {
-    &.ris {
-      aspect-ratio: 260/40;
+    height: 2.5rem;
+    width: auto;
+    object-fit: contain;
+    
+    &.jejusan {
+      height: 2.8rem;
     }
     &.ccei {
-      aspect-ratio: 193/40;
+      height: 2.5rem;
     }
     &.gdg {
-      aspect-ratio: 230/40;
+      height: 2.5rem;
     }
     &.weniv {
-      aspect-ratio: 145/40;
-      transform: translateY(-2px);
+      height: 2.5rem;
     }
     &.modu {
-      aspect-ratio: 145/40;
-      transform: translate(-3px, -6px);
+      height: 2rem;
+    }
+    &.ms {
+      height: 2.6rem;
     }
     &.reflow {
-      aspect-ratio: 126/40;
+      height: 2.5rem;
     }
     &.halla {
-      aspect-ratio: 90/40;
+      height: 2.5rem;
     }
-    &.ris,
-    &.ccei,
-    &.gdg,
-    &.weniv,
-    &.reflow,
-    &.halla {
-      width: auto;
-      height: 3rem;
+    &.ris {
+      height: 2.5rem;
     }
   }
 
   @media screen and (max-width: 1023px) {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    max-width: 60rem;
-    margin: 2rem auto 0;
-    gap: 1rem;
+    gap: 1.5rem;
+    
     img {
-      margin: 0 auto;
+      height: 2.2rem;
+      
+      &.jejusan {
+        height: 2.5rem;
+      }
+      &.modu {
+        height: 1.8rem;
+      }
+      &.ms {
+        height: 2.3rem;
+      }
     }
   }
 
   @media screen and (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-
-    max-width: 360px;
-
-    gap: 1rem 2rem;
-
+    gap: 1.2rem;
+    
     img {
-      width: auto;
-      height: 2.4rem;
-      justify-self: flex-start;
-
-      &:nth-child(odd) {
-        justify-self: flex-end;
+      height: 2rem;
+      
+      &.jejusan {
+        height: 2.2rem;
+      }
+      &.modu {
+        height: 1.6rem;
+      }
+      &.ms {
+        height: 2.1rem;
       }
     }
   }
