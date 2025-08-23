@@ -12,7 +12,7 @@ export default function Timetable({
   return (
     <div className={`${styles.fadeIn}`}>
       <h3 className={styles.tit}>
-        {day} <span>2024.04.{day === "Day1" ? "12(금)" : "13(토)"}</span>
+        {day} <span>2025.10.{day === "Day1" ? "10(금)" : "11(토)"}</span>
       </h3>
       <ul
         className={`${styles.section_cont} ${styles.column2}`}
