@@ -4,31 +4,22 @@ import styles from "./Timetable.module.scss";
 export default function TimetableItem({
   item,
   index,
+  day,
 }: {
   item: ProgramType;
   index: number;
+  day: string;
 }) {
   const row = item.times > 1 ? `${index - 2}/${index - 2 + item.times}` : null;
 
   let grid_Column;
+  
+  // 모든 뷰에서 2열 레이아웃 사용
   if (item.times === 0) {
-    grid_Column = `1 / span 6`;
+    grid_Column = `1 / span 2`;
   } else {
-    if (item.space === "트랙룸") {
-      if (index === 9) {
-        grid_Column = `1 / span 2`;
-      } else {
-        grid_Column = `1 / span 3`;
-      }
-    } else if (item.space === "라운지") {
-      if (index === 10) {
-        grid_Column = `3 / span 2`;
-      } else {
-        grid_Column = `4 / span 3`;
-      }
-    } else {
-      grid_Column = `5 / span 2`;
-    }
+    // 자동으로 배치되도록 설정하지 않음
+    grid_Column = undefined;
   }
 
   return (

@@ -164,9 +164,9 @@
 }
 
 .column2 {
-  grid-template-columns: repeat(6, 1fr);
-  .col {
-    grid-column: 1 / span 3;
+  grid-template-columns: repeat(2, 1fr);
+  li {
+    grid-column: span 1;
   }
 }
 

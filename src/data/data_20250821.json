@@ -4,8 +4,8 @@
   },
   "menu": [
     { "pc": "행사 소개", "mobile": "소개" },
-    { "pc": "찾아오시는 길", "mobile": "위치" },
     { "pc": "프로그램 안내", "mobile": "프로그램" },
+    { "pc": "찾아오시는 길", "mobile": "위치" },
     { "pc": "FAQ" }
   ],
   "headerLink": {
@@ -75,7 +75,15 @@
   "program": {
     "day1": [
       {
-        "time": "13:00~13:50",
+        "time": "13:00~14:00",
+        "space": "펀치룸",
+        "times": 1,
+        "title": "AI로 변화된, 그리고 변화될 스타트업의 업무 환경",
+        "speaker": "김일도",
+        "affiliated": "캐피털레터"
+      },
+      {
+        "time": "13:00~14:00",
         "space": "트랙룸",
         "times": 1,
         "title": "AI 시대 SW 교육과 커리어",
@@ -83,29 +91,7 @@
         "affiliated": "국민대"
       },
       {
-        "time": "13:00~13:50",
-        "space": "펀치룸",
-        "times": 1,
-        "title": "AI로 변화된, 그리고 변화될 스타트업의 업무 환경",
-        "speaker": "김일도",
-        "affiliated": "캐피탈레터"
-      },
-      {
-        "time": "13:50~14:00",
-        "space": "로비",
-        "times": 0,
-        "title": "전체 사진 촬영"
-      },
-      {
-        "time": "14:00~16:50",
-        "space": "트랙룸",
-        "times": 3,
-        "title": "주제 미정",
-        "speaker": "업스테이지",
-        "affiliated": "업스테이지"
-      },
-      {
-        "time": "14:00~14:50",
+        "time": "14:00~15:00",
         "space": "펀치룸",
         "times": 1,
         "title": "Cursor를 통한 바이브코딩",
@@ -113,49 +99,49 @@
         "affiliated": "제주AI클럽"
       },
       {
-        "time": "15:00~15:50",
-        "space": "펀치룸",
-        "times": 1,
-        "title": "디자이너가 사용하는 생성형 AI",
-        "speaker": "김남희",
+        "time": "14:00~16:00",
+        "space": "트랙룸",
+        "times": 2,
+        "title": "개발의 새로운 패러다임, 바이브 코딩",
+        "speaker": "이호준",
         "affiliated": "위니브"
       },
       {
+        "time": "16:00~17:00",
         "space": "펀치룸",
-        "time": "16:00~16:50",
         "times": 1,
         "title": "출판 업계에 들어온 AI",
         "speaker": "전정아",
         "affiliated": "리코멘드"
       },
       {
+        "time": "16:00~17:00",
         "space": "트랙룸",
-        "time": "17:00~17:50",
         "times": 1,
-        "title": "Firebase Studio 바이브 코딩 애플리케이션 배포",
-        "speaker": "이영빈",
-        "affiliated": "모두의연구소"
+        "title": "개발의 새로운 패러다임, 바이브 코딩을 위한 디자인",
+        "speaker": "차경림",
+        "affiliated": "위니브"
       },
       {
+        "time": "17:00~18:00",
         "space": "펀치룸",
-        "time": "17:00~17:50",
         "times": 1,
         "title": "AI 데이터 분석과 MCP를 데이터 분석 자동화",
         "speaker": "김진환",
         "affiliated": "위니브"
+      },
+      {
+        "time": "17:00~18:00",
+        "space": "트랙룸",
+        "times": 1,
+        "title": "Firebase Studio 바이브 코딩 애플리케이션 배포",
+        "speaker": "이영빈",
+        "affiliated": "모두의연구소"
       }
     ],
     "day2": [
       {
-        "time": "13:00~13:50",
-        "space": "트랙룸",
-        "times": 1,
-        "title": "바이브 코딩",
-        "speaker": "유저스틴, 이보라",
-        "affiliated": "마이크로소프트"
-      },
-      {
-        "time": "13:00~13:50",
+        "time": "13:00~14:00",
         "space": "펀치룸",
         "times": 1,
         "title": "바이브코딩 보라돌이 UI 탈출기",
@@ -164,34 +150,20 @@
         "affiliated": "J비주얼스쿨"
       },
       {
-        "time": "13:50~14:00",
-        "space": "로비",
-        "times": 0,
-        "title": "전체 사진 촬영"
-      },
-      {
-        "time": "14:00~17:50",
+        "time": "13:00~18:00",
         "space": "트랙룸",
-        "times": 4,
+        "times": 5,
         "title": "바이브 코딩",
         "speaker": "유저스틴, 이보라",
         "affiliated": "마이크로소프트"
       },
       {
-        "time": "14:00~16:50",
+        "time": "14:00~18:00",
         "space": "펀치룸",
-        "times": 3,
-        "title": "개발의 새로운 패러다임, 바이브 코딩",
-        "speaker": "이호준",
-        "affiliated": "위니브"
-      },
-      {
-        "space": "펀치룸",
-        "time": "17:00~17:50",
-        "times": 1,
-        "title": "개발의 새로운 패러다임, 바이브 코딩을 위한 디자인",
-        "speaker": "차경림",
-        "affiliated": "위니브"
+        "times": 4,
+        "title": "미정",
+        "speaker": "",
+        "affiliated": ""
       }
     ]
   },

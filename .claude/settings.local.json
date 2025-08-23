@@ -3,7 +3,8 @@
     "allow": [
       "Bash(gh pr:*)",
       "Bash(identify:*)",
-      "Bash(git ls-tree:*)"
+      "Bash(git ls-tree:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []

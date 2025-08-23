@@ -15,12 +15,10 @@ export default function Timetable({
         {day} <span>2024.04.{day === "Day1" ? "12(금)" : "13(토)"}</span>
       </h3>
       <ul
-        className={`${styles.section_cont}  ${
-          day === "Day2" ? styles.column2 : styles.column3
-        }`}
+        className={`${styles.section_cont} ${styles.column2}`}
       >
         {data?.map((value: ProgramType, index: number) => (
-          <TimetableItem key={index} item={value} index={index} />
+          <TimetableItem key={index} item={value} index={index} day={day} />
         ))}
       </ul>
     </div>
