@@ -23,6 +23,20 @@ const Footer = () => {
           className={styles.ccei}
         />
         <Image
+          src="/images/jsa.png"
+          alt="제주스타트업협회"
+          width={150}
+          height={40}
+          className={styles.jsa}
+        />
+        <Image
+          src="/images/kova.png"
+          alt="벤처기업협회 제주지회"
+          width={150}
+          height={40}
+          className={styles.kova}
+        />
+        <Image
           src="/images/weniv.svg"
           alt="위니브"
           width={145}

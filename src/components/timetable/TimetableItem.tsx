@@ -1,5 +1,6 @@
 import { ProgramType } from "@/utils/types";
 import styles from "./Timetable.module.scss";
+import Button from "../button/Button";
 
 export default function TimetableItem({
   item,
@@ -44,6 +45,14 @@ export default function TimetableItem({
         {item.subtitle && <span>{item.subtitle}</span>}
       </h4>
 
+      {day === "Day2" && item.title?.includes("바이브 코딩") && 
+        item.speaker === "유저스틴, 이보라" && (
+        <div style={{ marginBottom: "0.5rem" }}>
+          <Button as="a" href="/vscode-devdays">
+            상세보기
+          </Button>
+        </div>
+      )}
       <p className={styles.speaker}>
         <strong>{item.speaker}</strong>
         {item.affiliated && <span>{item.affiliated}</span>}
