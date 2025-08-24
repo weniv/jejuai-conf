@@ -97,11 +97,11 @@
         "title": "전체 사진 촬영"
       },
       {
-        "time": "14:00~16:50",
+        "time": "14:00~14:50",
         "space": "트랙룸",
-        "times": 3,
-        "title": "주제 미정",
-        "speaker": "업스테이지",
+        "times": 1,
+        "title": "The journey of Document AI",
+        "speaker": "문수영",
         "affiliated": "업스테이지"
       },
       {
@@ -114,11 +114,27 @@
       },
       {
         "time": "15:00~15:50",
+        "space": "트랙룸",
+        "times": 1,
+        "title": "LLM serving essentials",
+        "speaker": "송인서",
+        "affiliated": "업스테이지"
+      },
+      {
+        "time": "15:00~15:50",
         "space": "펀치룸",
         "times": 1,
         "title": "디자이너가 사용하는 생성형 AI",
         "speaker": "김남희",
         "affiliated": "위니브"
+      },
+      {
+        "time": "16:00~16:50",
+        "space": "트랙룸",
+        "times": 1,
+        "title": "대학생의 AI 활용, AI 서비스 개발기",
+        "speaker": "제주대학교 학생 4명",
+        "affiliated": "제주대학교"
       },
       {
         "space": "펀치룸",
