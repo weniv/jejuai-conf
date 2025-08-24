@@ -8,12 +8,16 @@ type Props = {};
 import data from "@/data/data.json";
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 const MENU = data.menu;
 const LINK = data.headerLink;
 
 const Header = ({}: Props) => {
   const [activeId, setActiveId] = useState("section1");
   const [showModal, setShowModal] = useState(false);
+  const pathname = usePathname();
+  const isVSCodePage = pathname === "/vscode-devdays";
+  
   useIntersectionObservation(setActiveId, ".section");
 
   return (
@@ -33,39 +37,47 @@ const Header = ({}: Props) => {
           </h1>
 
           <div className={styles.links}>
-            <Link
-              href="/"
-              className={`${styles.mobile} ${
-                activeId === "section1" ? styles.active : ""
-              }`}
-            >
-              홈
-            </Link>
-            {MENU.map((v, i) => (
-              <Link
-                key={i}
-                href={`#section${i + 2}`}
-                className={activeId === `section${i + 2}` ? styles.active : ""}
-              >
-                <span className={styles.pc}>{v.pc}</span>
-
-                <span className={styles.mobile}>
-                  {v.mobile ? v.mobile : v.pc}
-                </span>
+            {isVSCodePage ? (
+              <Link href="/" className={styles.active}>
+                컨퍼런스 안내
               </Link>
-            ))}
+            ) : (
+              <>
+                <Link
+                  href="/"
+                  className={`${styles.mobile} ${
+                    activeId === "section1" ? styles.active : ""
+                  }`}
+                >
+                  홈
+                </Link>
+                {MENU.map((v, i) => (
+                  <Link
+                    key={i}
+                    href={`#section${i + 2}`}
+                    className={activeId === `section${i + 2}` ? styles.active : ""}
+                  >
+                    <span className={styles.pc}>{v.pc}</span>
 
-            {LINK.link && (
-              <Button
-                as="button"
-                className={styles.pc}
-                onClick={(e: React.MouseEvent) => {
-                  e.preventDefault();
-                  setShowModal(true);
-                }}
-              >
-                {LINK.text}
-              </Button>
+                    <span className={styles.mobile}>
+                      {v.mobile ? v.mobile : v.pc}
+                    </span>
+                  </Link>
+                ))}
+
+                {LINK.link && (
+                  <Button
+                    as="button"
+                    className={styles.pc}
+                    onClick={(e: React.MouseEvent) => {
+                      e.preventDefault();
+                      setShowModal(true);
+                    }}
+                  >
+                    {LINK.text}
+                  </Button>
+                )}
+              </>
             )}
           </div>
         </div>
