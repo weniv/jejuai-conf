@@ -58,6 +58,13 @@ const Footer = () => {
           className={styles.ms}
         />
         <Image
+          src="/images/upstage.svg"
+          alt="Upstage"
+          width={150}
+          height={40}
+          className={styles.upstage}
+        />
+        <Image
           src="/images/GDG.svg"
           alt="GDG Jeju"
           width={230}
