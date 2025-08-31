@@ -48,6 +48,16 @@ export const ChatItem = ({ data, type = "ai" }: ChatItemProps) => {
               {item.link.text}
             </Button>
           )}
+          {item.button && (
+            <Button
+              as="a"
+              href={item.button.link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {item.button.text}
+            </Button>
+          )}
         </Fragment>
       ));
       break;

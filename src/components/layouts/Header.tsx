@@ -14,7 +14,6 @@ const LINK = data.headerLink;
 
 const Header = ({}: Props) => {
   const [activeId, setActiveId] = useState("section1");
-  const [showModal, setShowModal] = useState(false);
   const pathname = usePathname();
   const isVSCodePage = pathname === "/vscode-devdays";
   
@@ -67,12 +66,11 @@ const Header = ({}: Props) => {
 
                 {LINK.link && (
                   <Button
-                    as="button"
+                    as="a"
+                    href={LINK.link}
                     className={styles.pc}
-                    onClick={(e: React.MouseEvent) => {
-                      e.preventDefault();
-                      setShowModal(true);
-                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     {LINK.text}
                   </Button>
@@ -82,23 +80,6 @@ const Header = ({}: Props) => {
           </div>
         </div>
       </header>
-      
-      {showModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalContent}>
-              <h3>안내</h3>
-              <p>아직 신청 기간이 아닙니다.</p>
-              <button 
-                className={styles.modalClose}
-                onClick={() => setShowModal(false)}
-              >
-                확인
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };

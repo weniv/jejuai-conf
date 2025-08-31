@@ -173,3 +173,18 @@
 .column3 {
   grid-template-columns: repeat(6, 1fr);
 }
+
+.detailButton {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid $color;
+  
+  @media (hover: hover) {
+    &:hover {
+      background-color: $color;
+      color: $color2;
+      border-color: $color;
+      font-weight: 500;
+    }
+  }
+}

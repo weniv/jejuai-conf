@@ -9,7 +9,7 @@
     { "pc": "FAQ" }
   ],
   "headerLink": {
-    "link": "#",
+    "link": "https://forms.gle/cMCvL3tXRGMDkvm86",
     "text": "신청하기"
   },
   "address": "제주 제주시 중앙로 217 제주창조경제혁신센터 3층 J-SPACE",
@@ -29,7 +29,13 @@
             "장소: 제주창조경제혁신센터 3층 J-SPACE"
           ]
         },
-        { "string": "아직 모집을 하고 있지 않으니, 잠시만 기다려주세요." }
+        { "string": "지금 바로 신청하세요!" },
+        {
+          "button": {
+            "text": "신청하기",
+            "link": "https://forms.gle/cMCvL3tXRGMDkvm86"
+          }
+        }
       ]
     }
   ],
@@ -67,7 +73,13 @@
           ]
         },
         {
-          "string": "아직 모집을 하고 있지 않으니, 잠시만 기다려주세요."
+          "string": "지금 바로 신청하여 제주 AI 컨퍼런스에 참여하세요!"
+        },
+        {
+          "button": {
+            "text": "신청하기",
+            "link": "https://forms.gle/cMCvL3tXRGMDkvm86"
+          }
         }
       ]
     }
@@ -132,9 +144,9 @@
         "time": "16:00~16:50",
         "space": "트랙룸",
         "times": 1,
-        "title": "대학생의 AI 활용, AI 서비스 개발기",
-        "speaker": "제주대학교 학생 4명",
-        "affiliated": "제주대학교"
+        "title": "개발취준생: AI! 내 동료가 돼라!",
+        "speaker": "김예슬1, 김예슬2, 김채현, 허지은",
+        "affiliated": "취업준비생 4인"
       },
       {
         "space": "펀치룸",

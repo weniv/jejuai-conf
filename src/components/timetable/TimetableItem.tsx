@@ -48,7 +48,7 @@ export default function TimetableItem({
       {day === "Day2" && item.title?.includes("바이브 코딩") && 
         item.speaker === "유저스틴, 이보라" && (
         <div style={{ marginBottom: "0.5rem" }}>
-          <Button as="a" href="/vscode-devdays">
+          <Button as="a" href="/vscode-devdays" className={styles.detailButton}>
             상세보기
           </Button>
         </div>
