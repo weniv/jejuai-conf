@@ -53,12 +53,15 @@ export const ChatItemTyping = ({ data, type = "ai", last }: ChatItemProps) => {
       const linkHtml = data[3]?.link 
         ? `<a href=${data[3].link.url} class="link-btn" target="_blank">${data[3].link.text}</a>` 
         : '';
+      const buttonHtml = data[3]?.button
+        ? `<a href="${data[3].button.link}" class="link-btn" target="_blank" rel="noopener noreferrer">${data[3].button.text}</a>`
+        : '';
       content = Typing(
         `${data[0].string}<br/>
         <span class="list">${data[1]?.ul[0]}</span><br/>
         <span class="list">${data[1]?.ul[1]}</span><br/>
         ${data[2].string}<br/>
-        ${linkHtml}`
+        ${linkHtml}${buttonHtml}`
       );
       break;
     default:
