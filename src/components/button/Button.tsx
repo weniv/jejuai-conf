@@ -8,14 +8,15 @@ type Props = {
   href?: string;
   className?: string;
   target?: string;
+  rel?: string;
   onClick?: (e: React.MouseEvent) => void;
 };
-const Button = ({ children, as, href = "#", className, target, onClick }: Props) => {
+const Button = ({ children, as, href = "#", className, target, rel, onClick }: Props) => {
   const style = `${styles.btn} ${className}`;
 
   if (as === "a") {
     return (
-      <Link href={href} className={style} target={target}>
+      <Link href={href} className={style} target={target} rel={rel}>
         {children}
       </Link>
     );
