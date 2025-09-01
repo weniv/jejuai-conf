@@ -5,7 +5,8 @@
       "Bash(identify:*)",
       "Bash(git ls-tree:*)",
       "Bash(npm run dev:*)",
-      "Bash(copy:*)"
+      "Bash(copy:*)",
+      "Bash(taskkill:*)"
     ],
     "deny": [],
     "ask": []
