@@ -136,9 +136,9 @@
         "time": "15:00~15:50",
         "space": "펀치룸",
         "times": 1,
-        "title": "Google Gemini를 활용한 바이브 코딩",
-        "speaker": "김승주",
-        "affiliated": "위니브, GDG Jeju"
+        "title": "개발의 새로운 패러다임, 바이브 코딩",
+        "speaker": "이호준",
+        "affiliated": "위니브"
       },
       {
         "time": "16:00~16:50",
@@ -209,9 +209,9 @@
         "time": "14:00~16:50",
         "space": "펀치룸",
         "times": 3,
-        "title": "개발의 새로운 패러다임, 바이브 코딩",
-        "speaker": "이호준",
-        "affiliated": "위니브"
+        "title": "Google Gemini를 활용한 바이브 코딩",
+        "speaker": "김승주",
+        "affiliated": "위니브, GDG Jeju"
       },
       {
         "space": "펀치룸",
