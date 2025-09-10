@@ -67,7 +67,7 @@ export default function TimetableItem({
             className={styles.registrationButton}
             aria-label={`${item.title} 세션 신청하기 (새 창에서 열림)`}
           >
-            세션 신청하기 →
+            세션 신청하기
           </Button>
         </div>
       )}

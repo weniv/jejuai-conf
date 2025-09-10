@@ -208,28 +208,16 @@
 }
 
 .registrationButton {
-  background-color: #4285f4;
-  color: white;
-  padding: fcSize(10, 12) fcSize(16, 20);
-  border-radius: 6px;
-  text-decoration: none;
-  display: inline-block;
-  font-weight: 600;
-  font-size: fcSize(15, 17);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-  border: none;
-  
-  @media screen and (max-width: 500px) {
-    font-size: 1rem;
-    padding: 0.7rem 1.1rem;
-  }
+  background-color: #fff;
+  color: #000;
+  border: 1px solid $color;
   
   @media (hover: hover) {
     &:hover {
-      background-color: #357ae8;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transform: translateY(-1px);
+      background-color: $color;
+      color: $color2;
+      border-color: $color;
+      font-weight: 500;
     }
   }
 }
