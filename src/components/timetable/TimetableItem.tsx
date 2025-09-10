@@ -53,6 +53,25 @@ export default function TimetableItem({
           </Button>
         </div>
       )}
+      
+      {item.registration && (
+        <div className={styles.registrationWrapper}>
+          <p className={styles.registrationDesc} style={{ whiteSpace: 'pre-line' }}>
+            {item.registration.description}
+          </p>
+          <Button 
+            as="a" 
+            href={item.registration.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.registrationButton}
+            aria-label={`${item.title} 세션 신청하기 (새 창에서 열림)`}
+          >
+            세션 신청하기 →
+          </Button>
+        </div>
+      )}
+      
       <p className={styles.speaker}>
         <strong>{item.speaker}</strong>
         {item.affiliated && <span>{item.affiliated}</span>}

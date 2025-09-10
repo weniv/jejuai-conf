@@ -22,6 +22,10 @@ export interface ProgramType {
   subtitle?: string;
   speaker: string;
   affiliated: string;
+  registration?: {
+    url: string;
+    description: string;
+  };
 }
 
 export interface FaqType {
