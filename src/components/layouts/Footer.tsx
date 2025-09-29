@@ -22,6 +22,13 @@ const Footer = () => {
           className={styles.ccei}
         />
         <Image
+          src="/images/hallauni.svg"
+          alt="제주한라대학교"
+          width={194}
+          height={40}
+          className={styles.hallauni}
+        />
+        <Image
           src="/images/weniv.svg"
           alt="위니브"
           width={145}
