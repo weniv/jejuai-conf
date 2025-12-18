@@ -4,9 +4,8 @@ import data from "@/data/data.json";
 const Footer = () => {
   return (
     <footer className={styles.footer}>
-      <p>
-        <span>주관: {data.footer["주관"]}</span>{" "}
-      </p>
+      <p>주관: {data.footer["주관"]} </p>
+      <p>협력사: {data.footer["협력"]} </p>
       <div className={styles.logos}>
         <Image
           src="/images/jejusan.svg"
@@ -23,6 +22,22 @@ const Footer = () => {
           className={styles.ccei}
         />
         <Image
+          src="/images/hallauni.svg"
+          alt="제주한라대학교"
+          width={194}
+          height={40}
+          className={styles.hallauni}
+        />
+        <Image
+          src="/images/weniv.svg"
+          alt="위니브"
+          width={145}
+          height={40}
+          className={styles.weniv}
+        />
+      </div>
+      <div className={styles.logos}>
+        <Image
           src="/images/jsa.png"
           alt="제주스타트업협회"
           width={150}
@@ -36,13 +51,7 @@ const Footer = () => {
           height={40}
           className={styles.kova}
         />
-        <Image
-          src="/images/weniv.svg"
-          alt="위니브"
-          width={145}
-          height={40}
-          className={styles.weniv}
-        />
+
         <Image
           src="/images/modu.svg"
           alt="모두연"

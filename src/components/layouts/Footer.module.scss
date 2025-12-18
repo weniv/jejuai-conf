@@ -33,7 +33,7 @@
     height: 2.5rem;
     width: auto;
     object-fit: contain;
-    
+
     &.jejusan {
       height: 2.8rem;
     }
@@ -67,14 +67,17 @@
     &.ris {
       height: 2.5rem;
     }
+    &.hallauni {
+      height: 2.3rem;
+    }
   }
 
   @media screen and (max-width: 1023px) {
     gap: 1.5rem;
-    
+
     img {
       height: 2.2rem;
-      
+
       &.jejusan {
         height: 2.5rem;
       }
@@ -89,10 +92,10 @@
 
   @media screen and (max-width: 768px) {
     gap: 1.2rem;
-    
+
     img {
       height: 2rem;
-      
+
       &.jejusan {
         height: 2.2rem;
       }
