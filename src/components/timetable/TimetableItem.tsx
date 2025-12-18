@@ -25,7 +25,10 @@ export default function TimetableItem({
 
   return (
     <li
-      style={{ gridColumn: grid_Column, gridRow: `auto / span ${item.times}` }}
+      style={{
+        gridColumn: grid_Column,
+        gridRow: item.times > 0 ? `auto / span ${item.times}` : undefined
+      }}
       className={item.times === 0 ? styles.col2 : ""}
     >
       <div className={styles.spaceTime}>

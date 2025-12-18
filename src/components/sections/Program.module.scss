@@ -17,7 +17,7 @@
     flex-grow: 1;
 
     ul {
-      grid-template-rows: repeat(2, 24rem) repeat(2, 24rem) 30rem;
+      grid-template-rows: 24rem auto repeat(3, 24rem) 30rem;
     }
   }
 }
