@@ -3,7 +3,6 @@ import {
   Camera,
   CRATER,
   createDots,
-  Dot,
   MOUNTAIN_BASE,
   Point,
   project,
@@ -26,42 +25,36 @@ const BLAST_AT = 1300;
 const RING_TIME = 640;
 const GLYPH_TIME = 300;
 
-// 순환(ms): 프롬프트 입력 → 분화 → 작업 → 분화구로 귀환
-const CHAR_TIME = 34;
-const TYPE_HOLD = 400;
-const LINE_TYPE = 340;
-const VIA_FLIGHT = 340;
+// 작업(ms): 프롬프트 입력과 과열 → 분화 → 글자 쓰기 → 화산으로 귀환
+const HEAT_TIME = 360;
 const FLIGHT = 460;
 const LAUNCH_GAP = 22;
-const TRACE = 300;
-const WORK_TIME = 3600;
-const RETURN = 460;
-const RETURN_GAP = 28;
-const REST = 220;
-const FORCE_AFTER = 1200;
-const CLAIM_GRACE = 300;
-const QUICK_FLIGHT = 300;
 const NEXT_JOB = 170;
+const RETURN = 440;
+const WRITE_SPEED = 2.4;
+const WRITE_MIN = 220;
+const WRITE_MAX = 850;
+const FORCE_AFTER = 2600;
 const TAIL_LENGTH = 7;
-const SHAPE_STEPS = 40;
 const SHAKE_TIME = 340;
 const COLUMN_TIME = 460;
 
-type AgentState = "inside" | "flight" | "trace" | "walk" | "return";
-type Cycle = "opening" | "typing" | "out" | "gather" | "rest";
+type AgentState = "inside" | "flight" | "write" | "return";
+type Cycle = "opening" | "ready" | "charging";
 
-type Shape = "rect" | "ellipse" | "wave" | "zigzag" | "underline" | "hatch";
-
-// 에이전트마다 다른 도형을 맡긴다
-const SHAPES: Shape[] = ["rect", "ellipse", "wave", "zigzag", "underline", "hatch"];
+interface Line {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+}
 
 interface Job {
   el: HTMLElement;
-  pageX: number;
-  pageY: number;
-  w: number;
-  h: number;
-  shape: Shape;
+  left: number;
+  top: number;
+  lines: Line[];
+  length: number;
 }
 
 interface Agent {
@@ -78,15 +71,8 @@ interface Agent {
   spin: number;
   glyph?: string;
   jobs: Job[];
-  dot: Dot;
-  nextDot: Dot;
   tail: number[];
   labelAlpha: number;
-  fade: number;
-  // 내용으로 가기 전에 들르는 프롬프트 위치
-  hasVia: boolean;
-  viaX: number;
-  viaY: number;
 }
 
 interface Ripple {
@@ -101,16 +87,10 @@ interface Spark {
   born: number;
 }
 
-interface Trail {
-  job: Job;
-  start: number;
-}
-
 export interface StageOptions {
   terrain: HTMLCanvasElement;
   agents: HTMLCanvasElement;
   opening: string;
-  idlePrompts: string[];
   isBuilding: boolean;
   capsuleText: HTMLElement;
   getGlyphs: () => { glyph: string; x: number; y: number }[];
@@ -136,41 +116,73 @@ const heroCamera = (width: number, height: number): Camera =>
         radius: Math.min(width * 0.29, height * 0.56),
       };
 
-// 도형을 따라 그리는 경로. p는 0에서 1까지의 진행률이다
-const shapePoint = ({ pageX: x, w, h, shape }: Job, top: number, p: number) => {
-  if (shape === "ellipse") {
-    const angle = p * Math.PI * 2 - Math.PI / 2;
-    return {
-      x: x + w / 2 + (Math.cos(angle) * w) / 2,
-      y: top + h / 2 + (Math.sin(angle) * h) / 2,
-    };
-  }
-  if (shape === "wave") {
-    return {
-      x: x + w * p,
-      y: top + h / 2 + Math.sin(p * Math.PI * 6) * h * 0.32,
-    };
-  }
-  if (shape === "zigzag") {
-    const edge = p * 3;
-    if (edge < 1) return { x: x + w * edge, y: top };
-    if (edge < 2) return { x: x + w * (2 - edge), y: top + h * (edge - 1) };
-    return { x: x + w * (edge - 2), y: top + h };
-  }
-  if (shape === "underline") return { x: x + w * p, y: top + h };
-  if (shape === "hatch") {
-    const phase = (p * 5) % 1;
-    return {
-      x: x + w * p,
-      y: top + h * (phase < 0.5 ? phase * 2 : 2 - phase * 2),
-    };
-  }
+// 요소 안의 실제 글자 줄을 찾는다. 커서는 이 줄을 따라 글자를 드러낸다
+const textLines = (el: HTMLElement) => {
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const range = document.createRange();
+  const lines: Line[] = [];
 
-  const edge = p * 2 * (w + h);
-  if (edge < w) return { x: x + edge, y: top };
-  if (edge < w + h) return { x: x + w, y: top + edge - w };
-  if (edge < 2 * w + h) return { x: x + w - (edge - w - h), y: top + h };
-  return { x, y: top + h - (edge - 2 * w - h) };
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.textContent?.trim()) continue;
+    range.selectNodeContents(node);
+    Array.from(range.getClientRects()).forEach((rect) => {
+      if (rect.width < 1) return;
+      const top = rect.top + window.scrollY;
+      const bottom = rect.bottom + window.scrollY;
+      const same = lines.find(
+        (line) => top < line.bottom - 2 && bottom > line.top + 2
+      );
+      if (same) {
+        same.left = Math.min(same.left, rect.left);
+        same.right = Math.max(same.right, rect.right);
+        same.top = Math.min(same.top, top);
+        same.bottom = Math.max(same.bottom, bottom);
+      } else {
+        lines.push({ left: rect.left, right: rect.right, top, bottom });
+      }
+    });
+  }
+  return lines.sort((a, b) => a.top - b.top);
+};
+
+const toJob = (el: HTMLElement): Job => {
+  const box = el.getBoundingClientRect();
+  const top = box.top + window.scrollY;
+  const found = textLines(el);
+  const lines = found.length
+    ? found
+    : [{ left: box.left, right: box.right, top, bottom: top + box.height }];
+
+  return {
+    el,
+    left: box.left,
+    top,
+    lines,
+    length: lines.reduce((sum, line) => sum + line.right - line.left, 0),
+  };
+};
+
+// 진행률 p가 닿은 글자 위치
+const penAt = ({ lines, length }: Job, p: number) => {
+  let rest = p * length;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const size = line.right - line.left;
+    if (rest <= size || i === lines.length - 1) {
+      return { index: i, line, x: line.left + Math.min(rest, size) };
+    }
+    rest -= size;
+  }
+  return { index: 0, line: lines[0], x: lines[0].left };
+};
+
+// 지나온 줄은 전부, 지금 줄은 커서가 있는 곳까지만 보이게 자른다
+const revealTo = (job: Job, p: number) => {
+  const { index, line, x } = penAt(job, p);
+  const cut = x - job.left;
+  const top = index === 0 ? 0 : line.top - job.top;
+  const bottom = line.bottom - job.top + 8;
+  job.el.style.clipPath = `polygon(0 0, 100% 0, 100% ${top}px, ${cut}px ${top}px, ${cut}px ${bottom}px, 0 ${bottom}px)`;
 };
 
 const shade = (color: string, amount: number) => {
@@ -210,14 +222,13 @@ const createSprite = () => {
 };
 
 export const createStage = (options: StageOptions) => {
-  const { terrain, agents: agentCanvas, opening, idlePrompts } = options;
+  const { terrain, agents: agentCanvas, opening } = options;
   const groundCtx = terrain.getContext("2d");
   const ctx = agentCanvas.getContext("2d");
   if (!groundCtx || !ctx) return { stop: () => {}, destroy: () => {} };
 
   const isMobile = window.innerWidth < MOBILE_WIDTH;
   const dots = createDots(isMobile ? 0.021 : 0.0135);
-  const landDots = dots.filter((dot) => dot.d > 0.1);
   const sprite = createSprite();
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const camera: Camera = { yaw: 0, pitch: 1, cx: 0, cy: 0, radius: 0 };
@@ -228,23 +239,14 @@ export const createStage = (options: StageOptions) => {
   const buildable = Array.from(
     document.querySelectorAll<HTMLElement>("[data-build]")
   );
-  const sections = Array.from(
-    document.querySelectorAll<HTMLElement>("[data-prompt]")
-  );
   const lines = Array.from(
     document.querySelectorAll<HTMLElement>("[data-prompt-line]")
   );
-  const writes = new Map<
-    HTMLElement,
-    { text: string; start: number; time: number }
-  >();
+  const writes = new Map<HTMLElement, { text: string; start: number }>();
   const visible = new Map<HTMLElement, number>();
   const claimed = new Set<HTMLElement>();
-  const parts = new Map<HTMLElement, number>();
   const ripples: Ripple[] = [];
   const sparks: Spark[] = [];
-  const trails: Trail[] = [];
-  let workers: Agent[] = [];
 
   let width = 0;
   let height = 0;
@@ -257,77 +259,28 @@ export const createStage = (options: StageOptions) => {
   let shakeUntil = 0;
   let blastAt = -9999;
   let startTime = 0;
+  let cycle: Cycle = options.isBuilding ? "opening" : "ready";
+  let chargeStart = 0;
 
-  let cycle: Cycle = options.isBuilding ? "opening" : "rest";
-  let cycleEnd = 0;
-  let prompt = "";
-  let typeStart = 0;
-  let typeTime = 0;
-  let typeTarget = options.capsuleText;
-  let idleIndex = 0;
-
-  // 일을 마친 커서는 글자가 있는 구역을 피해 섬 위에만 머문다
-  const isClearOfText = (dot: Dot) => {
-    project(dot.x, dot.y, dot.z, camera, point);
-    if (width < MOBILE_WIDTH) return point.y < height * 0.44;
-    return point.x > width * (cameraScroll < 0.2 ? 0.44 : 0.58);
-  };
-
-  const randomLand = () => {
-    let dot = landDots[0];
-    for (let i = 0; i < 24; i++) {
-      dot = landDots[Math.floor(Math.random() * landDots.length)];
-      if (isClearOfText(dot)) break;
-    }
-    return dot;
-  };
-
-  const nearLand = (from: Dot) => {
-    let best = randomLand();
-    let bestGap = Infinity;
-    for (let i = 0; i < 14; i++) {
-      const dot = randomLand();
-      const gap = Math.abs(Math.hypot(dot.x - from.x, dot.z - from.z) - 0.18);
-      if (gap < bestGap) {
-        best = dot;
-        bestGap = gap;
-      }
-    }
-    return best;
-  };
-
-  // 모바일 본문에서는 글자와 커서가 겹칠 수밖에 없어 쉬는 커서를 흐리게 한다
-  const isQuiet = (agent: Agent) =>
-    width < MOBILE_WIDTH && cameraScroll > 0.3 && !agent.jobs.length;
-
-  const createAgents = () => {
-    const count = isMobile ? COUNT.mobile : COUNT.pc;
-    workers = Array.from({ length: count }, (_, i) => {
-      const dot = randomLand();
-      return {
-        name: `Agent ${i + 1}`,
-        state: "inside" as AgentState,
-        x: 0,
-        y: 0,
-        scale: 0,
-        rot: 0,
-        fromX: 0,
-        fromY: 0,
-        start: 0,
-        duration: FLIGHT,
-        spin: 0,
-        jobs: [],
-        dot,
-        nextDot: dot,
-        tail: [],
-        labelAlpha: 0,
-        fade: 1,
-        hasVia: false,
-        viaX: 0,
-        viaY: 0,
-      };
-    });
-  };
+  const workers: Agent[] = Array.from(
+    { length: isMobile ? COUNT.mobile : COUNT.pc },
+    (_, i) => ({
+      name: `Agent ${i + 1}`,
+      state: "inside",
+      x: 0,
+      y: 0,
+      scale: 0,
+      rot: 0,
+      fromX: 0,
+      fromY: 0,
+      start: 0,
+      duration: FLIGHT,
+      spin: 0,
+      jobs: [],
+      tail: [],
+      labelAlpha: 0,
+    })
+  );
 
   const resize = () => {
     width = window.innerWidth;
@@ -453,91 +406,66 @@ export const createStage = (options: StageOptions) => {
     }
   };
 
-  const toJob = (el: HTMLElement): Job => {
-    const { left, top, width: w, height: h } = el.getBoundingClientRect();
-    return { el, pageX: left, pageY: top + window.scrollY, w, h, shape: "rect" };
-  };
-
-  // 요소가 일손보다 적으면 면적에 맞춰 나눠 전원이 각자의 조각을 맡는다
-  const splitJobs = (jobs: Job[], crew: number) => {
-    const counts = jobs.map(() => 1);
-    for (let total = jobs.length; total < crew; total++) {
-      let widest = 0;
-      jobs.forEach(({ w, h }, i) => {
-        const best = jobs[widest];
-        if ((w * h) / counts[i] > (best.w * best.h) / counts[widest]) widest = i;
-      });
-      counts[widest]++;
-    }
-
-    return jobs.flatMap((job, i) => {
-      const count = counts[i];
-      const rows = job.h > 110 && count > 2 ? 2 : 1;
-      const columns = Math.ceil(count / rows);
-      const w = job.w / columns;
-      const h = job.h / rows;
-      parts.set(job.el, count);
-
-      return Array.from({ length: count }, (_, part): Job => ({
-        ...job,
-        pageX: job.pageX + (part % columns) * w + 3,
-        pageY: job.pageY + Math.floor(part / columns) * h + 3,
-        w: w - 6,
-        h: h - 6,
-      }));
-    });
-  };
-
-  const assignJobs = (jobs: Job[], crew: Agent[]) => {
-    splitJobs(jobs, crew.length).forEach((job, i) => {
-      const index = i % crew.length;
-      job.shape = SHAPES[index % SHAPES.length];
-      crew[index].jobs.push(job);
-    });
-  };
-
-  const finishElement = (el: HTMLElement) => {
-    el.dataset.built = "";
-    visible.delete(el);
-    claimed.delete(el);
-    parts.delete(el);
-  };
-
-  const takeJobs = (now: number, limit = Infinity) => {
-    const jobs: Job[] = [];
-    visible.forEach((_, el) => {
-      if (claimed.has(el) || jobs.length >= limit) return;
-      claimed.add(el);
-      // 맡은 커서가 날아갈 시간만큼만 강제 표시를 미룬다
-      visible.set(el, now + CLAIM_GRACE);
-      jobs.push(toJob(el));
-    });
-    return jobs.sort((a, b) => a.pageY - b.pageY);
-  };
-
   // 프롬프트 자리: 각 섹션 바로 위, 히어로는 하단 캡슐
   const lineOf = (el: Element) =>
     el
       .closest("[data-prompt]")
       ?.querySelector<HTMLElement>("[data-prompt-line]") ?? options.capsuleText;
 
-  // 지금 읽고 있는 섹션
-  const activeSection = () =>
-    sections.find((section) => {
-      const { top, bottom } = section.getBoundingClientRect();
-      return top <= height * 0.4 && bottom > height * 0.4;
-    });
+  const promptBox = (line: HTMLElement) => line.parentElement ?? line;
 
-  const updateWrites = (now: number) => {
-    writes.forEach(({ text, start, time }, el) => {
-      const p = clamp((now - start) / time);
-      el.textContent = text.slice(0, Math.ceil(p * text.length));
-      if (p >= 1) writes.delete(el);
-    });
+  const clearWriting = (el: HTMLElement) => {
+    delete el.dataset.writing;
+    el.style.clipPath = "";
   };
 
-  const emitSparks = (now: number) => {
-    for (let i = 0; i < 80; i++) {
+  const finishElement = (el: HTMLElement) => {
+    clearWriting(el);
+    el.dataset.built = "";
+    visible.delete(el);
+    claimed.delete(el);
+
+    // 섹션의 내용이 모두 나오면 프롬프트에 완료를 표시한다
+    const section = el.closest("[data-prompt]");
+    if (section && !section.querySelector("[data-build]:not([data-built])")) {
+      promptBox(lineOf(section)).dataset.done = "";
+    }
+  };
+
+  const nextPending = () =>
+    Array.from(visible.keys()).find((el) => !claimed.has(el));
+
+  const takeJobs = (now: number) => {
+    const jobs: Job[] = [];
+    visible.forEach((_, el) => {
+      if (claimed.has(el)) return;
+      claimed.add(el);
+      visible.set(el, now);
+      jobs.push(toJob(el));
+    });
+    return jobs.sort((a, b) => a.top - b.top);
+  };
+
+  const fly = (agent: Agent, now: number, delay: number) => {
+    agent.state = "flight";
+    agent.fromX = agent.x;
+    agent.fromY = agent.y;
+    agent.start = now + delay;
+    agent.duration = FLIGHT;
+    agent.spin = (Math.random() < 0.5 ? -1 : 1) * (2.5 + Math.random() * 3);
+  };
+
+  // 일이 끝나거나 없는 커서는 곧장 화산으로 돌아간다
+  const goHome = (agent: Agent, now: number) => {
+    agent.state = "return";
+    agent.fromX = agent.x;
+    agent.fromY = agent.y;
+    agent.start = now;
+    agent.duration = RETURN;
+  };
+
+  const emitSparks = (now: number, count: number) => {
+    for (let i = 0; i < count; i++) {
       const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.9;
       const force = 4 + Math.random() * 13;
       sparks.push({
@@ -550,231 +478,131 @@ export const createStage = (options: StageOptions) => {
     }
   };
 
-  const fly = (agent: Agent, now: number, delay: number) => {
-    agent.state = "flight";
-    agent.fromX = agent.x;
-    agent.fromY = agent.y;
-    agent.start = now + delay;
-    agent.duration = FLIGHT;
-    agent.spin = (Math.random() < 0.5 ? -1 : 1) * (2.5 + Math.random() * 3);
-  };
-
-  const flightTarget = (agent: Agent) => {
-    if (agent.hasVia) return { x: agent.viaX, y: agent.viaY - window.scrollY };
-    const job = agent.jobs[0];
-    if (job) return shapePoint(job, job.pageY - window.scrollY, 0);
-    return project(agent.dot.x, agent.dot.y, agent.dot.z, camera, point);
-  };
-
-  const beginTyping = (now: number) => {
-    const section = activeSection();
-    const pool = section?.dataset.idle?.split("|") ?? idlePrompts;
-    prompt = pool[idleIndex++ % pool.length];
-    typeTarget = section ? lineOf(section) : options.capsuleText;
-    cycle = "typing";
-    typeStart = now;
-    typeTime = prompt.length * CHAR_TIME;
-    typeTarget.textContent = "";
-  };
-
-  // 새 내용이 화면에 들어오면 그 위에 프롬프트를 치고,
-  // 한라산에서 나온 커서가 프롬프트를 거쳐 내용으로 흩어진다
-  const dispatch = (now: number) => {
-    const first = Array.from(visible.keys()).find((el) => !claimed.has(el));
-    const free = workers.filter((agent) => agent.state !== "trace");
-    if (!first || !free.length) return false;
-
+  // 지을 내용이 생기면 프롬프트를 치는 동안 열이 정상까지 오른다
+  const beginCharge = (first: HTMLElement, now: number) => {
     const line = lineOf(first);
     const text = first.closest<HTMLElement>("[data-prompt]")?.dataset.prompt;
-    const box = (line.parentElement ?? line).getBoundingClientRect();
-    const spread = Math.min((text ?? "").length * 13 + 30, box.width);
-    const jobs = takeJobs(now);
+    delete promptBox(line).dataset.done;
+    if (text) writes.set(line, { text, start: now });
+    cycle = "charging";
+    chargeStart = now;
+  };
 
-    writes.set(line, { text: text ?? "", start: now, time: LINE_TYPE });
-    if (workers.some((agent) => agent.state === "inside")) {
-      flashAt = now;
-      shakeUntil = now + SHAKE_TIME;
-      ripples.push({ start: now }, { start: now + 150 });
-      emitSparks(now);
+  // 필요한 수만큼만 출동하고 나머지는 화산에 남는다
+  const erupt = (now: number) => {
+    heat = 0;
+    cycle = "ready";
+
+    const jobs = takeJobs(now);
+    const crew = workers.filter(
+      ({ state }) => state === "inside" || state === "return"
+    );
+    if (!jobs.length || !crew.length) {
+      jobs.forEach((job) => claimed.delete(job.el));
+      return;
     }
 
-    free.forEach((agent, i) => {
+    const count = Math.min(jobs.length, crew.length);
+    jobs.forEach((job, i) => crew[i % count].jobs.push(job));
+    crew.slice(0, count).forEach((agent, i) => {
       const isInside = agent.state === "inside";
       if (isInside) {
         agent.x = crater.x;
         agent.y = crater.y;
-        agent.dot = randomLand();
       }
-      agent.viaX = box.left + (spread * (i + 0.5)) / free.length;
-      agent.viaY = box.top + box.height / 2 + window.scrollY;
-      agent.hasVia = true;
-      fly(agent, now, isInside ? i * 12 : 0);
-      agent.duration = VIA_FLIGHT;
+      fly(agent, now, isInside ? i * LAUNCH_GAP : 0);
     });
-    assignJobs(jobs, free);
 
-    heat = 0;
-    cycle = "out";
-    cycleEnd = now + WORK_TIME;
-    return true;
-  };
-
-  const erupt = (now: number) => {
-    cycle = "out";
-    cycleEnd = now + WORK_TIME;
-    heat = 0;
     flashAt = now;
     shakeUntil = now + SHAKE_TIME;
     ripples.push({ start: now }, { start: now + 150 });
-
-    const jobs = takeJobs(now);
-    workers.forEach((agent, i) => {
-      agent.x = crater.x;
-      agent.y = crater.y;
-      agent.dot = randomLand();
-      agent.jobs = [];
-      fly(agent, now, i * LAUNCH_GAP);
-    });
-    assignJobs(jobs, workers);
-
-    emitSparks(now);
+    emitSparks(now, 16 + count * 6);
   };
 
+  // 프롬프트의 글자가 커서로 변한다. 일이 없는 커서는 바로 화산으로 간다
   const blast = (now: number) => {
     const glyphs = options.getGlyphs();
     const step = Math.max(glyphs.length / workers.length, 1);
     const jobs = takeJobs(now);
+    const count = Math.min(jobs.length, workers.length);
 
+    jobs.forEach((job, i) => workers[i % count].jobs.push(job));
     workers.forEach((agent, i) => {
       const glyph = glyphs[Math.floor(i * step)];
       agent.x = glyph?.x ?? width / 2;
       agent.y = glyph?.y ?? height / 2;
       agent.glyph = glyph?.glyph;
       agent.scale = 1;
-      agent.jobs = [];
-      fly(agent, now, i * 8);
+      if (agent.jobs.length) {
+        fly(agent, now, 0);
+      } else {
+        goHome(agent, now);
+        agent.duration = FLIGHT + 200;
+      }
     });
-    assignJobs(jobs, workers);
 
     flashAt = now;
     blastAt = now;
     shakeUntil = now + SHAKE_TIME;
     ripples.push({ start: now }, { start: now + 150 });
     options.onBlast();
-    cycle = "out";
-    cycleEnd = now + 2800;
+    cycle = "ready";
   };
 
-  const gather = (now: number) => {
-    cycle = "gather";
-    workers.forEach((agent, i) => {
-      agent.state = "return";
-      agent.fromX = agent.x;
-      agent.fromY = agent.y;
-      agent.start = now + i * RETURN_GAP;
-      agent.duration = RETURN;
-    });
-  };
-
-  const startWalking = (agent: Agent, now: number) => {
-    agent.state = "walk";
-    agent.nextDot = nearLand(agent.dot);
-    agent.start = now;
-    agent.duration = 380 + Math.random() * 360;
-  };
-
-  const updateAgent = (agent: Agent, now: number) => {
-    if (agent.state === "inside") return;
-
-    // 맡은 요소가 화면을 벗어났거나 이미 나타났으면 그 일은 내려놓는다
-    while (agent.jobs[0] && !visible.has(agent.jobs[0].el)) agent.jobs.shift();
-    if (agent.state === "trace" && !agent.jobs.length) {
-      fly(agent, now, 0);
+  const updateFlight = (agent: Agent, now: number, p: number) => {
+    const job = agent.jobs[0];
+    if (!job) {
+      goHome(agent, now);
       return;
     }
 
-    const p = clamp((now - agent.start) / agent.duration);
+    const { line } = penAt(job, 0);
+    const tx = line.left;
+    const ty = (line.top + line.bottom) / 2 - window.scrollY;
+    const apex = Math.min(agent.fromY, ty) - height * 0.4;
+    // 분화구에서 튕겨 나가듯 처음에 가장 빠르다
+    const e = 1 - Math.pow(1 - p, 3);
+    const midX = (agent.fromX + tx) / 2;
 
-    if (agent.state === "flight") {
-      if (now < agent.start) return;
-      const target = flightTarget(agent);
-      const tx = target.x;
-      const ty = target.y;
-      const apex = Math.min(agent.fromY, ty) - height * 0.4;
-      // 분화구에서 튕겨 나가듯 처음에 가장 빠르다
-      const e = 1 - Math.pow(1 - p, 3);
-      const midX = (agent.fromX + tx) / 2;
+    agent.x = (1 - e) * (1 - e) * agent.fromX + 2 * (1 - e) * e * midX + e * e * tx;
+    agent.y = (1 - e) * (1 - e) * agent.fromY + 2 * (1 - e) * e * apex + e * e * ty;
+    agent.scale = 1 + Math.sin(p * Math.PI) * 1.3;
+    agent.rot = (1 - p) * agent.spin;
 
-      agent.x = (1 - e) * (1 - e) * agent.fromX + 2 * (1 - e) * e * midX + e * e * tx;
-      agent.y = (1 - e) * (1 - e) * agent.fromY + 2 * (1 - e) * e * apex + e * e * ty;
-      agent.scale = 1 + Math.sin(p * Math.PI) * 1.3;
-      agent.rot = (1 - p) * agent.spin;
-
-      if (p >= 1) {
-        if (agent.hasVia) {
-          agent.hasVia = false;
-          fly(agent, now, 0);
-          agent.duration = QUICK_FLIGHT;
-          return;
-        }
-
-        agent.start = now;
-        agent.rot = 0;
-        agent.scale = 1;
-        if (agent.jobs.length) {
-          agent.state = "trace";
-          agent.duration = TRACE;
-        } else {
-          startWalking(agent, now);
-        }
-      }
-      return;
-    }
-
-    if (agent.state === "trace") {
-      const job = agent.jobs[0];
-      const { x, y } = shapePoint(job, job.pageY - window.scrollY, p);
-      agent.x = x;
-      agent.y = y;
-
-      if (p >= 1) {
-        trails.push({ job, start: now });
-        const rest = (parts.get(job.el) ?? 1) - 1;
-        parts.set(job.el, rest);
-        if (rest <= 0) finishElement(job.el);
-        agent.jobs.shift();
-        if (agent.jobs.length) {
-          fly(agent, now, 0);
-          agent.duration = NEXT_JOB;
-        } else {
-          fly(agent, now, 0);
-        }
-      }
-      return;
-    }
-
-    if (agent.state === "walk") {
-      const from = project(agent.dot.x, agent.dot.y, agent.dot.z, camera, point);
-      const fromX = from.x;
-      const fromY = from.y;
-      const to = project(
-        agent.nextDot.x,
-        agent.nextDot.y,
-        agent.nextDot.z,
-        camera,
-        point
+    if (p >= 1) {
+      agent.rot = 0;
+      agent.scale = 1;
+      agent.state = "write";
+      agent.start = now;
+      agent.duration = Math.min(
+        Math.max(job.length / WRITE_SPEED, WRITE_MIN),
+        WRITE_MAX
       );
-      agent.x = lerp(fromX, to.x, ease(p));
-      agent.y = lerp(fromY, to.y, ease(p));
-
-      if (p >= 1) {
-        agent.dot = agent.nextDot;
-        startWalking(agent, now + 120 + Math.random() * 260);
-      }
-      return;
+      revealTo(job, 0);
+      job.el.dataset.writing = "";
     }
+  };
 
-    if (now < agent.start) return;
+  const updateWrite = (agent: Agent, now: number, p: number) => {
+    const job = agent.jobs[0];
+    const { line, x } = penAt(job, p);
+    revealTo(job, p);
+    agent.x = x;
+    agent.y = (line.top + line.bottom) / 2 - window.scrollY;
+
+    if (p >= 1) {
+      finishElement(job.el);
+      agent.jobs.shift();
+      if (agent.jobs.length) {
+        fly(agent, now, 0);
+        agent.duration = NEXT_JOB;
+      } else {
+        goHome(agent, now);
+      }
+    }
+  };
+
+  const updateReturn = (agent: Agent, p: number) => {
     // 분화구로 빨려 들어가듯 끝으로 갈수록 빨라진다
     const e = p * p * p;
     const midY = Math.min(agent.fromY, crater.y) - height * 0.12;
@@ -788,6 +616,31 @@ export const createStage = (options: StageOptions) => {
       agent.state = "inside";
       agent.scale = 0;
     }
+  };
+
+  const updateAgent = (agent: Agent, now: number) => {
+    if (agent.state === "inside") return;
+
+    // 맡은 요소가 화면을 벗어나면 그 일은 내려놓는다
+    while (agent.jobs[0] && !visible.has(agent.jobs[0].el)) agent.jobs.shift();
+    if (agent.state === "write" && !agent.jobs.length) {
+      goHome(agent, now);
+      return;
+    }
+
+    if (now < agent.start) return;
+    const p = clamp((now - agent.start) / agent.duration);
+    if (agent.state === "flight") updateFlight(agent, now, p);
+    else if (agent.state === "write") updateWrite(agent, now, p);
+    else updateReturn(agent, p);
+  };
+
+  const updateWrites = (now: number) => {
+    writes.forEach(({ text, start }, el) => {
+      const p = clamp((now - start) / HEAT_TIME);
+      el.textContent = text.slice(0, Math.ceil(p * text.length));
+      if (p >= 1) writes.delete(el);
+    });
   };
 
   const updateCycle = (now: number) => {
@@ -805,61 +658,25 @@ export const createStage = (options: StageOptions) => {
     }
 
     if (reveal < 9) reveal += 0.03;
-
     updateWrites(now);
-    if (dispatch(now)) return;
 
-    if (cycle === "rest") {
-      if (now >= cycleEnd) beginTyping(now);
+    if (cycle === "charging") {
+      heat = clamp((now - chargeStart) / HEAT_TIME);
+      if (heat >= 1) erupt(now);
       return;
     }
 
-    if (cycle === "typing") {
-      const p = clamp((now - typeStart) / typeTime);
-      typeTarget.textContent = prompt.slice(0, Math.ceil(p * prompt.length));
-      heat = clamp((now - typeStart) / (typeTime + TYPE_HOLD));
-      if (now - typeStart >= typeTime + TYPE_HOLD) erupt(now);
-      return;
-    }
-
-    if (cycle === "out") {
-      const isBusy = workers.some(
-        (agent) => agent.jobs.length || agent.state === "flight"
-      );
-      if (now >= cycleEnd && !isBusy) gather(now);
-      return;
-    }
-
-    if (workers.every((agent) => agent.state === "inside")) {
-      cycle = "rest";
-      cycleEnd = now + REST;
-    }
+    const first = nextPending();
+    if (first) beginCharge(first, now);
   };
 
-  // 일손이 닿지 못한 내용은 오래 숨겨 두지 않고 바로 보여 준다
+  // 일손이 끝내 닿지 못한 내용은 오래 숨겨 두지 않는다
   const forceReveal = (now: number) => {
     if (cycle === "opening") return;
     visible.forEach((seenAt, el) => {
+      if (el.hasAttribute("data-writing")) return;
       if (now - seenAt >= FORCE_AFTER) finishElement(el);
     });
-  };
-
-  const drawShape = (job: Job, progress: number, alpha: number) => {
-    const top = job.pageY - window.scrollY;
-    const start = shapePoint(job, top, 0);
-
-    ctx.globalAlpha = alpha;
-    ctx.strokeStyle = ORANGE;
-    ctx.lineWidth = 1.2;
-    ctx.beginPath();
-    ctx.moveTo(start.x, start.y);
-    for (let i = 1; i <= SHAPE_STEPS; i++) {
-      const p = (i / SHAPE_STEPS) * progress;
-      const { x, y } = shapePoint(job, top, p);
-      ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-    ctx.globalAlpha = 1;
   };
 
   // 분화 순간 한라산에서 솟구치는 빛기둥
@@ -916,7 +733,7 @@ export const createStage = (options: StageOptions) => {
     const isFast = agent.state === "flight" || agent.state === "return";
     if (isFast) tail.push(agent.x, agent.y);
     if (tail.length > TAIL_LENGTH * 2 || !isFast) tail.splice(0, 2);
-    if (tail.length < 4 || isQuiet(agent)) return;
+    if (tail.length < 4) return;
 
     ctx.strokeStyle = ORANGE;
     ctx.lineCap = "round";
@@ -933,9 +750,7 @@ export const createStage = (options: StageOptions) => {
   };
 
   const drawAgent = (agent: Agent, now: number) => {
-    if (agent.state === "inside" || now < agent.start - 1) {
-      if (agent.state !== "walk" && agent.state !== "return") return;
-    }
+    if (agent.state === "inside" || now < agent.start) return;
 
     const turn = agent.rot * 0.4;
     const squeeze = Math.max(Math.abs(Math.cos(agent.rot)), 0.14);
@@ -960,19 +775,18 @@ export const createStage = (options: StageOptions) => {
     } else {
       agent.glyph = undefined;
     }
-    agent.fade += ((isQuiet(agent) ? 0.14 : 1) - agent.fade) * 0.1;
-    ctx.globalAlpha = (1 - glyph) * agent.fade;
+    ctx.globalAlpha = 1 - glyph;
     ctx.drawImage(sprite, -1, -1, SPRITE.w, SPRITE.h);
     ctx.globalAlpha = 1;
   };
 
+  // 이름표는 맡은 일을 보여 주고, 일이 없으면 사라진다
   const drawLabel = (agent: Agent) => {
-    const isWorking = agent.state === "walk" || agent.state === "trace";
-    const target = isWorking && !isQuiet(agent) ? 1 : 0;
-    agent.labelAlpha += (target - agent.labelAlpha) * 0.2;
-    if (agent.labelAlpha < 0.02 || agent.state === "inside") return;
+    const job = agent.jobs[0];
+    agent.labelAlpha += ((job ? 1 : 0) - agent.labelAlpha) * 0.2;
+    if (!job || agent.labelAlpha < 0.02 || agent.state === "inside") return;
 
-    const label = agent.name;
+    const label = `${agent.name} · ${job.el.dataset.build}`;
     const labelWidth = ctx.measureText(label).width + 10;
     ctx.globalAlpha = agent.labelAlpha;
     ctx.fillStyle = ORANGE;
@@ -985,19 +799,6 @@ export const createStage = (options: StageOptions) => {
   const drawOverlay = (now: number) => {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
-
-    for (let i = trails.length - 1; i >= 0; i--) {
-      const trail = trails[i];
-      const p = (now - trail.start) / 450;
-      if (p >= 1) trails.splice(i, 1);
-      else drawShape(trail.job, 1, 1 - p);
-    }
-
-    workers.forEach((agent) => {
-      if (agent.state !== "trace") return;
-      const p = clamp((now - agent.start) / agent.duration);
-      drawShape(agent.jobs[0], p, 1);
-    });
 
     drawColumn(now);
     drawRing(now);
@@ -1062,17 +863,18 @@ export const createStage = (options: StageOptions) => {
       if (el.hasAttribute("data-prompt-line")) {
         writes.delete(el);
         el.textContent = "";
+        delete promptBox(el).dataset.done;
         return;
       }
 
       visible.delete(el);
       claimed.delete(el);
+      clearWriting(el);
       delete el.dataset.built;
     });
   });
 
   resize();
-  createAgents();
   window.addEventListener("resize", resize);
   buildable.forEach((el) => {
     observer.observe(el);
@@ -1088,12 +890,14 @@ export const createStage = (options: StageOptions) => {
     observer.disconnect();
     leaveObserver.disconnect();
     buildable.forEach((el) => {
+      clearWriting(el);
       el.dataset.built = "";
     });
     writes.clear();
     lines.forEach((line) => {
       line.textContent =
         line.closest<HTMLElement>("[data-prompt]")?.dataset.prompt ?? "";
+      promptBox(line).dataset.done = "";
     });
     options.onBuilt();
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

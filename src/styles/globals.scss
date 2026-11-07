@@ -86,21 +86,16 @@ img {
   position: absolute;
 }
 
-// 오프닝: 에이전트가 지나가기 전까지 요소를 숨긴다
+// 에이전트가 쓰기 전까지 요소를 숨기고, 쓰는 동안에는 커서 위치까지만 보인다
 html[data-build-on] [data-build] {
-  &:not([data-built]) {
+  transition: opacity 0.25s;
+
+  &:not([data-built]):not([data-writing]) {
     opacity: 0;
   }
 
-  &[data-built=""] {
-    animation: layer-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-}
-
-@keyframes layer-in {
-  from {
-    opacity: 0;
-    transform: translateY(1.2rem);
+  &[data-writing] {
+    transition: none;
   }
 }
 

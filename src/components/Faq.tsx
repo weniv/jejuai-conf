@@ -4,12 +4,16 @@ import styles from "./Faq.module.scss";
 
 const OPTIONS = { duration: 340, easing: "cubic-bezier(0.22, 1, 0.36, 1)" };
 
-interface FaqItemProps {
+interface FaqEntry {
   question: string;
   answer: string;
 }
 
-const FaqItem = ({ question, answer }: FaqItemProps) => {
+interface FaqItemProps extends FaqEntry {
+  order: number;
+}
+
+const FaqItem = ({ question, answer, order }: FaqItemProps) => {
   const itemRef = useRef<HTMLDetailsElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<Animation | null>(null);
@@ -47,7 +51,7 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
   };
 
   return (
-    <details ref={itemRef} className={styles.item} data-build="">
+    <details ref={itemRef} className={styles.item} data-build={`질문 ${order}`}>
       <summary onClick={onClick}>
         {question}
         <i aria-hidden="true" />
@@ -60,14 +64,14 @@ const FaqItem = ({ question, answer }: FaqItemProps) => {
 };
 
 interface FaqProps {
-  items: FaqItemProps[];
+  items: FaqEntry[];
 }
 
 export const Faq = ({ items }: FaqProps) => {
   return (
     <div>
-      {items.map((item) => (
-        <FaqItem key={item.question} {...item} />
+      {items.map((item, i) => (
+        <FaqItem key={item.question} order={i + 1} {...item} />
       ))}
     </div>
   );

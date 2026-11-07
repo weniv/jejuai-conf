@@ -6,10 +6,9 @@ import { createStage, drawStill } from "./engine";
 
 interface StageProps {
   opening: string;
-  idlePrompts: string[];
 }
 
-export const Stage = ({ opening, idlePrompts }: StageProps) => {
+export const Stage = ({ opening }: StageProps) => {
   const terrainRef = useRef<HTMLCanvasElement>(null);
   const agentsRef = useRef<HTMLCanvasElement>(null);
   const capsuleRef = useRef<HTMLDivElement>(null);
@@ -66,7 +65,6 @@ export const Stage = ({ opening, idlePrompts }: StageProps) => {
       terrain,
       agents,
       opening,
-      idlePrompts,
       isBuilding,
       capsuleText,
       getGlyphs,
@@ -86,7 +84,7 @@ export const Stage = ({ opening, idlePrompts }: StageProps) => {
 
     stopRef.current = stage.stop;
     return stage.destroy;
-  }, [opening, idlePrompts]);
+  }, [opening]);
 
   // 본문을 읽는 구간에서는 프롬프트가 글자를 가리지 않게 비켜난다
   useEffect(() => {

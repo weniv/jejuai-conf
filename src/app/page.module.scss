@@ -149,6 +149,18 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     opacity: 0;
   }
 
+  // 섹션을 다 지으면 커서 대신 완료 표시를 남긴다
+  &[data-done] {
+    i {
+      display: none;
+    }
+
+    span:nth-child(2)::after {
+      content: " ✓";
+      color: $orange;
+    }
+  }
+
   span:first-child {
     color: $orange;
   }
