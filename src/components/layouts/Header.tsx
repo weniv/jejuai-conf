@@ -23,7 +23,7 @@ const Header = ({}: Props) => {
     <>
       <header className={styles.header}>
         <div className="max-wrap2">
-          <h1 className={styles.pc}>
+          <h1 className={styles.pc} data-build="LOGO">
             <a href="/">
               <Image
                 src="images/logo.svg"
@@ -47,6 +47,7 @@ const Header = ({}: Props) => {
                   className={`${styles.mobile} ${
                     activeId === "section1" ? styles.active : ""
                   }`}
+                  data-build="NAV"
                 >
                   홈
                 </Link>
@@ -55,6 +56,7 @@ const Header = ({}: Props) => {
                     key={i}
                     href={`#section${i + 2}`}
                     className={activeId === `section${i + 2}` ? styles.active : ""}
+                    data-build="NAV"
                   >
                     <span className={styles.pc}>{v.pc}</span>
 

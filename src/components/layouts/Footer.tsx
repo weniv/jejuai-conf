@@ -4,8 +4,8 @@ import data from "@/data/data.json";
 const Footer = () => {
   return (
     <footer className={styles.footer}>
-      <p>주관: {data.footer["주관"]} </p>
-      <p>협력사: {data.footer["협력"]} </p>
+      <p>2025 주관: {data.footer["주관"]} </p>
+      <p>2025 협력사: {data.footer["협력"]} </p>
       <div className={styles.logos}>
         <Image
           src="/images/jejusan.svg"

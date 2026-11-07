@@ -1,0 +1,13 @@
+.island {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  width: min(112rem, 118%);
+  aspect-ratio: 64 / 37;
+  pointer-events: none;
+
+  @media screen and (max-width: 640px) {
+    width: 150%;
+  }
+}

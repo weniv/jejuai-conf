@@ -9,6 +9,19 @@ export interface chatContentType {
   link?: linkType;
 }
 
+export interface heroType {
+  title: string;
+  status: string;
+  eventStart: string;
+  rows: { label: string; value: string; pending?: boolean }[];
+}
+
+export interface programDraftType {
+  day: string;
+  date: string;
+  note: string;
+}
+
 export interface dayType {
   day1: ProgramType[];
   day2: ProgramType[];

@@ -5,10 +5,11 @@ import { ReactNode } from "react";
 import Header from "../components/layouts/Header";
 import Footer from "../components/layouts/Footer";
 import Script from "next/script";
+import { BUILD_SCRIPT } from "../components/build/swarmData";
 
 const TITLE = "제주 AI 컨퍼런스";
 const DESCRIPTION =
-  "AI, 모두를 위한 미래, 지식을 넘어 혁신으로 <2025 제주 AI Conference>";
+  "<2026 제주 AI Conference> 준비중 · 2026년 12월 8일(화) ~ 12월 9일(수) 18:00";
 const LINK = "https://www.jejuai.kr";
 const OGIMG = "/images/OG.png";
 
@@ -71,7 +72,14 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="ko-KR" className={pretendard.className}>
+    <html
+      lang="ko-KR"
+      className={pretendard.className}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: BUILD_SCRIPT }} />
+      </head>
       <body>
         <Header />
         {children}
