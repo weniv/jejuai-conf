@@ -86,31 +86,21 @@ img {
   position: absolute;
 }
 
-// 프롬프트가 뜨기 전 첫 화면을 어둡게 덮어 둔다
-html[data-build-on]:not([data-build-ready]) body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  background-color: $color2;
-}
-
-// 스크롤 빌드: 커서가 지나가기 전까지 요소를 숨긴다
+// 오프닝: 에이전트가 지나가기 전까지 요소를 숨긴다
 html[data-build-on] [data-build] {
   &:not([data-built]) {
     opacity: 0;
   }
 
-  &[data-built] {
-    animation: layer-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  &[data-built=""] {
+    animation: layer-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 }
 
-// 지어진 요소는 화면 안쪽 깊은 곳에서 튀어나온다
 @keyframes layer-in {
   from {
     opacity: 0;
-    transform: perspective(800px) translateZ(-240px) rotateX(24deg);
+    transform: translateY(1.2rem);
   }
 }
 

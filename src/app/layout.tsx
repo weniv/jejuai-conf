@@ -2,16 +2,18 @@ import "../styles/globals.scss";
 import localFont from "next/font/local";
 import type { Metadata } from "next";
 import { ReactNode } from "react";
-import Header from "../components/layouts/Header";
-import Footer from "../components/layouts/Footer";
-import Script from "next/script";
-import { BUILD_SCRIPT } from "../components/build/swarmData";
+import { BUILD_SCRIPT } from "../components/stage/constants";
 
-const TITLE = "제주 AI 컨퍼런스";
+const TITLE = "2026 제주 AI 컨퍼런스";
 const DESCRIPTION =
-  "<2026 제주 AI Conference> 준비중 · 2026년 12월 8일(화) ~ 12월 9일(수) 18:00";
-const LINK = "https://www.jejuai.kr";
-const OGIMG = "/images/OG.png";
+  "<2026 제주 AI Conference> 준비중 · 2026년 12월 8일(화) 13:00(예정) ~ 12월 9일(수) 18:00 · 제주창조경제혁신센터";
+const LINK = "https://jejuai.kr";
+const OGIMG = {
+  url: "/images/og-2026.png",
+  width: 1200,
+  height: 630,
+  alt: "2026 제주 AI 컨퍼런스, 12월 8일부터 9일까지 제주창조경제혁신센터",
+};
 
 const pretendard = localFont({
   src: [
@@ -53,7 +55,7 @@ export const metadata: Metadata = {
     locale: "ko_KR",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
     images: [OGIMG],
@@ -64,8 +66,6 @@ export const metadata: Metadata = {
     nocache: true,
   },
 };
-const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_APP_JS_KEY}&autoload=false`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -80,12 +80,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: BUILD_SCRIPT }} />
       </head>
-      <body>
-        <Header />
-        {children}
-        <Footer />
-        <Script src={KAKAO_SDK_URL} strategy="beforeInteractive" />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

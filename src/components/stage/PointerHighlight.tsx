@@ -13,6 +13,11 @@ export const PointerHighlight = () => {
     const onMove = (e: PointerEvent) => {
       pointer.style.opacity = "1";
       pointer.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+      const target = e.target as Element | null;
+      pointer.classList.toggle(
+        styles.over,
+        !!target?.closest?.("a, button, summary")
+      );
     };
     const onDown = () => pointer.classList.add(styles.down);
     const onUp = () => pointer.classList.remove(styles.down);

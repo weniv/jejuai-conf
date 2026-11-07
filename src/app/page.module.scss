@@ -1,0 +1,286 @@
+$basalt: #10110f;
+$paper: #f2efe6;
+$muted: rgba(242, 239, 230, 0.6);
+$line: rgba(242, 239, 230, 0.16);
+$orange: #ff7a1a;
+$mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+.site {
+  position: relative;
+  min-height: 100vh;
+  background-color: $basalt;
+  color: $paper;
+  word-break: keep-all;
+
+  h1,
+  h2 {
+    font-weight: 700;
+  }
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  padding: 2.4rem clamp(2rem, 5vw, 6.4rem);
+  background-color: $basalt;
+  font-size: 1.5rem;
+  font-weight: 600;
+
+  nav {
+    display: flex;
+    gap: 2.4rem;
+    font-weight: 400;
+
+    a {
+      background: linear-gradient($orange, $orange) left bottom / 0 1px no-repeat;
+      padding-bottom: 0.2rem;
+      transition: color 0.2s, background-size 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+
+      &:hover {
+        background-size: 100% 1px;
+      }
+    }
+  }
+
+  a {
+    transition: color 0.2s;
+  }
+
+  a:hover {
+    color: $orange;
+  }
+}
+
+.main {
+  position: relative;
+  z-index: 10;
+  padding: 0 clamp(2rem, 5vw, 6.4rem);
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 10rem 0 8rem;
+
+  h1 {
+    margin: 2rem 0 2.4rem;
+    font-size: clamp(5.6rem, 9.4vw, 14rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+
+    span {
+      display: block;
+    }
+  }
+}
+
+.eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.6rem;
+  font: 500 1.3rem/1.5 $mono;
+  letter-spacing: 0.06em;
+
+  em {
+    color: $orange;
+    font-style: normal;
+  }
+}
+
+.dates {
+  color: $orange;
+  font-size: clamp(3.2rem, 4.6vw, 6.8rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.detail {
+  margin-top: 2rem;
+  font-size: 1.7rem;
+  line-height: 1.6;
+
+  p:last-child {
+    color: $muted;
+  }
+}
+
+.section {
+  scroll-margin-top: 8rem;
+  max-width: 72rem;
+  padding: clamp(8rem, 14vh, 14rem) 0;
+
+  h2 {
+    margin-bottom: 3.2rem;
+    color: $orange;
+    font: 500 1.3rem/1.5 $mono;
+    letter-spacing: 0.06em;
+  }
+}
+
+.promptLine {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 26rem;
+  min-height: 4rem;
+  margin-bottom: 2.4rem;
+  padding: 0.6rem 1.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10rem;
+  background-color: rgba(16, 17, 15, 0.86);
+  font: 500 1.3rem/1.5 $mono;
+  transition: opacity 0.2s;
+
+  // 아직 입력 전인 프롬프트는 빈 칸으로 남기지 않는다
+  &:has([data-prompt-line]:empty) {
+    opacity: 0;
+  }
+
+  span:first-child {
+    color: $orange;
+  }
+
+  i {
+    width: 2px;
+    height: 1.2em;
+    margin-left: -0.6rem;
+    background-color: $orange;
+    animation: prompt-caret 1s ease-in-out infinite;
+  }
+}
+
+@keyframes prompt-caret {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+.lead {
+  font-size: clamp(3rem, 4vw, 5.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.body {
+  margin-top: 2.4rem;
+  color: $muted;
+  font-size: 1.8rem;
+  line-height: 1.7;
+}
+
+.schedule li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.4rem 2rem;
+  padding: 2.4rem 0;
+  border-top: 1px solid $line;
+
+  &:last-child {
+    border-bottom: 1px solid $line;
+  }
+
+  strong {
+    font-size: clamp(2.8rem, 3.4vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  span {
+    align-self: center;
+    color: $muted;
+    font-size: 1.6rem;
+  }
+
+  span:nth-child(2) {
+    font-family: $mono;
+    font-size: 1.3rem;
+    text-align: right;
+  }
+
+  span:nth-child(3) {
+    color: $paper;
+  }
+
+  span:nth-child(4) {
+    text-align: right;
+  }
+}
+
+.footer {
+  position: relative;
+  z-index: 10;
+  padding: 4rem clamp(2rem, 5vw, 6.4rem) 12rem;
+  color: $muted;
+  font-size: 1.4rem;
+}
+
+.replay {
+  position: fixed;
+  right: 2rem;
+  bottom: 2rem;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-sizing: border-box;
+  height: 4rem;
+  padding: 0 1.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10rem;
+  background-color: rgba(16, 17, 15, 0.86);
+  color: $paper;
+  font-size: 1.3rem;
+  transition: color 0.2s, border-color 0.2s;
+
+  i {
+    font-size: 1.6rem;
+    font-style: normal;
+    line-height: 1;
+  }
+
+  &:hover {
+    border-color: $orange;
+    color: $orange;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    display: none;
+  }
+
+  // 좁은 화면에서는 프롬프트 자리를 비워 주려고 아이콘만 남긴다
+  @media screen and (max-width: 767px) {
+    right: 1.6rem;
+    justify-content: center;
+    width: 4rem;
+    padding: 0;
+
+    span {
+      clip-path: inset(50%);
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .hero {
+    justify-content: flex-end;
+    padding-bottom: 9rem;
+  }
+}
