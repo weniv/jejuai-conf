@@ -1,0 +1,41 @@
+Built-in image generation tool. Text-only wordmarks, exact wording: JEJU AI CONFERENCE 2026.
+
+1 · 2단형
+File: public/images/wordmark-concepts/01-two-line.png
+
+Use case: logo-brand.
+Create a restrained, bold, contemporary TYPOGRAPHIC WORDMARK for a real AI conference.
+The user has explicitly requested ONLY this exact text: "JEJU AI CONFERENCE 2026".
+Every word and numeral must be spelled exactly, in this order, once only. Line breaks are allowed where specified.
+Absolutely NO logo symbol, pictogram, emblem, monogram, cursor, mountain, line, dot, bar, frame, badge, decoration, illustration, extra label, slogan, or secondary duplicate text. The letters themselves are the complete design.
+Typography: carefully drawn, beautifully kerned strong contemporary grotesk sans serif, confident and slightly future-facing through proportions alone. All letters remain whole and easily legible. No stencil cuts, gimmicky science-fiction letterforms, italics, 3D, perspective, metallic surfaces, gradients, glow, shadows, texture, or mockups.
+Composition: one finished wordmark centered on a completely flat solid near-black #10110f landscape artboard. Crisp vector-like edges. Generous balanced negative space. Mostly warm ivory #f2efe6; only the text "2026" may be warm orange #ff7a1a. No other colors. Premium conference identity, minimalist and confident.
+Layout: exactly TWO centered lines. The first line reads "JEJU AI" in distinctive very bold slightly wide sans-serif capitals. The second line reads "CONFERENCE 2026" in smaller medium-weight capitals with modest refined letter spacing, optically aligned to the same overall width as the first line. Make the hierarchy calm and purposeful. Overall lockup approximately 3:1, filling 65 percent of artboard width. Perfectly usable as a small website header wordmark.
+
+========================================================================
+
+2 · 가로형
+File: public/images/wordmark-concepts/02-horizontal.png
+
+Use case: logo-brand.
+Create a restrained, bold, contemporary TYPOGRAPHIC WORDMARK for a real AI conference.
+The user has explicitly requested ONLY this exact text: "JEJU AI CONFERENCE 2026".
+Every word and numeral must be spelled exactly, in this order, once only. Line breaks are allowed where specified.
+Absolutely NO logo symbol, pictogram, emblem, monogram, cursor, mountain, line, dot, bar, frame, badge, decoration, illustration, extra label, slogan, or secondary duplicate text. The letters themselves are the complete design.
+Typography: carefully drawn, beautifully kerned strong contemporary grotesk sans serif, confident and slightly future-facing through proportions alone. All letters remain whole and easily legible. No stencil cuts, gimmicky science-fiction letterforms, italics, 3D, perspective, metallic surfaces, gradients, glow, shadows, texture, or mockups.
+Composition: one finished wordmark centered on a completely flat solid near-black #10110f landscape artboard. Crisp vector-like edges. Generous balanced negative space. Mostly warm ivory #f2efe6; only the text "2026" may be warm orange #ff7a1a. No other colors. Premium conference identity, minimalist and confident.
+Layout: ONE single horizontal line, reading exactly "JEJU AI CONFERENCE 2026". Use bold condensed architectural sans-serif typography with very careful kerning so the full name has strength without excessive length. "JEJU AI" can be subtly heavier than "CONFERENCE 2026", but all text shares one clear baseline and approximately one cap height. The complete wordmark fills about 84 percent of artboard width. Modest spacing between words, no exaggerated gaps. Extremely clean, direct, type-only event branding.
+
+========================================================================
+
+3 · 3단형
+File: public/images/wordmark-concepts/03-stacked.png
+
+Use case: logo-brand.
+Create a restrained, bold, contemporary TYPOGRAPHIC WORDMARK for a real AI conference.
+The user has explicitly requested ONLY this exact text: "JEJU AI CONFERENCE 2026".
+Every word and numeral must be spelled exactly, in this order, once only. Line breaks are allowed where specified.
+Absolutely NO logo symbol, pictogram, emblem, monogram, cursor, mountain, line, dot, bar, frame, badge, decoration, illustration, extra label, slogan, or secondary duplicate text. The letters themselves are the complete design.
+Typography: carefully drawn, beautifully kerned strong contemporary grotesk sans serif, confident and slightly future-facing through proportions alone. All letters remain whole and easily legible. No stencil cuts, gimmicky science-fiction letterforms, italics, 3D, perspective, metallic surfaces, gradients, glow, shadows, texture, or mockups.
+Composition: one finished wordmark centered on a completely flat solid near-black #10110f landscape artboard. Crisp vector-like edges. Generous balanced negative space. Mostly warm ivory #f2efe6; only the text "2026" may be warm orange #ff7a1a. No other colors. Premium conference identity, minimalist and confident.
+Layout: a compact LEFT-ALIGNED typographic block of exactly THREE lines, reading "JEJU AI" then "CONFERENCE" then "2026". All three lines have carefully balanced widths, with the top two in warm ivory and the last in orange. Strong tightly composed bold condensed grotesk typography, open counters, no distortion, 2026 confidently anchors the block. Compact architectural proportions, exact left alignment, carefully adjusted line spacing. The wordmark is centered as a whole on the artboard and fills approximately 52 percent of its width. No extra design elements.

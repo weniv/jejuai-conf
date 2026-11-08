@@ -1,0 +1,59 @@
+Built-in image generation tool. Fresh generation; no references to earlier images.
+User preference: bold and futuristic.
+
+A · SIGNAL
+File: public/images/logo-concepts-v2/a-signal.png
+
+Use case: logo-brand.
+Client: JEJU AI CONFERENCE 2026, a leading AI conference in Jeju, Korea.
+The client rejected earlier literal volcano, cursor, neural-node, chat-bubble, and obvious Ai pictogram concepts. This is a complete fresh creative direction. Their explicit taste: BOLD AND FUTURISTIC.
+Design a real sophisticated contemporary event brand, with a custom-designed typographic wordmark and one exceptionally memorable abstract symbol where specified. Think carefully designed experimental typography, strong negative space, refined optical balance, confident scale. The design must be immediately credible on a conference stage, website navigation, shirt, and badge.
+Deliver exactly one finished logo lockup centered on a pristine solid-color landscape artboard, generous breathing room. This is the final graphic artwork itself, not a photograph or a physical product mockup. The composition is extremely clean and disciplined. Sharp graphic edges, flat solid inks. No captions, commentary, concept numbers, labels, or alternative versions anywhere. No random AI decorative illustrations.
+Exact main wordmark text: "JEJU AI".
+Exact small secondary text: "CONFERENCE 2026".
+Be precise about spelling and excellent typography.
+Avoid: mountains, volcanoes, mouse pointers, robots, brains, computer chips, neural network dots, chat bubbles, four-point AI sparkles, infinity knots, generic corporate swooshes, stock icons, gradients, glow, shadows, fuzzy edges, texture, film grain, watermarks.
+Direction A / SIGNAL. Solid near-black #090b0a artboard. High-impact acid-lime #c8ff31 main identity with a tiny warm-white secondary line. Main idea: an unmistakable powerful CUSTOM WIDE STENCIL WORDMARK, not a normal typed font. JEJU AI uses extra-bold extended geometric letterforms, a single precisely aligned thin horizontal negative cut passes through several stems like a signal scan, carefully limited so every letter stays readable. The J is distinctive and architectural, the A has an unexpected open counter. A very small symbol composed of three solid vertical rectangles of different heights acts as a signal signature, integrated at the left or end of the wordmark rather than floating as a large pictogram. Build a concentrated horizontal 3:1 brand lockup occupying 78 percent of artboard width. The small CONFERENCE 2026 line is meticulously letterspaced below. Restrained color count, unapologetically futuristic, precision and intelligence.
+
+========================================================================
+
+B · HYPER J
+File: public/images/logo-concepts-v2/b-hyper-j.png
+
+Use case: logo-brand.
+Client: JEJU AI CONFERENCE 2026, a leading AI conference in Jeju, Korea.
+The client rejected earlier literal volcano, cursor, neural-node, chat-bubble, and obvious Ai pictogram concepts. This is a complete fresh creative direction. Their explicit taste: BOLD AND FUTURISTIC.
+Design a real sophisticated contemporary event brand, with a custom-designed typographic wordmark and one exceptionally memorable abstract symbol where specified. Think carefully designed experimental typography, strong negative space, refined optical balance, confident scale. The design must be immediately credible on a conference stage, website navigation, shirt, and badge.
+Deliver exactly one finished logo lockup centered on a pristine solid-color landscape artboard, generous breathing room. This is the final graphic artwork itself, not a photograph or a physical product mockup. The composition is extremely clean and disciplined. Sharp graphic edges, flat solid inks. No captions, commentary, concept numbers, labels, or alternative versions anywhere. No random AI decorative illustrations.
+Exact main wordmark text: "JEJU AI".
+Exact small secondary text: "CONFERENCE 2026".
+Be precise about spelling and excellent typography.
+Avoid: mountains, volcanoes, mouse pointers, robots, brains, computer chips, neural network dots, chat bubbles, four-point AI sparkles, infinity knots, generic corporate swooshes, stock icons, gradients, glow, shadows, fuzzy edges, texture, film grain, watermarks.
+Direction B / HYPER J. Artboard is a uniform vivid electric cobalt blue #1638ef. Main logo is warm white #f7f8ef with one restrained pale-lime #deff92 face accent. Create a striking abstract angular J-shaped glyph as if a single wide band of space has been folded once: bold architectural volume expressed purely through two flat polygon planes, a decisive diagonal negative cut, open geometry, no physical 3D rendering. This is a uniquely designed emblem, not a bent arrow. Place this compact symbol to the left of the JEJU AI wordmark, whose custom sharp extra-wide sans-serif typography matches the emblem's angles. Secondary CONFERENCE 2026 in small well-spaced capitals below. Whole identity must feel adventurous, futuristic, global, editorial, brilliantly simple. Let cobalt negative space do the work, avoid ornament. Horizontal logo lockup centered with substantial margins.
+
+========================================================================
+
+C · PHASE
+File: public/images/logo-concepts-v2/c-phase.png
+
+Use case: logo-brand.
+Client: JEJU AI CONFERENCE 2026, a leading AI conference in Jeju, Korea.
+The client rejected earlier literal volcano, cursor, neural-node, chat-bubble, and obvious Ai pictogram concepts. This is a complete fresh creative direction. Their explicit taste: BOLD AND FUTURISTIC.
+Design a real sophisticated contemporary event brand, with a custom-designed typographic wordmark and one exceptionally memorable abstract symbol where specified. Think carefully designed experimental typography, strong negative space, refined optical balance, confident scale. The design must be immediately credible on a conference stage, website navigation, shirt, and badge.
+Deliver exactly one finished logo lockup centered on a pristine solid-color landscape artboard, generous breathing room. This is the final graphic artwork itself, not a photograph or a physical product mockup. The composition is extremely clean and disciplined. Sharp graphic edges, flat solid inks. No captions, commentary, concept numbers, labels, or alternative versions anywhere. No random AI decorative illustrations.
+Exact main wordmark text: "JEJU AI".
+Exact small secondary text: "CONFERENCE 2026".
+Be precise about spelling and excellent typography.
+Avoid: mountains, volcanoes, mouse pointers, robots, brains, computer chips, neural network dots, chat bubbles, four-point AI sparkles, infinity knots, generic corporate swooshes, stock icons, gradients, glow, shadows, fuzzy edges, texture, film grain, watermarks.
+Direction C / PHASE. A uniform ink-black #111016 artboard. Identity is vibrant electric violet #a98bff and warm white #faf7f1; a single tiny hot-orange #ff754a accent may appear only in the secondary text. Design a sophisticated abstract PHASE symbol: three bold interleaved horizontal bands, asymmetrically shifted and joined by ONE crisp diagonal void, creating an original compact emblem of movement, computation and shifting perspective. Give the whole symbol a horizontally compressed, dynamic silhouette. It must not resemble a simple list, mountain, or chain logo. Beside it, design JEJU AI using striking compact techno-grotesk letters, clever angled cuts and beautifully balanced spacing. The wordmark is very legible and bespoke, not gaming type and not sci-fi movie lettering. CONFERENCE 2026 appears underneath in small calm typography. High-end experimental AI festival branding, future-facing but disciplined, entire horizontal mark fills about 76 percent of the canvas width.
+
+========================================================================
+
+D · JEJU FUTURE
+File: public/images/logo-concepts-v2/d-jeju-future.png
+
+Use case: logo-brand.
+Design a bold futuristic Korean AI conference wordmark as a finished flat brand artwork on a uniform near-black #0b1110 landscape artboard.
+The main lettering must read EXACTLY "제주 AI", a single horizontal custom typographic logo. It is NOT a typed label: engineer an original very bold squared Korean display type with generous open counters, precise 45-degree cuts in selected corners, strong compact block rhythm, and an optically matched custom Latin AI. The Hangul 제주 must be correct and easily readable. Use luminous solid mint #75ffd0 for the main lettering. A tiny solid electric-blue #4284ff rectangular cursor-like block may be the only secondary geometric accent, attached to the wordmark baseline as a typographic punctuation rather than an illustrated mouse cursor. Exact small subtitle below: "JEJU AI CONFERENCE 2026" in restrained clean warm-white typography.
+The logo should feel like an ambitious contemporary creative technology conference, with confident Korean cultural character and international precision. Clever typography is the whole idea; no separate icon. Wordmark occupies about 78 percent of canvas width, centered with beautiful breathing room, wide landscape composition.
+All color fields are solid, crisp vector-like graphic edges. No mountains, volcanoes, mouse pointers, brains, robot faces, chat bubbles, neural nodes, sparkles, orbit symbols, generic sci-fi fonts, gradients, glow, 3D, shadows, grain, mockups, captions, numbers outside the stated subtitle, watermarks, or alternative versions.

@@ -23,6 +23,7 @@ const FaqItem = ({ question, answer, order }: FaqItemProps) => {
     const item = itemRef.current;
     const body = bodyRef.current;
     if (!item || !body) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     e.preventDefault();
 
     const isOpening = item.dataset.open === undefined;

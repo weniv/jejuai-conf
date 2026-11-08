@@ -60,6 +60,12 @@ button {
   background: none;
 }
 
+:focus-visible {
+  outline: 2px solid #ff7a1a;
+  outline-offset: 6px;
+  border-radius: 3px;
+}
+
 img {
   vertical-align: top;
 }
@@ -96,6 +102,25 @@ html[data-build-on] [data-build] {
 
   &[data-writing] {
     transition: none;
+  }
+
+  &[data-built=""] {
+    animation: build-settle 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes build-settle {
+  from { transform: translateY(6px); filter: brightness(1.35); }
+  to { transform: translateY(0); filter: brightness(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  html[data-build-on] [data-build] {
+    animation: none;
+    transition: none;
+    opacity: 1 !important;
+    clip-path: none !important;
   }
 }
 

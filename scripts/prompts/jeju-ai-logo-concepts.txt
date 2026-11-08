@@ -1,0 +1,63 @@
+Generated with the built-in image generation tool. Four independent logo-brand prompts.
+
+1 · 제주 뉴런
+File: public/images/logo-concepts/01-neural-hallasan.png
+
+Use case: logo-brand.
+Asset type: one professional symbol-only logo concept for the Korean Jeju AI Conference 2026, intended for a small website header, conference signage, and favicon.
+Style: exceptionally refined, original contemporary AI conference identity, flat vector-like graphic shapes, compact silhouette, generous clean negative space, excellent legibility at 32 pixels. Large bold forms, smooth sharp antialiased boundaries, deliberate balanced geometry.
+Palette: warm vivid orange #ff7a1a as the primary color, warm ivory #f2efe6 as a restrained secondary accent. It will primarily sit on a near-black #10110f website.
+Background: genuine transparency, including all negative space. No enclosing square or colored background.
+Composition: exactly ONE centered symbol, fill roughly 80 percent of a square canvas with consistent padding.
+Do not include a brand name, tagline, year, labels, additional options, presentation board, or mockup.
+Avoid gradients, dimensional shading, shadows, glow, textures, tiny dots or fine detail, decorative particles, stock icon styling, watermarks, thin linework.
+
+Concept: NEURAL HALLASAN — a distinctive fusion of Jeju's low, broad Hallasan volcanic peak and a minimal neural network. Construct one recognizably broad mountain/crater silhouette from three bold smoothly curved circuit branches and at most five substantial round nodes. The open oval crater is the central negative-space feature; a single upward node above it evokes AI ideas emerging. Integrate all parts into a coherent logo, not a mountain with a separate circuit pasted over it. Regional identity meets intelligence. Keep it confident and incredibly simple.
+
+========================================================================
+
+2 · Agent 컬렉티브
+File: public/images/logo-concepts/02-agent-collective.png
+
+Use case: logo-brand.
+Asset type: one professional symbol-only logo concept for the Korean Jeju AI Conference 2026, intended for a small website header, conference signage, and favicon.
+Style: exceptionally refined, original contemporary AI conference identity, flat vector-like graphic shapes, compact silhouette, generous clean negative space, excellent legibility at 32 pixels. Large bold forms, smooth sharp antialiased boundaries, deliberate balanced geometry.
+Palette: warm vivid orange #ff7a1a as the primary color, warm ivory #f2efe6 as a restrained secondary accent. It will primarily sit on a near-black #10110f website.
+Background: genuine transparency, including all negative space. No enclosing square or colored background.
+Composition: exactly ONE centered symbol, fill roughly 80 percent of a square canvas with consistent padding.
+Do not include a brand name, tagline, year, labels, additional options, presentation board, or mockup.
+Avoid gradients, dimensional shading, shadows, glow, textures, tiny dots or fine detail, decorative particles, stock icon styling, watermarks, thin linework.
+
+Concept: AGENT COLLECTIVE — three bold, softly rounded mouse cursor arrowheads meeting in an original compact interlocking triangular/radial arrangement. Their shared negative space forms a clean small central diamond or spark of intelligence. Use two orange cursor shapes and one warm ivory cursor as a subtle accent. The visual message is AI agents cooperating and people gathering for a conference. One strong balanced symbol with approximately threefold rhythm, clearly recognizable cursor forms, contemporary friendly technology branding. No volcano, no brain, no chip, no extra network lines or particles.
+
+========================================================================
+
+3 · 연결되는 지능
+File: public/images/logo-concepts/03-connected-dialogue.png
+
+Use case: logo-brand.
+Asset type: one professional symbol-only logo concept for the Korean Jeju AI Conference 2026, intended for a small website header, conference signage, and favicon.
+Style: exceptionally refined, original contemporary AI conference identity, flat vector-like graphic shapes, compact silhouette, generous clean negative space, excellent legibility at 32 pixels. Large bold forms, smooth sharp antialiased boundaries, deliberate balanced geometry.
+Palette: warm vivid orange #ff7a1a as the primary color, warm ivory #f2efe6 as a restrained secondary accent. It will primarily sit on a near-black #10110f website.
+Background: genuine transparency, including all negative space. No enclosing square or colored background.
+Composition: exactly ONE centered symbol, fill roughly 80 percent of a square canvas with consistent padding.
+Do not include a brand name, tagline, year, labels, additional options, presentation board, or mockup.
+Avoid gradients, dimensional shading, shadows, glow, textures, tiny dots or fine detail, decorative particles, stock icon styling, watermarks, thin linework.
+
+Concept: CONNECTED DIALOGUE — a compact, original logo made of two elegant interlocking speech-bubble forms whose open interior integrates a tiny neural structure of exactly three substantial nodes linked by thick short strokes. Combine dialogue, shared knowledge, and artificial intelligence into one unified mark. One bubble in vivid orange, a restrained ivory inner element. Clever clean negative space suggests conversation moving in both directions. Premium international technology conference identity, not a generic chatbot mascot. No face, robot, brain outline, literal computer chip, mountain, or pointer.
+
+========================================================================
+
+4 · AI 모노그램
+File: public/images/logo-concepts/04-ai-ligature.png
+
+Use case: logo-brand.
+Asset type: one professional symbol-only logo concept for the Korean Jeju AI Conference 2026, intended for a small website header, conference signage, and favicon.
+Style: exceptionally refined, original contemporary AI conference identity, flat vector-like graphic shapes, compact silhouette, generous clean negative space, excellent legibility at 32 pixels. Large bold forms, smooth sharp antialiased boundaries, deliberate balanced geometry.
+Palette: warm vivid orange #ff7a1a as the primary color, warm ivory #f2efe6 as a restrained secondary accent. It will primarily sit on a near-black #10110f website.
+Background: genuine transparency, including all negative space. No enclosing square or colored background.
+Composition: exactly ONE centered symbol, fill roughly 80 percent of a square canvas with consistent padding.
+Do not include a brand name, tagline, year, labels, additional options, presentation board, or mockup.
+Avoid gradients, dimensional shading, shadows, glow, textures, tiny dots or fine detail, decorative particles, stock icon styling, watermarks, thin linework.
+
+Concept: AI LIGATURE — a premium compact custom geometric monogram fusing the letterforms A and I into ONE distinctive brand symbol. A has a soft broad peak subtly recalling Hallasan; the upright I and its substantial circular dot are structurally integrated with the A. A clever open negative-space counter subtly resembles an upward cursor. The result should read as AI without appearing like two typed letters. Thick confident strokes, softly chamfered corners, architectural proportions, clean optical balance, orange main shape and very limited warm ivory accent. No other lettering, no outline mountain illustration, no network nodes, no detached decorative spark.

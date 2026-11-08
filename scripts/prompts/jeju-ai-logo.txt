@@ -1,0 +1,17 @@
+Use case: logo-brand.
+Asset type: production-ready transparent brand symbol for the top-left website header of the Korean "Jeju AI Conference 2026".
+Primary request: design ONE distinctive, polished, compact logo mark that fuses Jeju's Hallasan volcanic crater and an AI agent's upward mouse pointer into a single coherent visual identity.
+Design: a bold, softly rounded, low volcanic silhouette, with a distinctive open crater formed using elegant negative space; an upward-right cursor arrow emerges naturally from that crater as the eruption. Make the cursor feel integral to the shape. Strong graphic silhouette, carefully balanced proportions, refined contemporary technology conference branding, confident and minimal. The volcano and pointer should be immediately legible at 32 to 40 pixels.
+Style/medium: pristine flat vector-like logo artwork with solid filled shapes and beautifully clean edges. This is a finished brand symbol, not a drawing, illustration, mockup, or presentation board.
+Color palette: primarily vivid warm orange #ff7a1a, with a restrained warm ivory #f2efe6 cursor accent. It will appear on a near-black #10110f website.
+Scene/backdrop: genuinely transparent background, including negative-space openings.
+Composition/framing: one centered mark, square canvas, mark fills approximately 82 percent of canvas, compact and balanced, generous but modest transparent edge padding.
+Text: none; symbol only. Do not generate Korean or English lettering.
+Avoid: generic triangular mountain outline, zigzag mountains, clip-art sun rays, explosion stars, snow cap, landscape, excessive tiny particles, badges, enclosing circles, black square backgrounds, gradients, shadows, 3D, textures, thin hairlines, multiple logo options, watermark.
+
+Refinement prompt (built-in image generation tool, editing the first generated mark):
+Use case: logo-brand, precise-object-edit.
+Edit target: the provided transparent Jeju AI Conference volcano-and-cursor symbol.
+Keep the same strong recognizable design: wide soft orange volcano, open elliptical crater, a single warm ivory upward-right cursor rising out of the crater. Keep the composition and colors #ff7a1a orange and #f2efe6 ivory.
+Required correction: make it a flawless, completely clean flat brand mark for a small website header. Remove ALL stray pixels, red speckles, white edge fringing, gray cloudy halos, glow, texture, gradients, and semi-transparent debris outside the main two shapes. Use perfectly uniform solid flat fills with crisp, smooth, antialiased boundaries. The area outside the mark and the crater opening must be genuinely fully transparent. No strokes or outlines. No shadows.
+Composition: centered compact symbol with approximately 5 percent clear padding on all sides, balanced vertical alignment. One finished symbol only, no variations and no text. Strong silhouette that remains clear at a displayed width of 36 pixels.

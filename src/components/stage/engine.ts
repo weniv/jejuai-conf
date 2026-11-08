@@ -15,7 +15,8 @@ const ARROW_PATH =
 const SPRITE = { w: 26, h: 32 };
 
 const MOBILE_WIDTH = 768;
-const COUNT = { pc: 12, mobile: 8 };
+const COUNT = { pc: 24, mobile: 14 };
+const COLORS = [ORANGE, "#ffc16e", "#ff9b50", "#f2efe6"];
 
 // 오프닝(ms): 프롬프트 등장 → 타이핑 → 빛을 모음 → 폭발
 const TYPE_DELAY = 420;
@@ -35,11 +36,15 @@ const WRITE_SPEED = 2.4;
 const WRITE_MIN = 220;
 const WRITE_MAX = 850;
 const FORCE_AFTER = 2600;
-const TAIL_LENGTH = 7;
+const TAIL_LENGTH = 12;
 const SHAKE_TIME = 340;
 const COLUMN_TIME = 460;
+const IDLE_INTERVAL = 6200;
+const IDLE_CHARGE = 780;
+const SCROLL_INTERVAL = 1700;
+const SWARM_TIME = 3800;
 
-type AgentState = "inside" | "flight" | "write" | "return";
+type AgentState = "inside" | "flight" | "write" | "swarm" | "return";
 type Cycle = "opening" | "ready" | "charging";
 
 interface Line {
@@ -59,6 +64,8 @@ interface Job {
 
 interface Agent {
   name: string;
+  index: number;
+  color: string;
   state: AgentState;
   x: number;
   y: number;
@@ -66,6 +73,7 @@ interface Agent {
   rot: number;
   fromX: number;
   fromY: number;
+  fromScale: number;
   start: number;
   duration: number;
   spin: number;
@@ -73,6 +81,7 @@ interface Agent {
   jobs: Job[];
   tail: number[];
   labelAlpha: number;
+  land: { x: number; y: number; z: number };
 }
 
 interface Ripple {
@@ -101,8 +110,6 @@ export interface StageOptions {
 
 const clamp = (value: number) => Math.min(Math.max(value, 0), 1);
 const lerp = (from: number, to: number, p: number) => from + (to - from) * p;
-const ease = (p: number) =>
-  p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
 
 // 히어로에서는 글자 오른쪽에 섬 전체가 들어오게 둔다
 const heroCamera = (width: number, height: number): Camera =>
@@ -193,7 +200,7 @@ const shade = (color: string, amount: number) => {
 };
 
 // 측면을 겹쳐 그려 두께가 있는 입체 커서를 미리 만들어 둔다
-const createSprite = () => {
+const createSprite = (color: string) => {
   const canvas = document.createElement("canvas");
   canvas.width = SPRITE.w * 2;
   canvas.height = SPRITE.h * 2;
@@ -204,7 +211,7 @@ const createSprite = () => {
   ctx.scale(2.5, 2.5);
   ctx.translate(1, 1);
 
-  ctx.fillStyle = shade(ORANGE, 0.4);
+  ctx.fillStyle = shade(color, 0.4);
   for (let depth = 5; depth > 0; depth--) {
     ctx.save();
     ctx.translate(depth * 0.5, depth * 0.5);
@@ -214,8 +221,8 @@ const createSprite = () => {
 
   const face = ctx.createLinearGradient(0, 0, 10, 18);
   face.addColorStop(0, "#ffe2c4");
-  face.addColorStop(0.4, ORANGE);
-  face.addColorStop(1, shade(ORANGE, 0.75));
+  face.addColorStop(0.4, color);
+  face.addColorStop(1, shade(color, 0.75));
   ctx.fillStyle = face;
   ctx.fill(arrow);
   return canvas;
@@ -229,7 +236,8 @@ export const createStage = (options: StageOptions) => {
 
   const isMobile = window.innerWidth < MOBILE_WIDTH;
   const dots = createDots(isMobile ? 0.021 : 0.0135);
-  const sprite = createSprite();
+  const landDots = dots.filter((dot) => dot.d > 0.13 && dot.d < 0.78);
+  const sprites = COLORS.map(createSprite);
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const camera: Camera = { yaw: 0, pitch: 1, cx: 0, cy: 0, radius: 0 };
   const point: Point = { x: 0, y: 0, scale: 1 };
@@ -261,11 +269,21 @@ export const createStage = (options: StageOptions) => {
   let startTime = 0;
   let cycle: Cycle = options.isBuilding ? "opening" : "ready";
   let chargeStart = 0;
+  let chargeDuration = HEAT_TIME;
+  let lastBurst = performance.now();
+  let lastScroll = 0;
+  let lastScrollY = window.scrollY;
+  let scrollEnergy = 0;
+  let lastWave = 0;
+  let lastFrame = 0;
+  let frameDelta = 1;
 
   const workers: Agent[] = Array.from(
     { length: isMobile ? COUNT.mobile : COUNT.pc },
     (_, i) => ({
       name: `Agent ${i + 1}`,
+      index: i,
+      color: COLORS[i % COLORS.length],
       state: "inside",
       x: 0,
       y: 0,
@@ -273,12 +291,14 @@ export const createStage = (options: StageOptions) => {
       rot: 0,
       fromX: 0,
       fromY: 0,
+      fromScale: 1,
       start: 0,
       duration: FLIGHT,
       spin: 0,
       jobs: [],
       tail: [],
       labelAlpha: 0,
+      land: landDots[(i * 137) % landDots.length],
     })
   );
 
@@ -289,21 +309,37 @@ export const createStage = (options: StageOptions) => {
       canvas.width = width * dpr;
       canvas.height = height * dpr;
     });
+    workers.forEach((agent) => {
+      agent.jobs = agent.jobs.map(({ el }) => toJob(el));
+      agent.tail.length = 0;
+    });
+  };
+
+  const onScroll = () => {
+    const now = performance.now();
+    const distance = Math.abs(window.scrollY - lastScrollY);
+    scrollEnergy = clamp(scrollEnergy + distance / 280);
+    lastScrollY = window.scrollY;
+    lastScroll = now;
+    if (!isStopped && distance > 5 && now - lastWave > 850) {
+      ripples.push({ start: now });
+      lastWave = now;
+    }
   };
 
   const updateCamera = (now: number) => {
     const target = clamp(window.scrollY / (height * 0.8));
-    cameraScroll += (target - cameraScroll) * 0.08;
+    cameraScroll += (target - cameraScroll) * (1 - Math.pow(0.92, frameDelta));
     const p = cameraScroll;
     const hero = heroCamera(width, height);
 
     // 북쪽이 위로 오도록 회전은 살짝 흔들리는 정도로만 둔다
-    camera.yaw = Math.sin(now * 0.00012) * 0.05 + p * 0.2;
-    camera.pitch = lerp(hero.pitch, 1.02, p);
+    camera.yaw = Math.sin(now * 0.00012) * 0.05 + p * 0.2 + scrollEnergy * 0.09;
+    camera.pitch = lerp(hero.pitch, 1.02, p) + scrollEnergy * 0.035;
     if (width < MOBILE_WIDTH) {
-      camera.cx = hero.cx;
-      camera.cy = lerp(hero.cy, height * 0.5, p);
-      camera.radius = hero.radius;
+      camera.cx = lerp(hero.cx, width * 0.88, p);
+      camera.cy = lerp(hero.cy, height * 0.38, p);
+      camera.radius = hero.radius * lerp(1, 0.84, p);
     } else {
       camera.cx = lerp(hero.cx, width * 0.78, p);
       camera.cy = lerp(hero.cy, height * 0.5, p);
@@ -317,7 +353,7 @@ export const createStage = (options: StageOptions) => {
     groundCtx.clearRect(0, 0, width, height);
 
     const isNarrow = width < MOBILE_WIDTH;
-    groundCtx.globalAlpha = lerp(1, isNarrow ? 0.3 : 0.7, cameraScroll);
+    groundCtx.globalAlpha = lerp(1, isNarrow ? 0.24 : 0.7, cameraScroll);
 
     for (let i = ripples.length - 1; i >= 0; i--) {
       if (now - ripples[i].start > 2200) ripples.splice(i, 1);
@@ -453,15 +489,28 @@ export const createStage = (options: StageOptions) => {
     agent.start = now + delay;
     agent.duration = FLIGHT;
     agent.spin = (Math.random() < 0.5 ? -1 : 1) * (2.5 + Math.random() * 3);
+    agent.tail.length = 0;
   };
 
-  // 일이 끝나거나 없는 커서는 곧장 화산으로 돌아간다
+  // 커서는 섬을 탐색한 뒤 분화구로 모여 다음 출동을 기다린다.
   const goHome = (agent: Agent, now: number) => {
     agent.state = "return";
     agent.fromX = agent.x;
     agent.fromY = agent.y;
     agent.start = now;
+    agent.fromScale = agent.scale;
     agent.duration = RETURN;
+  };
+
+  const swarm = (agent: Agent, now: number, delay = 0) => {
+    agent.fromX = agent.x;
+    agent.fromY = agent.y;
+    agent.state = "swarm";
+    agent.start = now + delay;
+    agent.duration = SWARM_TIME + (agent.index % 5) * 180;
+    agent.spin = (agent.index % 2 ? 1 : -1) * 2.4;
+    agent.land = landDots[Math.floor(Math.random() * landDots.length)];
+    agent.tail.length = 0;
   };
 
   const emitSparks = (now: number, count: number) => {
@@ -479,54 +528,57 @@ export const createStage = (options: StageOptions) => {
   };
 
   // 지을 내용이 생기면 프롬프트를 치는 동안 열이 정상까지 오른다
-  const beginCharge = (first: HTMLElement, now: number) => {
-    const line = lineOf(first);
-    const text = first.closest<HTMLElement>("[data-prompt]")?.dataset.prompt;
-    delete promptBox(line).dataset.done;
-    if (text) writes.set(line, { text, start: now });
+  const beginCharge = (first: HTMLElement | undefined, now: number) => {
+    if (first) {
+      const line = lineOf(first);
+      const text = first.closest<HTMLElement>("[data-prompt]")?.dataset.prompt;
+      delete promptBox(line).dataset.done;
+      if (text) writes.set(line, { text, start: now });
+    }
+    chargeDuration = first ? HEAT_TIME : IDLE_CHARGE;
     cycle = "charging";
     chargeStart = now;
   };
 
-  // 필요한 수만큼만 출동하고 나머지는 화산에 남는다
+  // 글을 짓는 커서와 섬을 탐색하는 커서가 한 무리로 출동한다.
   const erupt = (now: number) => {
     heat = 0;
     cycle = "ready";
 
     const jobs = takeJobs(now);
     const crew = workers.filter(
-      ({ state }) => state === "inside" || state === "return"
+      ({ state }) => state === "inside" || state === "return" || state === "swarm"
     );
-    if (!jobs.length || !crew.length) {
+    if (!crew.length) {
       jobs.forEach((job) => claimed.delete(job.el));
       return;
     }
 
-    const count = Math.min(jobs.length, crew.length);
-    jobs.forEach((job, i) => crew[i % count].jobs.push(job));
-    crew.slice(0, count).forEach((agent, i) => {
+    jobs.forEach((job, i) => crew[i % crew.length].jobs.push(job));
+    crew.forEach((agent, i) => {
       const isInside = agent.state === "inside";
       if (isInside) {
         agent.x = crater.x;
         agent.y = crater.y;
       }
-      fly(agent, now, isInside ? i * LAUNCH_GAP : 0);
+      const delay = i * LAUNCH_GAP;
+      if (agent.jobs.length) fly(agent, now, delay);
+      else swarm(agent, now, delay);
     });
 
+    lastBurst = now;
     flashAt = now;
     shakeUntil = now + SHAKE_TIME;
     ripples.push({ start: now }, { start: now + 150 });
-    emitSparks(now, 16 + count * 6);
+    emitSparks(now, width < MOBILE_WIDTH ? 44 : 88);
   };
 
-  // 프롬프트의 글자가 커서로 변한다. 일이 없는 커서는 바로 화산으로 간다
+  // 프롬프트의 글자가 커서로 변해 글과 섬으로 퍼져 나간다.
   const blast = (now: number) => {
     const glyphs = options.getGlyphs();
     const step = Math.max(glyphs.length / workers.length, 1);
     const jobs = takeJobs(now);
-    const count = Math.min(jobs.length, workers.length);
-
-    jobs.forEach((job, i) => workers[i % count].jobs.push(job));
+    jobs.forEach((job, i) => workers[i % workers.length].jobs.push(job));
     workers.forEach((agent, i) => {
       const glyph = glyphs[Math.floor(i * step)];
       agent.x = glyph?.x ?? width / 2;
@@ -536,14 +588,15 @@ export const createStage = (options: StageOptions) => {
       if (agent.jobs.length) {
         fly(agent, now, 0);
       } else {
-        goHome(agent, now);
-        agent.duration = FLIGHT + 200;
+        swarm(agent, now, (i % 4) * LAUNCH_GAP);
       }
     });
 
     flashAt = now;
     blastAt = now;
     shakeUntil = now + SHAKE_TIME;
+    lastBurst = now;
+    emitSparks(now, width < MOBILE_WIDTH ? 36 : 72);
     ripples.push({ start: now }, { start: now + 150 });
     options.onBlast();
     cycle = "ready";
@@ -597,7 +650,7 @@ export const createStage = (options: StageOptions) => {
         fly(agent, now, 0);
         agent.duration = NEXT_JOB;
       } else {
-        goHome(agent, now);
+        swarm(agent, now);
       }
     }
   };
@@ -611,18 +664,48 @@ export const createStage = (options: StageOptions) => {
       (1 - e) * (1 - e) * agent.fromX + 2 * (1 - e) * e * midX + e * e * crater.x;
     agent.y =
       (1 - e) * (1 - e) * agent.fromY + 2 * (1 - e) * e * midY + e * e * crater.y;
-    agent.scale = lerp(1, 0.08, e);
+    agent.scale = lerp(agent.fromScale, 0.08, e);
     if (p >= 1) {
       agent.state = "inside";
       agent.scale = 0;
+      agent.tail.length = 0;
     }
+  };
+
+  const updateSwarm = (agent: Agent, now: number, p: number) => {
+    const mobile = width < MOBILE_WIDTH;
+    const { land, index } = agent;
+    const angle = now * 0.00055 + index * 2.39996;
+    project(land.x, land.y, land.z, camera, point);
+    const spread = mobile ? 16 : 32;
+    // 데스크톱의 본문 왼쪽과 모바일 히어로 아래쪽은 비워 둔다.
+    const left = mobile ? 18 : width * lerp(0.48, 0.62, cameraScroll);
+    const tx = Math.min(width - 32, Math.max(left, point.x + Math.cos(angle) * spread));
+    const ty = Math.max(90, Math.min(
+      height * (mobile ? lerp(0.39, 0.6, cameraScroll) : 0.78),
+      point.y + Math.sin(angle * 1.3) * spread - 18
+    ));
+    const arrival = clamp(p / 0.24);
+    const e = 1 - Math.pow(1 - arrival, 3);
+    const arc = Math.sin(arrival * Math.PI) * (mobile ? 65 : 140);
+    agent.x = lerp(agent.fromX, tx, e);
+    agent.y = lerp(agent.fromY, ty, e) - arc;
+    agent.scale = (mobile ? 0.68 : 0.82) + Math.sin(arrival * Math.PI) * 0.65;
+    agent.rot = (1 - arrival) * agent.spin + Math.sin(angle) * 0.12;
+    if (p >= 1) goHome(agent, now);
   };
 
   const updateAgent = (agent: Agent, now: number) => {
     if (agent.state === "inside") return;
 
     // 맡은 요소가 화면을 벗어나면 그 일은 내려놓는다
+    const previousJob = agent.jobs[0];
     while (agent.jobs[0] && !visible.has(agent.jobs[0].el)) agent.jobs.shift();
+    if (agent.jobs[0] && previousJob !== agent.jobs[0]) {
+      fly(agent, now, 0);
+      agent.duration = NEXT_JOB;
+      return;
+    }
     if (agent.state === "write" && !agent.jobs.length) {
       goHome(agent, now);
       return;
@@ -632,6 +715,7 @@ export const createStage = (options: StageOptions) => {
     const p = clamp((now - agent.start) / agent.duration);
     if (agent.state === "flight") updateFlight(agent, now, p);
     else if (agent.state === "write") updateWrite(agent, now, p);
+    else if (agent.state === "swarm") updateSwarm(agent, now, p);
     else updateReturn(agent, p);
   };
 
@@ -657,17 +741,24 @@ export const createStage = (options: StageOptions) => {
       return;
     }
 
-    if (reveal < 9) reveal += 0.03;
+    if (reveal < 9) reveal += 0.03 * frameDelta;
     updateWrites(now);
 
     if (cycle === "charging") {
-      heat = clamp((now - chargeStart) / HEAT_TIME);
+      heat = clamp((now - chargeStart) / chargeDuration);
       if (heat >= 1) erupt(now);
       return;
     }
 
     const first = nextPending();
-    if (first) beginCharge(first, now);
+    if (first) {
+      beginCharge(first, now);
+    } else if (
+      (scrollEnergy > 0.12 && now - lastBurst > SCROLL_INTERVAL) ||
+      (now - lastBurst > IDLE_INTERVAL && now - lastScroll > 650)
+    ) {
+      beginCharge(undefined, now);
+    }
   };
 
   // 일손이 끝내 닿지 못한 내용은 오래 숨겨 두지 않는다
@@ -721,25 +812,30 @@ export const createStage = (options: StageOptions) => {
   // 지형만 흔들어 글자는 계속 또렷하게 둔다
   const shakeGround = (now: number) => {
     const power = (shakeUntil - now) / SHAKE_TIME;
-    const offset = () => (Math.random() - 0.5) * 14 * power;
+    const offset = () => (Math.random() - 0.5) * (width < MOBILE_WIDTH ? 5 : 9) * power;
     const value = power > 0 ? `translate(${offset()}px, ${offset()}px)` : "";
     terrain.style.transform = value;
     agentCanvas.style.transform = value;
   };
 
   // 빠르게 나는 동안에만 잔상을 남긴다
-  const drawTail = (agent: Agent) => {
+  const drawTail = (agent: Agent, now: number) => {
+    if (agent.state === "inside" || now < agent.start) return;
     const { tail } = agent;
-    const isFast = agent.state === "flight" || agent.state === "return";
-    if (isFast) tail.push(agent.x, agent.y);
+    const isFast = agent.state === "flight" || agent.state === "return" ||
+      (agent.state === "swarm" && (now - agent.start) / agent.duration < 0.24);
+    const moved = !tail.length || Math.hypot(
+      agent.x - tail[tail.length - 2], agent.y - tail[tail.length - 1]
+    ) > 1.5;
+    if (isFast && moved) tail.push(agent.x, agent.y);
     if (tail.length > TAIL_LENGTH * 2 || !isFast) tail.splice(0, 2);
     if (tail.length < 4) return;
 
-    ctx.strokeStyle = ORANGE;
+    ctx.strokeStyle = agent.color;
     ctx.lineCap = "round";
     for (let i = 2; i < tail.length; i += 2) {
       const p = i / tail.length;
-      ctx.globalAlpha = p * 0.55;
+      ctx.globalAlpha = p * (width < MOBILE_WIDTH && cameraScroll > 0.3 ? 0.18 : 0.45);
       ctx.lineWidth = 1 + p * 3;
       ctx.beginPath();
       ctx.moveTo(tail[i - 2], tail[i - 1]);
@@ -775,24 +871,75 @@ export const createStage = (options: StageOptions) => {
     } else {
       agent.glyph = undefined;
     }
-    ctx.globalAlpha = 1 - glyph;
-    ctx.drawImage(sprite, -1, -1, SPRITE.w, SPRITE.h);
+    const quiet = width < MOBILE_WIDTH && cameraScroll > 0.3 && !agent.jobs.length;
+    ctx.globalAlpha = (1 - glyph) * (quiet ? 0.38 : 1);
+    ctx.drawImage(sprites[agent.index % COLORS.length], -1, -1, SPRITE.w, SPRITE.h);
     ctx.globalAlpha = 1;
   };
 
-  // 이름표는 맡은 일을 보여 주고, 일이 없으면 사라진다
-  const drawLabel = (agent: Agent) => {
+  // 탐색 중에도 Agent의 존재가 보이도록 짧은 이름표를 유지한다.
+  const drawLabel = (agent: Agent, now: number) => {
+    if (now < agent.start) return;
     const job = agent.jobs[0];
-    agent.labelAlpha += ((job ? 1 : 0) - agent.labelAlpha) * 0.2;
-    if (!job || agent.labelAlpha < 0.02 || agent.state === "inside") return;
+    const roaming = agent.state === "swarm";
+    const mobile = width < MOBILE_WIDTH;
+    const show = job ? 1 : roaming && (!mobile || cameraScroll < 0.3) ? 0.72 : 0;
+    agent.labelAlpha += (show - agent.labelAlpha) * (1 - Math.pow(0.8, frameDelta));
+    if (agent.labelAlpha < 0.02 || agent.state === "inside") return;
+    if (mobile && !job && agent.index % 3 !== 0) return;
 
-    const label = `${agent.name} · ${job.el.dataset.build}`;
+    const label = job ? `${agent.name} · ${job.el.dataset.build}` : agent.name;
     const labelWidth = ctx.measureText(label).width + 10;
+    const x = Math.max(8, Math.min(agent.x + 13, width - labelWidth - 8));
+    const y = Math.max(80, Math.min(agent.y + 19, height - 24));
     ctx.globalAlpha = agent.labelAlpha;
-    ctx.fillStyle = ORANGE;
-    ctx.fillRect(agent.x + 13, agent.y + 19, labelWidth, 15);
-    ctx.fillStyle = INK;
-    ctx.fillText(label, agent.x + 18, agent.y + 30);
+    ctx.fillStyle = job ? agent.color : "rgba(16, 17, 15, 0.88)";
+    ctx.beginPath();
+    ctx.roundRect(x, y, labelWidth, 17, 4);
+    ctx.fill();
+    ctx.fillStyle = job ? INK : agent.color;
+    ctx.fillText(label, x + 5, y + 12);
+    ctx.globalAlpha = 1;
+  };
+
+  const drawConnections = (now: number) => {
+    const mobile = width < MOBILE_WIDTH;
+    ctx.strokeStyle = ORANGE;
+    ctx.lineWidth = 0.65;
+    workers.forEach((agent, i) => {
+      if (agent.state !== "swarm" || now < agent.start) return;
+      let links = 0;
+      for (let j = i + 1; j < workers.length && links < 2; j++) {
+        const other = workers[j];
+        if (other.state !== "swarm" || now < other.start) continue;
+        const gap = Math.hypot(agent.x - other.x, agent.y - other.y);
+        const reach = mobile ? 90 : 150;
+        if (gap < 25 || gap > reach) continue;
+        ctx.globalAlpha = (1 - gap / reach) * (mobile ? 0.14 : 0.26);
+        ctx.beginPath();
+        ctx.moveTo(agent.x, agent.y);
+        ctx.lineTo(other.x, other.y);
+        ctx.stroke();
+        links++;
+      }
+    });
+    ctx.globalAlpha = 1;
+  };
+
+  const drawCraterRings = (now: number) => {
+    const age = now - flashAt;
+    if (age < 0 || age > 1400) return;
+    for (let i = 0; i < 3; i++) {
+      const p = (age - i * 130) / 1000;
+      if (p <= 0 || p >= 1) continue;
+      ctx.globalAlpha = (1 - p) * 0.45;
+      ctx.strokeStyle = i === 0 ? "#ffc16e" : ORANGE;
+      ctx.lineWidth = (1 - p) * 2;
+      ctx.beginPath();
+      ctx.ellipse(crater.x, crater.y + p * 12,
+        camera.radius * p * 0.8, camera.radius * p * 0.24, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
     ctx.globalAlpha = 1;
   };
 
@@ -802,6 +949,8 @@ export const createStage = (options: StageOptions) => {
 
     drawColumn(now);
     drawRing(now);
+    drawCraterRings(now);
+    drawConnections(now);
 
     ctx.fillStyle = ORANGE;
     for (let i = sparks.length - 1; i >= 0; i--) {
@@ -811,25 +960,29 @@ export const createStage = (options: StageOptions) => {
         sparks.splice(i, 1);
         continue;
       }
-      spark.vy += 0.16;
-      spark.x += spark.vx;
-      spark.y += spark.vy;
-      ctx.globalAlpha = 1 - age / 1300;
-      ctx.fillRect(spark.x, spark.y, 3.5, 3.5);
+      spark.vy += 0.16 * frameDelta;
+      spark.x += spark.vx * frameDelta;
+      spark.y += spark.vy * frameDelta;
+      ctx.globalAlpha = (1 - age / 1300) * (width < MOBILE_WIDTH ? 0.65 : 1);
+      const size = 1.5 + (1 - age / 1300) * 2;
+      ctx.fillRect(spark.x, spark.y, size, size);
     }
     ctx.globalAlpha = 1;
 
-    workers.forEach(drawTail);
+    workers.forEach((agent) => drawTail(agent, now));
     workers.forEach((agent) => drawAgent(agent, now));
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.font = "600 10px ui-monospace, Menlo, Consolas, monospace";
-    workers.forEach(drawLabel);
+    workers.forEach((agent) => drawLabel(agent, now));
   };
 
   const tick = (now: number) => {
     frame = requestAnimationFrame(tick);
     if (!startTime) startTime = now;
+    frameDelta = lastFrame ? Math.min((now - lastFrame) / (1000 / 60), 2) : 1;
+    lastFrame = now;
+    scrollEnergy *= Math.pow(0.965, frameDelta);
 
     updateCamera(now);
     if (!isStopped) {
@@ -842,23 +995,26 @@ export const createStage = (options: StageOptions) => {
     drawTerrain(now);
   };
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const now = performance.now();
-      entries.forEach(({ isIntersecting, target }) => {
-        const el = target as HTMLElement;
-        if (!isIntersecting || el.hasAttribute("data-built")) return;
-        if (!visible.has(el)) visible.set(el, now);
-      });
-    },
-    { rootMargin: "0px 0px -8% 0px" }
-  );
+  const onVisibility = () => {
+    cancelAnimationFrame(frame);
+    if (!document.hidden) {
+      lastFrame = 0;
+      frame = requestAnimationFrame(tick);
+    }
+  };
 
-  // 화면을 완전히 벗어난 요소는 되돌려 두었다가 돌아오면 다시 짓는다
-  const leaveObserver = new IntersectionObserver((entries) => {
+  // 진입과 이탈을 한 observer에서 처리해 화면 회전 때 상태가 엇갈리지 않게 한다.
+  // 아래쪽 내용을 조금 일찍 준비해 스크롤 중 빈 공간이 보이는 시간도 줄인다.
+  const observer = new IntersectionObserver((entries) => {
+    const now = performance.now();
     entries.forEach(({ isIntersecting, target }) => {
-      if (isIntersecting) return;
       const el = target as HTMLElement;
+      if (isIntersecting) {
+        if (!el.hasAttribute("data-prompt-line") && !el.hasAttribute("data-built")) {
+          if (!visible.has(el)) visible.set(el, now);
+        }
+        return;
+      }
 
       if (el.hasAttribute("data-prompt-line")) {
         writes.delete(el);
@@ -872,23 +1028,26 @@ export const createStage = (options: StageOptions) => {
       clearWriting(el);
       delete el.dataset.built;
     });
-  });
+  }, { rootMargin: "0px 0px 10% 0px" });
 
   resize();
   window.addEventListener("resize", resize);
+  window.addEventListener("scroll", onScroll, { passive: true });
+  document.addEventListener("visibilitychange", onVisibility);
   buildable.forEach((el) => {
     observer.observe(el);
-    leaveObserver.observe(el);
   });
-  lines.forEach((line) => leaveObserver.observe(line));
+  lines.forEach((line) => observer.observe(line));
   frame = requestAnimationFrame(tick);
 
   const stop = () => {
     isStopped = true;
     reveal = 9;
     heat = 0;
+    shakeUntil = 0;
+    terrain.style.transform = "";
+    agentCanvas.style.transform = "";
     observer.disconnect();
-    leaveObserver.disconnect();
     buildable.forEach((el) => {
       clearWriting(el);
       el.dataset.built = "";
@@ -907,8 +1066,9 @@ export const createStage = (options: StageOptions) => {
   const destroy = () => {
     cancelAnimationFrame(frame);
     observer.disconnect();
-    leaveObserver.disconnect();
     window.removeEventListener("resize", resize);
+    window.removeEventListener("scroll", onScroll);
+    document.removeEventListener("visibilitychange", onVisibility);
   };
 
   return { stop, destroy };

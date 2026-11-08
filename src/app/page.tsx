@@ -23,8 +23,11 @@ export default function Home() {
       <Replay className={styles.replay} />
 
       <header className={styles.header}>
-        <a href="#top" data-build="로고">
-          제주 AI 컨퍼런스
+        <a href="#top" data-build="행사명" aria-label="JEJU AI CONFERENCE 2026">
+          <span className={styles.brandName}>
+            <span className={styles.brandTitle}>JEJU AI</span>{" "}
+            <span className={styles.brandSubtitle}>CONFERENCE <em>2026</em></span>
+          </span>
         </a>
         <nav data-build="메뉴">
           <a href="#about">소개</a>
@@ -54,12 +57,20 @@ export default function Home() {
             <p>{hero.place}</p>
             <p>{hero.note}</p>
           </div>
+          <div className={styles.sceneCaption} aria-hidden="true">
+            <span>33.361° N · 126.533° E</span>
+            <span>HALLASAN, JEJU</span>
+          </div>
+          <a href="#about" className={styles.scrollHint}>
+            <span>SCROLL TO EXPLORE</span><span aria-hidden="true">↓</span>
+          </a>
         </section>
 
         <section
           id="about"
           className={styles.section}
           data-prompt={prompts.about}
+          data-section="01"
         >
           <PromptLine text={prompts.about} />
           <h2 data-build="제목">소개</h2>
@@ -75,6 +86,7 @@ export default function Home() {
           id="schedule"
           className={styles.section}
           data-prompt={prompts.schedule}
+          data-section="02"
         >
           <PromptLine text={prompts.schedule} />
           <h2 data-build="제목">일정</h2>
@@ -94,6 +106,7 @@ export default function Home() {
           id="faq"
           className={styles.section}
           data-prompt={prompts.faq}
+          data-section="03"
         >
           <PromptLine text={prompts.faq} />
           <h2 data-build="제목">FAQ</h2>
@@ -103,6 +116,7 @@ export default function Home() {
 
       <footer className={styles.footer}>
         <p>2026 제주 AI 컨퍼런스</p>
+        <a href="#top">맨 위로 <span aria-hidden="true">↑</span></a>
       </footer>
     </div>
   );

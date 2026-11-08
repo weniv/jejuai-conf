@@ -70,3 +70,8 @@ $orange: #ff7a1a;
     line-height: 1.7;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .item i { transition: none; }
+  .item[open] i { transform: rotate(135deg); }
+}

@@ -24,9 +24,11 @@ export const Stage = ({ opening }: StageProps) => {
     if (!terrain || !agents || !capsule || !capsuleText) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      drawStill(terrain);
+      const renderStill = () => drawStill(terrain);
+      renderStill();
       setIsClosed(true);
-      return;
+      window.addEventListener("resize", renderStill);
+      return () => window.removeEventListener("resize", renderStill);
     }
 
     const html = document.documentElement;
@@ -38,6 +40,7 @@ export const Stage = ({ opening }: StageProps) => {
 
     // 재방문은 지금 보이는 화면을 그대로 두고, 스크롤하는 곳부터 짓는다
     if (!isBuilding) {
+      capsuleText.textContent = opening;
       document.querySelectorAll<HTMLElement>("[data-build]").forEach((el) => {
         const { top, bottom } = el.getBoundingClientRect();
         if (bottom > 0 && top < window.innerHeight) el.dataset.built = "static";
@@ -89,13 +92,15 @@ export const Stage = ({ opening }: StageProps) => {
   // 본문을 읽는 구간에서는 프롬프트가 글자를 가리지 않게 비켜난다
   useEffect(() => {
     const onScroll = () => {
-      capsuleRef.current?.classList.toggle(
-        styles.reading,
-        window.scrollY > window.innerHeight * 0.5
-      );
+      const capsule = capsuleRef.current;
+      if (!capsule) return;
+      const reading = window.scrollY > window.innerHeight * 0.5;
+      capsule.classList.toggle(styles.reading, reading);
+      capsule.inert = reading;
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -109,9 +114,9 @@ export const Stage = ({ opening }: StageProps) => {
   };
 
   return (
-    <div aria-hidden="true">
-      <canvas ref={terrainRef} className={styles.terrain} />
-      <canvas ref={agentsRef} className={styles.agents} />
+    <div>
+      <canvas ref={terrainRef} className={styles.terrain} aria-hidden="true" />
+      <canvas ref={agentsRef} className={styles.agents} aria-hidden="true" />
       {!isClosed && (
         <div ref={capsuleRef} className={styles.capsule}>
           <span className={styles.mark}>&gt;</span>
