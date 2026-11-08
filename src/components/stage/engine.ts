@@ -886,7 +886,6 @@ export const createStage = (options: StageOptions) => {
     const show = job ? 1 : roaming && (!mobile || cameraScroll < 0.3) ? 0.72 : 0;
     agent.labelAlpha += (show - agent.labelAlpha) * (1 - Math.pow(0.8, frameDelta));
     if (agent.labelAlpha < 0.02 || agent.state === "inside") return;
-    if (mobile && !job && agent.index % 3 !== 0) return;
 
     const label = job ? `${agent.name} · ${job.el.dataset.build}` : agent.name;
     const labelWidth = ctx.measureText(label).width + 10;
