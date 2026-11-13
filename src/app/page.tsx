@@ -26,7 +26,7 @@ const eventData = {
   isAccessibleForFree: true,
   inLanguage: "ko-KR",
   url: SITE,
-  image: [`${SITE}/images/og-2026-wordmark.png`],
+  image: [`${SITE}/images/og-2026.jpg`],
   location: {
     "@type": "Place",
     name: `${location.name} ${location.room}`,

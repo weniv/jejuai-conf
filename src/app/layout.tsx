@@ -9,7 +9,7 @@ const DESCRIPTION =
   "AI에 관심 있는 누구에게나 열려 있는 2026 제주 AI 컨퍼런스. 12월 8일(화)–9일(수), 제주창조경제혁신센터 3층 J-SPACE. 참가비 무료, 프로그램과 참가 신청을 준비하고 있습니다.";
 const LINK = "https://jejuai.kr";
 const OGIMG = {
-  url: "/images/og-2026-wordmark.png",
+  url: "/images/og-2026.jpg",
   width: 1200,
   height: 630,
   alt: "2026 제주 AI 컨퍼런스, 12월 8일부터 9일까지 제주창조경제혁신센터 3층 J-SPACE",

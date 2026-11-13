@@ -45,7 +45,9 @@ yarn build
 
 헤더는 `JEJU AI / CONFERENCE 2026` 텍스트 워드마크를 사용합니다. 작은 아이콘에는 `AI` 텍스트를 사용합니다. SNS 공유 이미지와 아이콘 설정은 `src/app/layout.tsx`에서 관리합니다.
 
-제주 지형과 프로젝트의 Pretendard 글꼴로 운영 이미지를 다시 생성할 수 있습니다.
+SNS 공유 이미지(`public/images/og-2026.jpg`, 1200×630)는 피그마 `썸네일 B · 큰 글자` 프레임(790×416)을 2배로 내보내 1200×630으로 맞춘 것입니다. 바꿀 때는 파일 이름을 새로 지어 `layout.tsx`와 `page.tsx`의 경로를 함께 바꾸면 SNS 미리보기 캐시를 피할 수 있습니다.
+
+아이콘은 프로젝트의 Pretendard 글꼴로 다시 생성할 수 있습니다.
 
 ```sh
 python -m pip install pillow fonttools
