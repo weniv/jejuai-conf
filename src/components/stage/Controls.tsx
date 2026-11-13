@@ -11,7 +11,7 @@ export const Dday = ({ date }: { date: string }) => {
     setDays(Math.ceil((Date.parse(date) - Date.now()) / DAY));
   }, [date]);
 
-  return days !== null && days > 0 ? <span>D-{days}</span> : null;
+  return days !== null && days > 0 ? <em>D-{days}</em> : null;
 };
 
 export const Replay = ({ className }: { className?: string }) => {

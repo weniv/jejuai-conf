@@ -25,10 +25,21 @@ export const Stage = ({ opening }: StageProps) => {
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       const renderStill = () => drawStill(terrain);
+      // 움직이는 화면처럼 본문 구간에서는 지형을 흐리게 둔다
+      const dimStill = () => {
+        const reading = window.scrollY > window.innerHeight * 0.5;
+        const dim = window.innerWidth < 768 ? "0.24" : "0.7";
+        terrain.style.opacity = reading ? dim : "";
+      };
       renderStill();
+      dimStill();
       setIsClosed(true);
       window.addEventListener("resize", renderStill);
-      return () => window.removeEventListener("resize", renderStill);
+      window.addEventListener("scroll", dimStill, { passive: true });
+      return () => {
+        window.removeEventListener("resize", renderStill);
+        window.removeEventListener("scroll", dimStill);
+      };
     }
 
     const html = document.documentElement;

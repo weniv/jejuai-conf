@@ -1,0 +1,136 @@
+$ink: #120f2a;
+$paper: #eef0fa;
+$mint: #6df2cc;
+$muted: rgba(238, 240, 250, 0.6);
+$line: rgba(238, 240, 250, 0.16);
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 3.2rem;
+}
+
+.tab {
+  min-height: 4rem;
+  padding: 0 1.6rem;
+  border: 1px solid rgba($mint, 0.6);
+  border-radius: 5rem;
+  color: $mint;
+  font-size: 1.4rem;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+
+  &:hover {
+    background-color: rgba($mint, 0.12);
+  }
+}
+
+.tabActive,
+.tabActive:hover {
+  border-color: $mint;
+  background-color: $mint;
+  color: $ink;
+  font-weight: 600;
+}
+
+.sessions li {
+  display: grid;
+  grid-template-columns: 12rem 1fr;
+  gap: 2.4rem;
+  padding: 2.4rem 0;
+  border-top: 1px solid $line;
+
+  &:last-child {
+    border-bottom: 1px solid $line;
+  }
+}
+
+.time {
+  color: $muted;
+  font-size: 1.6rem;
+  line-height: 2.2rem;
+}
+
+.tracks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+  gap: 2rem 3.2rem;
+}
+
+.track {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  font-size: 1.6rem;
+  line-height: 2.2rem;
+
+  strong {
+    font-weight: 700;
+  }
+}
+
+.room {
+  color: $mint;
+  font-size: 1.4rem;
+}
+
+.speaker {
+  color: $muted;
+  font-weight: 500;
+}
+
+.track .soon {
+  color: rgba($paper, 0.4);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.empty {
+  display: grid;
+  gap: 0.8rem;
+  padding: 2.4rem 0;
+  border-top: 1px solid $line;
+  border-bottom: 1px solid $line;
+
+  strong {
+    font-size: 3.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    color: $muted;
+    font-size: 1.6rem;
+  }
+}
+
+.notice {
+  margin-top: 3.2rem;
+  padding: 1.6rem 2.4rem;
+  border: 1px solid $line;
+  border-radius: 1.2rem;
+  color: $muted;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+@media screen and (max-width: 767px) {
+  .sessions li {
+    grid-template-columns: 9.6rem 1fr;
+    gap: 1.6rem;
+    padding: 2rem 0;
+  }
+
+  .time {
+    font-size: 1.4rem;
+  }
+
+  .empty strong {
+    font-size: 2.4rem;
+  }
+
+  .tracks {
+    grid-template-columns: 1fr;
+  }
+}

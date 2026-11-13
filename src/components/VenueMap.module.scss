@@ -1,0 +1,42 @@
+$paper: #eef0fa;
+$mint: #6df2cc;
+
+.map,
+.embed {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: 36rem;
+  margin-top: 3.2rem;
+  border: 1px solid rgba($paper, 0.16);
+  border-radius: 1.6rem;
+  background-color: rgba($paper, 0.04);
+}
+
+.map {
+  transition: border-color 0.2s;
+
+  // 지도 안의 요소가 링크의 클릭을 가로채지 않게 한다
+  > div {
+    pointer-events: none;
+  }
+
+  &:hover {
+    border-color: $mint;
+  }
+}
+
+// 밝은 지도를 남색 화면에 맞춰 어둡게 뒤집는다
+.embed {
+  width: 100%;
+  border-width: 1px;
+  filter: invert(0.9) hue-rotate(180deg) saturate(0.6) brightness(0.95);
+}
+
+@media screen and (max-width: 767px) {
+  .map,
+  .embed {
+    height: 26rem;
+    margin-top: 2.4rem;
+  }
+}

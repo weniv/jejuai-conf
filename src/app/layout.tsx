@@ -6,13 +6,13 @@ import { BUILD_SCRIPT } from "../components/stage/constants";
 
 const TITLE = "2026 제주 AI 컨퍼런스";
 const DESCRIPTION =
-  "AI에 관심 있는 누구에게나 열려 있는 2026 제주 AI 컨퍼런스. 12월 8일(화)–9일(수), 제주창조경제혁신센터. 프로그램과 참가 신청을 준비하고 있습니다.";
+  "AI에 관심 있는 누구에게나 열려 있는 2026 제주 AI 컨퍼런스. 12월 8일(화)–9일(수), 제주창조경제혁신센터 3층 J-SPACE. 참가비 무료, 프로그램과 참가 신청을 준비하고 있습니다.";
 const LINK = "https://jejuai.kr";
 const OGIMG = {
   url: "/images/og-2026-wordmark.png",
   width: 1200,
   height: 630,
-  alt: "2026 제주 AI 컨퍼런스, 12월 8일부터 9일까지 제주창조경제혁신센터",
+  alt: "2026 제주 AI 컨퍼런스, 12월 8일부터 9일까지 제주창조경제혁신센터 3층 J-SPACE",
 };
 
 const pretendard = localFont({
@@ -43,11 +43,11 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
   icons: {
     icon: [
-      { url: "/favicon.ico?v=2026-wordmark", sizes: "16x16 32x32 48x48" },
-      { url: "/icon.svg?v=2026-wordmark", type: "image/svg+xml", sizes: "any" },
+      { url: "/favicon.ico?v=2026-kv", sizes: "16x16 32x32 48x48" },
+      { url: "/icon.svg?v=2026-kv", type: "image/svg+xml", sizes: "any" },
     ],
-    shortcut: "/favicon.ico?v=2026-wordmark",
-    apple: { url: "/apple-touch-icon.png?v=2026-wordmark", sizes: "180x180", type: "image/png" },
+    shortcut: "/favicon.ico?v=2026-kv",
+    apple: { url: "/apple-touch-icon.png?v=2026-kv", sizes: "180x180", type: "image/png" },
   },
   openGraph: {
     title: TITLE,
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#10110f",
+  themeColor: "#120f2a",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,

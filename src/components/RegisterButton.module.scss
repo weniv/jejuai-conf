@@ -1,0 +1,51 @@
+$ink: #120f2a;
+$mint: #6df2cc;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 1px solid $mint;
+  color: $mint;
+  white-space: nowrap;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.small {
+  height: 4.2rem;
+  padding: 0 2rem;
+  border-radius: 1rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+// 히어로에서는 키비주얼의 민트로 가득 채워 가장 먼저 눈에 띄게 한다
+.large {
+  height: 5.6rem;
+  padding: 0 3.2rem;
+  border-radius: 1.2rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+
+  &.open {
+    background-color: $mint;
+    color: $ink;
+
+    &:hover {
+      background-color: #9af7dc;
+      border-color: #9af7dc;
+    }
+  }
+}
+
+.small.open:hover {
+  background-color: $mint;
+  color: $ink;
+}
+
+.pending {
+  border-color: rgba($mint, 0.45);
+  color: rgba($mint, 0.8);
+  cursor: default;
+}

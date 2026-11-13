@@ -1,33 +1,30 @@
 import {
-  BUCKETS,
-  Camera,
-  CRATER,
-  createDots,
-  MOUNTAIN_BASE,
-  Point,
-  project,
-} from "./terrain";
+  loadKv,
+  MOBILE_WIDTH,
+  placeKv,
+  rasterize,
+  Rect,
+  SUMMIT,
+} from "./kv";
 
-const ORANGE = "#ff7a1a";
-const INK = "#10110f";
-const ARROW_PATH =
-  "M0 0 L0 15.5 L4.4 11.8 L7.3 18 L10 16.8 L7.2 10.8 L13 10.4 Z";
+const MINT = "#6df2cc";
+const INK = "#120f2a";
+// 손잡이 없이 화살촉만 남기고, 아래쪽 한 꼭짓점을 안으로 파낸 커서
+const ARROW_PATH = "M0 0 L0 15.5 L4.8 11.2 L12 11 Z";
 const SPRITE = { w: 26, h: 32 };
 
-const MOBILE_WIDTH = 768;
-const COUNT = { pc: 24, mobile: 14 };
-const COLORS = [ORANGE, "#ffc16e", "#ff9b50", "#f2efe6"];
+const COUNT = { pc: 10, mobile: 6 };
+const COLORS = [MINT, "#b4f9e4", "#3fd6ae", "#eef0fa"];
 
-// 오프닝(ms): 프롬프트 등장 → 타이핑 → 빛을 모음 → 폭발
+// 오프닝(ms): 프롬프트 등장 → 타이핑 → 글자가 커서로 흩어짐
 const TYPE_DELAY = 420;
 const TYPE_TIME = 560;
 const CHARGE_AT = 1080;
 const BLAST_AT = 1300;
-const RING_TIME = 640;
 const GLYPH_TIME = 300;
 
-// 작업(ms): 프롬프트 입력과 과열 → 분화 → 글자 쓰기 → 화산으로 귀환
-const HEAT_TIME = 360;
+// 작업(ms): 프롬프트 입력 → 출동 → 글자 쓰기 → 정상으로 귀환
+const PROMPT_TIME = 360;
 const FLIGHT = 460;
 const LAUNCH_GAP = 22;
 const NEXT_JOB = 170;
@@ -36,15 +33,8 @@ const WRITE_SPEED = 2.4;
 const WRITE_MIN = 220;
 const WRITE_MAX = 850;
 const FORCE_AFTER = 2600;
-const TAIL_LENGTH = 12;
-const SHAKE_TIME = 340;
-const COLUMN_TIME = 460;
-const IDLE_INTERVAL = 6200;
-const IDLE_CHARGE = 780;
-const SCROLL_INTERVAL = 1700;
-const SWARM_TIME = 3800;
 
-type AgentState = "inside" | "flight" | "write" | "swarm" | "return";
+type AgentState = "inside" | "flight" | "write" | "return";
 type Cycle = "opening" | "ready" | "charging";
 
 interface Line {
@@ -79,21 +69,7 @@ interface Agent {
   spin: number;
   glyph?: string;
   jobs: Job[];
-  tail: number[];
   labelAlpha: number;
-  land: { x: number; y: number; z: number };
-}
-
-interface Ripple {
-  start: number;
-}
-
-interface Spark {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  born: number;
 }
 
 export interface StageOptions {
@@ -111,17 +87,49 @@ export interface StageOptions {
 const clamp = (value: number) => Math.min(Math.max(value, 0), 1);
 const lerp = (from: number, to: number, p: number) => from + (to - from) * p;
 
-// 히어로에서는 글자 오른쪽에 섬 전체가 들어오게 둔다
-const heroCamera = (width: number, height: number): Camera =>
-  width < MOBILE_WIDTH
-    ? { yaw: 0, pitch: 0.84, cx: width * 0.5, cy: height * 0.3, radius: width * 0.47 }
-    : {
-        yaw: 0,
-        pitch: 0.84,
-        cx: width * 0.7,
-        cy: height * 0.52,
-        radius: Math.min(width * 0.29, height * 0.56),
-      };
+// 캔버스 글자도 페이지와 같은 Pretendard로 쓴다
+const pageFont = () => getComputedStyle(document.body).fontFamily || "sans-serif";
+
+// 등고선을 세로로 가늘게 잘라 칸마다 높이를 달리 두면 선 전체가 위아래로 일렁인다
+const COLUMN = 3;
+const WAVE = 0.011;
+
+// 스크롤하면 분화구에서 좌우로 잔잔한 물결이 한 번씩 퍼진다
+const RIPPLE = 0.03;
+const RIPPLE_GAP = 1400;
+const RIPPLE_TIME = 2200;
+
+const waveAt = (x: number, rect: Rect, now: number, ripples: number[]) => {
+  let lift =
+    (Math.sin(x * 0.011 + now * 0.0011) + 0.6 * Math.sin(x * 0.027 - now * 0.0008)) *
+    WAVE *
+    rect.h;
+  const summit = rect.x + SUMMIT.u * rect.w;
+  for (const start of ripples) {
+    const age = (now - start) / RIPPLE_TIME;
+    const gap = Math.abs(x - summit) / rect.w - age * 1.1;
+    lift -= Math.exp(-(gap * gap) / 0.002) * (1 - age) * RIPPLE * rect.h;
+  }
+  return lift;
+};
+
+const drawColumns = (
+  ctx: CanvasRenderingContext2D,
+  raster: HTMLCanvasElement,
+  rect: Rect,
+  now: number,
+  ripples: number[]
+) => {
+  const scale = raster.width / rect.w;
+  for (let x = 0; x < rect.w; x += COLUMN) {
+    const lift = waveAt(rect.x + x, rect, now, ripples);
+    ctx.drawImage(
+      raster,
+      x * scale, 0, COLUMN * scale, raster.height,
+      rect.x + x, rect.y + lift, COLUMN, rect.h
+    );
+  }
+};
 
 // 요소 안의 실제 글자 줄을 찾는다. 커서는 이 줄을 따라 글자를 드러낸다
 const textLines = (el: HTMLElement) => {
@@ -192,14 +200,7 @@ const revealTo = (job: Job, p: number) => {
   job.el.style.clipPath = `polygon(0 0, 100% 0, 100% ${top}px, ${cut}px ${top}px, ${cut}px ${bottom}px, 0 ${bottom}px)`;
 };
 
-const shade = (color: string, amount: number) => {
-  const value = parseInt(color.slice(1), 16);
-  const channel = (shift: number) =>
-    Math.round(((value >> shift) & 255) * amount);
-  return `rgb(${channel(16)}, ${channel(8)}, ${channel(0)})`;
-};
-
-// 측면을 겹쳐 그려 두께가 있는 입체 커서를 미리 만들어 둔다
+// 입체감도 테두리도 없는 단색의 납작한 커서
 const createSprite = (color: string) => {
   const canvas = document.createElement("canvas");
   canvas.width = SPRITE.w * 2;
@@ -210,20 +211,7 @@ const createSprite = (color: string) => {
   const arrow = new Path2D(ARROW_PATH);
   ctx.scale(2.5, 2.5);
   ctx.translate(1, 1);
-
-  ctx.fillStyle = shade(color, 0.4);
-  for (let depth = 5; depth > 0; depth--) {
-    ctx.save();
-    ctx.translate(depth * 0.5, depth * 0.5);
-    ctx.fill(arrow);
-    ctx.restore();
-  }
-
-  const face = ctx.createLinearGradient(0, 0, 10, 18);
-  face.addColorStop(0, "#ffe2c4");
-  face.addColorStop(0.4, color);
-  face.addColorStop(1, shade(color, 0.75));
-  ctx.fillStyle = face;
+  ctx.fillStyle = color;
   ctx.fill(arrow);
   return canvas;
 };
@@ -235,14 +223,14 @@ export const createStage = (options: StageOptions) => {
   if (!groundCtx || !ctx) return { stop: () => {}, destroy: () => {} };
 
   const isMobile = window.innerWidth < MOBILE_WIDTH;
-  const dots = createDots(isMobile ? 0.021 : 0.0135);
-  const landDots = dots.filter((dot) => dot.d > 0.13 && dot.d < 0.78);
   const sprites = COLORS.map(createSprite);
+  const font = pageFont();
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const camera: Camera = { yaw: 0, pitch: 1, cx: 0, cy: 0, radius: 0 };
-  const point: Point = { x: 0, y: 0, scale: 1 };
-  const crater: Point = { x: 0, y: 0, scale: 1 };
-  const hot = new Float32Array(dots.length * 3);
+  const crater = { x: 0, y: 0 };
+  let rect: Rect = { x: 0, y: 0, w: 0, h: 0 };
+
+  let image: HTMLImageElement | null = null;
+  let raster: HTMLCanvasElement | null = null;
 
   const buildable = Array.from(
     document.querySelectorAll<HTMLElement>("[data-build]")
@@ -253,8 +241,7 @@ export const createStage = (options: StageOptions) => {
   const writes = new Map<HTMLElement, { text: string; start: number }>();
   const visible = new Map<HTMLElement, number>();
   const claimed = new Set<HTMLElement>();
-  const ripples: Ripple[] = [];
-  const sparks: Spark[] = [];
+  const ripples: number[] = [];
 
   let width = 0;
   let height = 0;
@@ -262,20 +249,12 @@ export const createStage = (options: StageOptions) => {
   let cameraScroll = 0;
   let isStopped = false;
   let reveal = options.isBuilding ? 0 : 9;
-  let heat = 0;
-  let flashAt = -9999;
-  let shakeUntil = 0;
-  let blastAt = -9999;
   let startTime = 0;
   let cycle: Cycle = options.isBuilding ? "opening" : "ready";
   let chargeStart = 0;
-  let chargeDuration = HEAT_TIME;
-  let lastBurst = performance.now();
-  let lastScroll = 0;
-  let lastScrollY = window.scrollY;
-  let scrollEnergy = 0;
-  let lastWave = 0;
   let lastFrame = 0;
+  let lastScrollY = window.scrollY;
+  let lastWave = 0;
   let frameDelta = 1;
 
   const workers: Agent[] = Array.from(
@@ -296,9 +275,7 @@ export const createStage = (options: StageOptions) => {
       duration: FLIGHT,
       spin: 0,
       jobs: [],
-      tail: [],
       labelAlpha: 0,
-      land: landDots[(i * 137) % landDots.length],
     })
   );
 
@@ -311,41 +288,29 @@ export const createStage = (options: StageOptions) => {
     });
     workers.forEach((agent) => {
       agent.jobs = agent.jobs.map(({ el }) => toJob(el));
-      agent.tail.length = 0;
     });
+    if (image) raster = rasterize(image, placeKv(width, height, 0).w * dpr);
   };
 
+  const addRipple = (now: number) => {
+    ripples.push(now);
+    lastWave = now;
+  };
+
+  // 스크롤하면 섬에 잔잔한 물결이 한 번씩 퍼진다
   const onScroll = () => {
     const now = performance.now();
     const distance = Math.abs(window.scrollY - lastScrollY);
-    scrollEnergy = clamp(scrollEnergy + distance / 280);
     lastScrollY = window.scrollY;
-    lastScroll = now;
-    if (!isStopped && distance > 5 && now - lastWave > 850) {
-      ripples.push({ start: now });
-      lastWave = now;
-    }
+    if (!isStopped && distance > 5 && now - lastWave > RIPPLE_GAP) addRipple(now);
   };
 
-  const updateCamera = (now: number) => {
+  const updateCamera = () => {
     const target = clamp(window.scrollY / (height * 0.8));
     cameraScroll += (target - cameraScroll) * (1 - Math.pow(0.92, frameDelta));
-    const p = cameraScroll;
-    const hero = heroCamera(width, height);
-
-    // 북쪽이 위로 오도록 회전은 살짝 흔들리는 정도로만 둔다
-    camera.yaw = Math.sin(now * 0.00012) * 0.05 + p * 0.2 + scrollEnergy * 0.09;
-    camera.pitch = lerp(hero.pitch, 1.02, p) + scrollEnergy * 0.035;
-    if (width < MOBILE_WIDTH) {
-      camera.cx = lerp(hero.cx, width * 0.88, p);
-      camera.cy = lerp(hero.cy, height * 0.38, p);
-      camera.radius = hero.radius * lerp(1, 0.84, p);
-    } else {
-      camera.cx = lerp(hero.cx, width * 0.78, p);
-      camera.cy = lerp(hero.cy, height * 0.5, p);
-      camera.radius = hero.radius * lerp(1, 0.78, p);
-    }
-    project(CRATER.x, CRATER.y, CRATER.z, camera, crater);
+    rect = placeKv(width, height, cameraScroll);
+    crater.x = rect.x + SUMMIT.u * rect.w;
+    crater.y = rect.y + SUMMIT.v * rect.h;
   };
 
   const drawTerrain = (now: number) => {
@@ -356,77 +321,20 @@ export const createStage = (options: StageOptions) => {
     groundCtx.globalAlpha = lerp(1, isNarrow ? 0.24 : 0.7, cameraScroll);
 
     for (let i = ripples.length - 1; i >= 0; i--) {
-      if (now - ripples[i].start > 2200) ripples.splice(i, 1);
+      if (now - ripples[i] > RIPPLE_TIME) ripples.splice(i, 1);
     }
 
-    let bucket = -1;
-    let hotCount = 0;
-    const tremor = heat > 0.7 ? (heat - 0.7) * 0.03 : 0;
-
-    // 열은 산기슭에서 시작해 경사면을 타고 정상까지 올라온다
-    const heatFront = MOUNTAIN_BASE * Math.pow(1 - heat, 2.6);
-    const heatBand = 0.08 + heatFront * 0.5;
-
-    for (const dot of dots) {
-      if (dot.d > reveal) continue;
-
-      let lift = 0;
-      for (const ripple of ripples) {
-        const reach = ((now - ripple.start) / 1000) * 1.1;
-        const gap = dot.d - reach;
-        if (reach > 0 && Math.abs(gap) < 0.16) {
-          lift += Math.exp((-gap * gap) / 0.004) * Math.max(1 - reach / 1.7, 0);
-        }
+    if (raster) {
+      // 오프닝에서는 분화구를 중심으로 둥글게 번지며 드러난다
+      groundCtx.save();
+      if (reveal < 9) {
+        const r = reveal * rect.w;
+        groundCtx.beginPath();
+        groundCtx.ellipse(crater.x, crater.y, r, r * 0.62, 0, 0, Math.PI * 2);
+        groundCtx.clip();
       }
-
-      const shake = dot.d < 0.3 ? (Math.random() - 0.5) * tremor : 0;
-      project(dot.x, dot.y + lift * 0.14 + shake, dot.z, camera, point);
-      const size = (1.1 + dot.y * 4) * point.scale;
-
-      // 앞쪽 경계는 빽빽하고 지나온 자리로 갈수록 흩어진다
-      const behind = (dot.d - heatFront) / heatBand;
-      const isHeated =
-        heat > 0.01 && behind >= 0 && behind < 1 && dot.grain > behind;
-
-      if (lift > 0.12 || isHeated) {
-        hot[hotCount * 3] = point.x;
-        hot[hotCount * 3 + 1] = point.y;
-        hot[hotCount * 3 + 2] = size + lift * 1.4;
-        hotCount++;
-        continue;
-      }
-
-      if (dot.bucket !== bucket) {
-        bucket = dot.bucket;
-        groundCtx.fillStyle = BUCKETS[bucket];
-      }
-      groundCtx.fillRect(point.x, point.y, size, size);
-    }
-
-    groundCtx.fillStyle = ORANGE;
-    for (let i = 0; i < hotCount; i++) {
-      const size = hot[i * 3 + 2];
-      groundCtx.fillRect(hot[i * 3], hot[i * 3 + 1], size, size);
-    }
-
-    // 분화구는 프롬프트가 입력될수록 달아오른다
-    const flash = 1 - clamp((now - flashAt) / 700);
-    const glow = Math.max(Math.pow(heat, 5) * 0.6, flash);
-    if (glow > 0.01) {
-      const size = camera.radius * (0.1 + glow * 0.34);
-      const light = groundCtx.createRadialGradient(
-        crater.x,
-        crater.y,
-        0,
-        crater.x,
-        crater.y,
-        size
-      );
-      light.addColorStop(0, `rgba(255, 170, 90, ${glow})`);
-      light.addColorStop(0.35, `rgba(255, 122, 26, ${glow * 0.5})`);
-      light.addColorStop(1, "rgba(255, 122, 26, 0)");
-      groundCtx.fillStyle = light;
-      groundCtx.fillRect(crater.x - size, crater.y - size, size * 2, size * 2);
+      drawColumns(groundCtx, raster, rect, now, ripples);
+      groundCtx.restore();
     }
     groundCtx.globalAlpha = 1;
 
@@ -488,11 +396,10 @@ export const createStage = (options: StageOptions) => {
     agent.fromY = agent.y;
     agent.start = now + delay;
     agent.duration = FLIGHT;
-    agent.spin = (Math.random() < 0.5 ? -1 : 1) * (2.5 + Math.random() * 3);
-    agent.tail.length = 0;
+    agent.spin = (Math.random() < 0.5 ? -1 : 1) * (0.3 + Math.random() * 0.3);
   };
 
-  // 커서는 섬을 탐색한 뒤 분화구로 모여 다음 출동을 기다린다.
+  // 일을 마친 커서는 곧장 분화구로 돌아가 다음 출동까지 쉰다
   const goHome = (agent: Agent, now: number) => {
     agent.state = "return";
     agent.fromX = agent.x;
@@ -502,52 +409,23 @@ export const createStage = (options: StageOptions) => {
     agent.duration = RETURN;
   };
 
-  const swarm = (agent: Agent, now: number, delay = 0) => {
-    agent.fromX = agent.x;
-    agent.fromY = agent.y;
-    agent.state = "swarm";
-    agent.start = now + delay;
-    agent.duration = SWARM_TIME + (agent.index % 5) * 180;
-    agent.spin = (agent.index % 2 ? 1 : -1) * 2.4;
-    agent.land = landDots[Math.floor(Math.random() * landDots.length)];
-    agent.tail.length = 0;
-  };
-
-  const emitSparks = (now: number, count: number) => {
-    for (let i = 0; i < count; i++) {
-      const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.9;
-      const force = 4 + Math.random() * 13;
-      sparks.push({
-        x: crater.x,
-        y: crater.y,
-        vx: Math.cos(angle) * force,
-        vy: Math.sin(angle) * force,
-        born: now,
-      });
-    }
-  };
-
-  // 지을 내용이 생기면 프롬프트를 치는 동안 열이 정상까지 오른다
-  const beginCharge = (first: HTMLElement | undefined, now: number) => {
-    if (first) {
-      const line = lineOf(first);
-      const text = first.closest<HTMLElement>("[data-prompt]")?.dataset.prompt;
-      delete promptBox(line).dataset.done;
-      if (text) writes.set(line, { text, start: now });
-    }
-    chargeDuration = first ? HEAT_TIME : IDLE_CHARGE;
+  // 지을 내용이 생기면 섹션 프롬프트를 먼저 입력한다
+  const beginCharge = (first: HTMLElement, now: number) => {
+    const line = lineOf(first);
+    const text = first.closest<HTMLElement>("[data-prompt]")?.dataset.prompt;
+    delete promptBox(line).dataset.done;
+    if (text) writes.set(line, { text, start: now });
     cycle = "charging";
     chargeStart = now;
   };
 
-  // 글을 짓는 커서와 섬을 탐색하는 커서가 한 무리로 출동한다.
-  const erupt = (now: number) => {
-    heat = 0;
+  // 쓸 내용이 있는 만큼만 커서가 나가고, 나머지는 분화구에 머문다
+  const dispatch = (now: number) => {
     cycle = "ready";
 
     const jobs = takeJobs(now);
     const crew = workers.filter(
-      ({ state }) => state === "inside" || state === "return" || state === "swarm"
+      ({ state }) => state === "inside" || state === "return"
     );
     if (!crew.length) {
       jobs.forEach((job) => claimed.delete(job.el));
@@ -555,25 +433,19 @@ export const createStage = (options: StageOptions) => {
     }
 
     jobs.forEach((job, i) => crew[i % crew.length].jobs.push(job));
-    crew.forEach((agent, i) => {
-      const isInside = agent.state === "inside";
-      if (isInside) {
-        agent.x = crater.x;
-        agent.y = crater.y;
-      }
-      const delay = i * LAUNCH_GAP;
-      if (agent.jobs.length) fly(agent, now, delay);
-      else swarm(agent, now, delay);
-    });
-
-    lastBurst = now;
-    flashAt = now;
-    shakeUntil = now + SHAKE_TIME;
-    ripples.push({ start: now }, { start: now + 150 });
-    emitSparks(now, width < MOBILE_WIDTH ? 44 : 88);
+    crew
+      .filter((agent) => agent.jobs.length)
+      .forEach((agent, i) => {
+        if (agent.state === "inside") {
+          agent.x = crater.x;
+          agent.y = crater.y;
+        }
+        fly(agent, now, i * LAUNCH_GAP);
+      });
+    addRipple(now);
   };
 
-  // 프롬프트의 글자가 커서로 변해 글과 섬으로 퍼져 나간다.
+  // 프롬프트의 글자가 커서로 변해, 일을 받은 커서는 글로 가고 나머지는 분화구로 들어간다
   const blast = (now: number) => {
     const glyphs = options.getGlyphs();
     const step = Math.max(glyphs.length / workers.length, 1);
@@ -585,19 +457,11 @@ export const createStage = (options: StageOptions) => {
       agent.y = glyph?.y ?? height / 2;
       agent.glyph = glyph?.glyph;
       agent.scale = 1;
-      if (agent.jobs.length) {
-        fly(agent, now, 0);
-      } else {
-        swarm(agent, now, (i % 4) * LAUNCH_GAP);
-      }
+      if (agent.jobs.length) fly(agent, now, 0);
+      else goHome(agent, now);
     });
 
-    flashAt = now;
-    blastAt = now;
-    shakeUntil = now + SHAKE_TIME;
-    lastBurst = now;
-    emitSparks(now, width < MOBILE_WIDTH ? 36 : 72);
-    ripples.push({ start: now }, { start: now + 150 });
+    addRipple(now);
     options.onBlast();
     cycle = "ready";
   };
@@ -612,14 +476,13 @@ export const createStage = (options: StageOptions) => {
     const { line } = penAt(job, 0);
     const tx = line.left;
     const ty = (line.top + line.bottom) / 2 - window.scrollY;
-    const apex = Math.min(agent.fromY, ty) - height * 0.4;
-    // 분화구에서 튕겨 나가듯 처음에 가장 빠르다
+    const apex = Math.min(agent.fromY, ty) - height * 0.16;
     const e = 1 - Math.pow(1 - p, 3);
     const midX = (agent.fromX + tx) / 2;
 
     agent.x = (1 - e) * (1 - e) * agent.fromX + 2 * (1 - e) * e * midX + e * e * tx;
     agent.y = (1 - e) * (1 - e) * agent.fromY + 2 * (1 - e) * e * apex + e * e * ty;
-    agent.scale = 1 + Math.sin(p * Math.PI) * 1.3;
+    agent.scale = 1 + Math.sin(p * Math.PI) * 0.25;
     agent.rot = (1 - p) * agent.spin;
 
     if (p >= 1) {
@@ -650,7 +513,7 @@ export const createStage = (options: StageOptions) => {
         fly(agent, now, 0);
         agent.duration = NEXT_JOB;
       } else {
-        swarm(agent, now);
+        goHome(agent, now);
       }
     }
   };
@@ -668,31 +531,7 @@ export const createStage = (options: StageOptions) => {
     if (p >= 1) {
       agent.state = "inside";
       agent.scale = 0;
-      agent.tail.length = 0;
     }
-  };
-
-  const updateSwarm = (agent: Agent, now: number, p: number) => {
-    const mobile = width < MOBILE_WIDTH;
-    const { land, index } = agent;
-    const angle = now * 0.00055 + index * 2.39996;
-    project(land.x, land.y, land.z, camera, point);
-    const spread = mobile ? 16 : 32;
-    // 데스크톱의 본문 왼쪽과 모바일 히어로 아래쪽은 비워 둔다.
-    const left = mobile ? 18 : width * lerp(0.48, 0.62, cameraScroll);
-    const tx = Math.min(width - 32, Math.max(left, point.x + Math.cos(angle) * spread));
-    const ty = Math.max(90, Math.min(
-      height * (mobile ? lerp(0.39, 0.6, cameraScroll) : 0.78),
-      point.y + Math.sin(angle * 1.3) * spread - 18
-    ));
-    const arrival = clamp(p / 0.24);
-    const e = 1 - Math.pow(1 - arrival, 3);
-    const arc = Math.sin(arrival * Math.PI) * (mobile ? 65 : 140);
-    agent.x = lerp(agent.fromX, tx, e);
-    agent.y = lerp(agent.fromY, ty, e) - arc;
-    agent.scale = (mobile ? 0.68 : 0.82) + Math.sin(arrival * Math.PI) * 0.65;
-    agent.rot = (1 - arrival) * agent.spin + Math.sin(angle) * 0.12;
-    if (p >= 1) goHome(agent, now);
   };
 
   const updateAgent = (agent: Agent, now: number) => {
@@ -715,13 +554,12 @@ export const createStage = (options: StageOptions) => {
     const p = clamp((now - agent.start) / agent.duration);
     if (agent.state === "flight") updateFlight(agent, now, p);
     else if (agent.state === "write") updateWrite(agent, now, p);
-    else if (agent.state === "swarm") updateSwarm(agent, now, p);
     else updateReturn(agent, p);
   };
 
   const updateWrites = (now: number) => {
     writes.forEach(({ text, start }, el) => {
-      const p = clamp((now - start) / HEAT_TIME);
+      const p = clamp((now - start) / PROMPT_TIME);
       el.textContent = text.slice(0, Math.ceil(p * text.length));
       if (p >= 1) writes.delete(el);
     });
@@ -745,20 +583,13 @@ export const createStage = (options: StageOptions) => {
     updateWrites(now);
 
     if (cycle === "charging") {
-      heat = clamp((now - chargeStart) / chargeDuration);
-      if (heat >= 1) erupt(now);
+      if (now - chargeStart >= PROMPT_TIME) dispatch(now);
       return;
     }
 
+    // 새로 지을 내용이 있을 때만 움직이고, 그 밖에는 조용히 둔다
     const first = nextPending();
-    if (first) {
-      beginCharge(first, now);
-    } else if (
-      (scrollEnergy > 0.12 && now - lastBurst > SCROLL_INTERVAL) ||
-      (now - lastBurst > IDLE_INTERVAL && now - lastScroll > 650)
-    ) {
-      beginCharge(undefined, now);
-    }
+    if (first) beginCharge(first, now);
   };
 
   // 일손이 끝내 닿지 못한 내용은 오래 숨겨 두지 않는다
@@ -768,81 +599,6 @@ export const createStage = (options: StageOptions) => {
       if (el.hasAttribute("data-writing")) return;
       if (now - seenAt >= FORCE_AFTER) finishElement(el);
     });
-  };
-
-  // 분화 순간 한라산에서 솟구치는 빛기둥
-  const drawColumn = (now: number) => {
-    const p = (now - flashAt) / COLUMN_TIME;
-    if (p < 0 || p >= 1) return;
-
-    const top = crater.y - height * 0.55 * (1 - Math.pow(1 - p, 3));
-    const size = camera.radius * 0.035 * (1 - p);
-    const beam = ctx.createLinearGradient(0, crater.y, 0, top);
-    beam.addColorStop(0, `rgba(255, 226, 190, ${1 - p})`);
-    beam.addColorStop(0.5, `rgba(255, 122, 26, ${(1 - p) * 0.7})`);
-    beam.addColorStop(1, "rgba(255, 122, 26, 0)");
-    ctx.fillStyle = beam;
-    ctx.beginPath();
-    ctx.moveTo(crater.x - size, crater.y);
-    ctx.lineTo(crater.x + size, crater.y);
-    ctx.lineTo(crater.x, top);
-    ctx.fill();
-  };
-
-  // 프롬프트가 터질 때 화면 중앙에서 퍼지는 충격파
-  const drawRing = (now: number) => {
-    const p = (now - blastAt) / RING_TIME;
-    if (p < 0 || p >= 1) return;
-
-    ctx.globalAlpha = 1 - p;
-    ctx.strokeStyle = ORANGE;
-    ctx.lineWidth = (1 - p) * 6;
-    ctx.beginPath();
-    ctx.arc(
-      width / 2,
-      height / 2,
-      (1 - Math.pow(1 - p, 3)) * Math.hypot(width, height) * 0.56,
-      0,
-      Math.PI * 2
-    );
-    ctx.stroke();
-    ctx.globalAlpha = 1;
-  };
-
-  // 지형만 흔들어 글자는 계속 또렷하게 둔다
-  const shakeGround = (now: number) => {
-    const power = (shakeUntil - now) / SHAKE_TIME;
-    const offset = () => (Math.random() - 0.5) * (width < MOBILE_WIDTH ? 5 : 9) * power;
-    const value = power > 0 ? `translate(${offset()}px, ${offset()}px)` : "";
-    terrain.style.transform = value;
-    agentCanvas.style.transform = value;
-  };
-
-  // 빠르게 나는 동안에만 잔상을 남긴다
-  const drawTail = (agent: Agent, now: number) => {
-    if (agent.state === "inside" || now < agent.start) return;
-    const { tail } = agent;
-    const isFast = agent.state === "flight" || agent.state === "return" ||
-      (agent.state === "swarm" && (now - agent.start) / agent.duration < 0.24);
-    const moved = !tail.length || Math.hypot(
-      agent.x - tail[tail.length - 2], agent.y - tail[tail.length - 1]
-    ) > 1.5;
-    if (isFast && moved) tail.push(agent.x, agent.y);
-    if (tail.length > TAIL_LENGTH * 2 || !isFast) tail.splice(0, 2);
-    if (tail.length < 4) return;
-
-    ctx.strokeStyle = agent.color;
-    ctx.lineCap = "round";
-    for (let i = 2; i < tail.length; i += 2) {
-      const p = i / tail.length;
-      ctx.globalAlpha = p * (width < MOBILE_WIDTH && cameraScroll > 0.3 ? 0.18 : 0.45);
-      ctx.lineWidth = 1 + p * 3;
-      ctx.beginPath();
-      ctx.moveTo(tail[i - 2], tail[i - 1]);
-      ctx.lineTo(tail[i], tail[i + 1]);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
   };
 
   const drawAgent = (agent: Agent, now: number) => {
@@ -866,7 +622,7 @@ export const createStage = (options: StageOptions) => {
     if (glyph > 0) {
       ctx.globalAlpha = glyph;
       ctx.fillStyle = "#ffffff";
-      ctx.font = "700 22px Pretendard, sans-serif";
+      ctx.font = `700 22px ${font}`;
       ctx.fillText(agent.glyph as string, -9, 8);
     } else {
       agent.glyph = undefined;
@@ -877,13 +633,11 @@ export const createStage = (options: StageOptions) => {
     ctx.globalAlpha = 1;
   };
 
-  // 탐색 중에도 Agent의 존재가 보이도록 짧은 이름표를 유지한다.
+  // 이름표는 글자를 쓰는 동안에만 붙여 화면을 어지럽히지 않는다
   const drawLabel = (agent: Agent, now: number) => {
     if (now < agent.start) return;
     const job = agent.jobs[0];
-    const roaming = agent.state === "swarm";
-    const mobile = width < MOBILE_WIDTH;
-    const show = job ? 1 : roaming && (!mobile || cameraScroll < 0.3) ? 0.72 : 0;
+    const show = job ? 1 : 0;
     agent.labelAlpha += (show - agent.labelAlpha) * (1 - Math.pow(0.8, frameDelta));
     if (agent.labelAlpha < 0.02 || agent.state === "inside") return;
 
@@ -892,53 +646,12 @@ export const createStage = (options: StageOptions) => {
     const x = Math.max(8, Math.min(agent.x + 13, width - labelWidth - 8));
     const y = Math.max(80, Math.min(agent.y + 19, height - 24));
     ctx.globalAlpha = agent.labelAlpha;
-    ctx.fillStyle = job ? agent.color : "rgba(16, 17, 15, 0.88)";
+    ctx.fillStyle = job ? agent.color : "rgba(18, 15, 42, 0.88)";
     ctx.beginPath();
-    ctx.roundRect(x, y, labelWidth, 17, 4);
+    ctx.roundRect(x, y, labelWidth, 18, 4);
     ctx.fill();
     ctx.fillStyle = job ? INK : agent.color;
-    ctx.fillText(label, x + 5, y + 12);
-    ctx.globalAlpha = 1;
-  };
-
-  const drawConnections = (now: number) => {
-    const mobile = width < MOBILE_WIDTH;
-    ctx.strokeStyle = ORANGE;
-    ctx.lineWidth = 0.65;
-    workers.forEach((agent, i) => {
-      if (agent.state !== "swarm" || now < agent.start) return;
-      let links = 0;
-      for (let j = i + 1; j < workers.length && links < 2; j++) {
-        const other = workers[j];
-        if (other.state !== "swarm" || now < other.start) continue;
-        const gap = Math.hypot(agent.x - other.x, agent.y - other.y);
-        const reach = mobile ? 90 : 150;
-        if (gap < 25 || gap > reach) continue;
-        ctx.globalAlpha = (1 - gap / reach) * (mobile ? 0.14 : 0.26);
-        ctx.beginPath();
-        ctx.moveTo(agent.x, agent.y);
-        ctx.lineTo(other.x, other.y);
-        ctx.stroke();
-        links++;
-      }
-    });
-    ctx.globalAlpha = 1;
-  };
-
-  const drawCraterRings = (now: number) => {
-    const age = now - flashAt;
-    if (age < 0 || age > 1400) return;
-    for (let i = 0; i < 3; i++) {
-      const p = (age - i * 130) / 1000;
-      if (p <= 0 || p >= 1) continue;
-      ctx.globalAlpha = (1 - p) * 0.45;
-      ctx.strokeStyle = i === 0 ? "#ffc16e" : ORANGE;
-      ctx.lineWidth = (1 - p) * 2;
-      ctx.beginPath();
-      ctx.ellipse(crater.x, crater.y + p * 12,
-        camera.radius * p * 0.8, camera.radius * p * 0.24, 0, 0, Math.PI * 2);
-      ctx.stroke();
-    }
+    ctx.fillText(label, x + 5, y + 13);
     ctx.globalAlpha = 1;
   };
 
@@ -946,33 +659,11 @@ export const createStage = (options: StageOptions) => {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
 
-    drawColumn(now);
-    drawRing(now);
-    drawCraterRings(now);
-    drawConnections(now);
 
-    ctx.fillStyle = ORANGE;
-    for (let i = sparks.length - 1; i >= 0; i--) {
-      const spark = sparks[i];
-      const age = now - spark.born;
-      if (age > 1300) {
-        sparks.splice(i, 1);
-        continue;
-      }
-      spark.vy += 0.16 * frameDelta;
-      spark.x += spark.vx * frameDelta;
-      spark.y += spark.vy * frameDelta;
-      ctx.globalAlpha = (1 - age / 1300) * (width < MOBILE_WIDTH ? 0.65 : 1);
-      const size = 1.5 + (1 - age / 1300) * 2;
-      ctx.fillRect(spark.x, spark.y, size, size);
-    }
-    ctx.globalAlpha = 1;
-
-    workers.forEach((agent) => drawTail(agent, now));
     workers.forEach((agent) => drawAgent(agent, now));
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.font = "600 10px ui-monospace, Menlo, Consolas, monospace";
+    ctx.font = `600 11px ${font}`;
     workers.forEach((agent) => drawLabel(agent, now));
   };
 
@@ -981,15 +672,13 @@ export const createStage = (options: StageOptions) => {
     if (!startTime) startTime = now;
     frameDelta = lastFrame ? Math.min((now - lastFrame) / (1000 / 60), 2) : 1;
     lastFrame = now;
-    scrollEnergy *= Math.pow(0.965, frameDelta);
 
-    updateCamera(now);
+    updateCamera();
     if (!isStopped) {
       updateCycle(now);
       forceReveal(now);
       workers.forEach((agent) => updateAgent(agent, now));
       drawOverlay(now);
-      shakeGround(now);
     }
     drawTerrain(now);
   };
@@ -1015,21 +704,25 @@ export const createStage = (options: StageOptions) => {
         return;
       }
 
+      // 한 번 적힌 내용은 그대로 두고, 쓰다 만 내용은 마저 보여 준다.
+      // 다시 돌아와도 같은 내용을 또 쓰지 않는다.
       if (el.hasAttribute("data-prompt-line")) {
-        writes.delete(el);
-        el.textContent = "";
-        delete promptBox(el).dataset.done;
+        const text = writes.get(el)?.text;
+        if (text) {
+          el.textContent = text;
+          writes.delete(el);
+        }
         return;
       }
-
-      visible.delete(el);
-      claimed.delete(el);
-      clearWriting(el);
-      delete el.dataset.built;
+      if (visible.has(el)) finishElement(el);
     });
   }, { rootMargin: "0px 0px 10% 0px" });
 
   resize();
+  loadKv().then((loaded) => {
+    image = loaded;
+    raster = rasterize(loaded, placeKv(width, height, 0).w * dpr);
+  });
   window.addEventListener("resize", resize);
   window.addEventListener("scroll", onScroll, { passive: true });
   document.addEventListener("visibilitychange", onVisibility);
@@ -1042,10 +735,6 @@ export const createStage = (options: StageOptions) => {
   const stop = () => {
     isStopped = true;
     reveal = 9;
-    heat = 0;
-    shakeUntil = 0;
-    terrain.style.transform = "";
-    agentCanvas.style.transform = "";
     observer.disconnect();
     buildable.forEach((el) => {
       clearWriting(el);
@@ -1074,22 +763,15 @@ export const createStage = (options: StageOptions) => {
 };
 
 // 움직임을 줄인 환경에서는 지형을 한 번만 그린다
-export const drawStill = (canvas: HTMLCanvasElement) => {
+export const drawStill = async (canvas: HTMLCanvasElement) => {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  const image = await loadKv();
   const width = window.innerWidth;
   const height = window.innerHeight;
-  const isMobile = width < MOBILE_WIDTH;
-  const camera = heroCamera(width, height);
-  const point: Point = { x: 0, y: 0, scale: 1 };
-
+  const rect = placeKv(width, height, 0);
   canvas.width = width;
   canvas.height = height;
-  createDots(isMobile ? 0.021 : 0.0135).forEach((dot) => {
-    project(dot.x, dot.y, dot.z, camera, point);
-    const size = (1.1 + dot.y * 4) * point.scale;
-    ctx.fillStyle = BUCKETS[dot.bucket];
-    ctx.fillRect(point.x, point.y, size, size);
-  });
+  ctx.drawImage(image, rect.x, rect.y, rect.w, rect.h);
 };

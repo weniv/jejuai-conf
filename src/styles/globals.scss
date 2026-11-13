@@ -36,7 +36,7 @@ html {
 body {
   color: var(--color-surface);
   background-color: var(--color-background);
-  font-size: fcSize(15, 16);
+  font-size: 1.6rem;
 
   font-weight: 400;
   line-height: 1.4;
@@ -61,7 +61,7 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid #ff7a1a;
+  outline: 2px solid #6df2cc;
   outline-offset: 6px;
   border-radius: 3px;
 }

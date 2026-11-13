@@ -1,6 +1,6 @@
-$muted: rgba(242, 239, 230, 0.6);
-$line: rgba(242, 239, 230, 0.16);
-$orange: #ff7a1a;
+$muted: rgba(238, 240, 250, 0.6);
+$line: rgba(238, 240, 250, 0.16);
+$mint: #6df2cc;
 
 .item {
   border-top: 1px solid $line;
@@ -26,7 +26,7 @@ $orange: #ff7a1a;
     }
 
     &:hover {
-      color: $orange;
+      color: $mint;
     }
   }
 
