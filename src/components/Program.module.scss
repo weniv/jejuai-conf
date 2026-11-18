@@ -3,6 +3,7 @@ $paper: #eef0fa;
 $mint: #6df2cc;
 $muted: rgba(238, 240, 250, 0.6);
 $line: rgba(238, 240, 250, 0.16);
+$warn: #ffc533;
 
 .tabs {
   display: flex;
@@ -75,9 +76,18 @@ $line: rgba(238, 240, 250, 0.16);
   font-size: 1.4rem;
 }
 
+
 .speaker {
   color: $muted;
   font-weight: 500;
+}
+
+// 준비물처럼 참가자가 미리 알아야 할 것을 연사 아래에 작게 적는다.
+// 민트인 룸 이름과 헷갈리지 않게 사이트의 경고색으로 구분한다
+.note {
+  color: rgba($warn, 0.6);
+  font-size: 1.4rem;
+  line-height: 2rem;
 }
 
 .track .soon {
@@ -106,13 +116,9 @@ $line: rgba(238, 240, 250, 0.16);
 }
 
 .notice {
-  margin-top: 3.2rem;
-  padding: 1.6rem 2.4rem;
-  border: 1px solid $line;
-  border-radius: 1.2rem;
+  margin-top: 2.4rem;
   color: $muted;
   font-size: 1.4rem;
-  text-align: center;
 }
 
 @media screen and (max-width: 767px) {

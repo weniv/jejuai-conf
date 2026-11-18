@@ -7,6 +7,7 @@ interface Track {
   room: string;
   title: string;
   speaker: string;
+  note?: string;
 }
 
 interface Session {
@@ -59,7 +60,7 @@ export const Program = ({ days, comingSoon, empty, notice }: ProgramProps) => {
                 <span className={styles.time}>{time}</span>
                 <div className={styles.tracks}>
                   {/* 아직 정해지지 않은 칸은 빈 값 대신 Coming soon으로 채운다 */}
-                  {tracks.map(({ room, title, speaker }, i) => (
+                  {tracks.map(({ room, title, speaker, note }, i) => (
                     <div key={i} className={styles.track}>
                       {room && <span className={styles.room}>{room}</span>}
                       {title ? (
@@ -68,6 +69,7 @@ export const Program = ({ days, comingSoon, empty, notice }: ProgramProps) => {
                         <strong className={styles.soon}>{comingSoon}</strong>
                       )}
                       {speaker && <span className={styles.speaker}>{speaker}</span>}
+                      {note && <small className={styles.note}>{note}</small>}
                     </div>
                   ))}
                 </div>

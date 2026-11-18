@@ -23,13 +23,13 @@ yarn build
 `src/data/data.json`에서 다음 값을 바꾸면 화면이 함께 바뀝니다.
 
 - `registration.url`: 비어 있으면 헤더와 히어로의 버튼이 "참가 신청 준비중"으로 표시되고, 주소를 넣으면 "참가 신청하기" 링크가 됩니다.
-- `program.days[].sessions`: 시간대별 세션입니다. `title`이 비어 있는 칸은 `program.comingSoon`(Coming soon)으로 표시되고, `room`·`speaker`가 비어 있으면 그 줄을 숨깁니다. 같은 시간대에 트랙을 여러 개 넣으면 나란히 표시됩니다. 세션 배열 자체를 비우면 그날의 시작·종료 시각과 `program.empty` 문구를 보여 주고, `program.notice`를 채우면 표 아래에 안내 상자가 나옵니다.
+- `program.days[].sessions`: 시간대별 세션입니다. `title`이 비어 있는 칸은 `program.comingSoon`(Coming soon)으로 표시되고, `room`·`speaker`가 비어 있으면 그 줄을 숨깁니다. 같은 시간대에 트랙을 여러 개 넣으면 나란히 표시됩니다. `note`(생략 가능)는 준비물 같은 안내로, 연사 아래에 작게 표시됩니다. 세션 배열 자체를 비우면 그날의 시작·종료 시각과 `program.empty` 문구를 보여 주고, `program.notice`를 채우면 표 아래에 작은 안내 문구가 나옵니다.
 
 ```json
-{ "time": "13:00 ~ 13:50", "tracks": [{ "room": "트랙룸", "title": "세션 제목", "speaker": "소속 | 이름" }] }
+{ "time": "13:00 ~ 13:50", "tracks": [{ "room": "트랙룸", "title": "세션 제목", "speaker": "이름 | 소속", "note": "노트북 지참" }] }
 ```
 
-- `partners.groups[].logos`: 비어 있으면 `partners.slots`개의 빈 자리가 점선으로 보입니다. 로고 파일은 `public/images/`에 두고 `{ "name": "기관명", "src": "/images/파일.svg", "url": "https://..." }` 형태로 넣습니다(`url`은 생략 가능). 로고는 남색 배경에 맞춰 흰색 한 가지로 표시됩니다.
+- `partners.logos`: 푸터에 주최·주관·후원 구분 없이 한데 모아 보여 주는 로고입니다. 비어 있으면 로고 두 줄 높이의 빈 자리만 남겨 둡니다. 로고는 `{ "name": "기관명", "src": "/images/partners/파일.svg", "width": 원본 가로, "height": 원본 세로, "scale": 1.2, "url": "https://..." }` 형태로 넣습니다(`scale`, `url`은 생략 가능). 높이를 같게 맞추면 생김새에 따라 커 보이거나 작아 보이므로 `scale`로 눈대중 보정합니다. 로고 파일은 남색 배경에 맞춰 흰색으로 바꿔 `public/images/partners/`에 둡니다. 색이 있는 부분은 흰색, 원래 흰색이던 속 무늬는 배경색(`#120f2a`)으로 바꾸면 엠블럼의 무늬가 뭉개지지 않습니다.
 
 `eventTime`과 위 정보로 구글 검색용 행사 정보(schema.org Event)를 페이지에 함께 싣습니다. 배포 후 [리치 결과 테스트](https://search.google.com/test/rich-results)에 `https://jejuai.kr`을 넣어 확인할 수 있습니다.
 
