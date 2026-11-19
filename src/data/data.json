@@ -17,6 +17,7 @@
     "faq": "자주 묻는 질문 정리해줘"
   },
   "hero": {
+    "edition": "5th",
     "eyebrow": "2026 제주 AI 컨퍼런스",
     "title": [
       "2026 JEJU",
@@ -31,7 +32,8 @@
   },
   "about": {
     "lead": "AI에 관심 있는 누구에게나 열려\u00a0있습니다.",
-    "body": "개발자 여부를 떠나, AI의 활용 사례와 개발 방법, 다양한 분야에서 AI로 문제를 해결한 실제 경험과 통찰을 공유합니다."
+    "body": "개발자 여부를 떠나, AI의 활용 사례와 개발 방법, 다양한 분야에서 AI로 문제를 해결한 실제 경험과 통찰을 공유합니다.",
+    "history": "2022년 제주 웹 컨퍼런스로 시작해 올해로 5년째 이어 오고 있습니다."
   },
   "program": {
     "days": [
@@ -41,11 +43,11 @@
         "sessions": [
           { "time": "12:00 ~ 12:30", "tracks": [{ "room": "J-SPACE 라운지", "title": "Conference 안내 및 등록", "speaker": "" }] },
           { "time": "12:30 ~ 13:00", "tracks": [{ "room": "", "title": "오프닝", "speaker": "" }] },
-          { "time": "13:00 ~ 13:50", "tracks": [{ "room": "트랙룸", "title": "안전한 비즈니스 AX를 위한 첫걸음: AI 에이전트 보안 사고 사례와 대응", "speaker": "김일도 대표 | 캐피탈레터" }, { "room": "펀치룸", "title": "AX시대를 대비하기 위한 AX 기본 이론 및 사례", "speaker": "김진환 | 위니브, 고려대학교 빅데이터사이언스 학부" }] },
-          { "time": "14:00 ~ 14:50", "tracks": [{ "room": "트랙룸", "title": "왕초보 3D 게임도전기", "speaker": "정진호 대표" }, { "room": "펀치룸", "title": "", "speaker": "이진명 | 인디게임 개발자" }] },
-          { "time": "15:00 ~ 15:50", "tracks": [{ "room": "트랙룸", "title": "내 금쪽이 코딩 에이전트를 안전하게 다루는 방법: 샌드박싱", "speaker": "Justin Yoo | Microsoft" }, { "room": "펀치룸", "title": "", "speaker": "이진명 | 인디게임 개발자" }] },
-          { "time": "16:00 ~ 16:50", "tracks": [{ "room": "트랙룸", "title": "", "speaker": "김혜일 이사 | 카카오" }, { "room": "펀치룸", "title": "3년간 AI 소식을 전하며 배운 기획과 확산", "speaker": "CHOI | Creator(@choi.openai)" }] },
-          { "time": "17:00 ~ 17:50", "tracks": [{ "room": "트랙룸", "title": "", "speaker": "김혜일 이사 | 카카오" }, { "room": "펀치룸", "title": "Solar Works가 만들어갈 엔터프라이즈 AI 에이전트", "speaker": "주상원 | 업스테이지" }] }
+          { "time": "13:00 ~ 13:50", "tracks": [{ "room": "트랙룸", "title": "안전한 비즈니스 AX를 위한 첫걸음: AI 에이전트 보안 사고 사례와 대응", "speaker": "김일도 대표 | 캐피탈레터" }, { "room": "펀치룸", "title": "AX시대를 대비하기 위한 AX 기본 이론 및 사례", "speaker": "김진환 | 위니브, 고려대학교 국가통계·빅데이터 전공 겸임교수" }] },
+          { "time": "14:00 ~ 14:50", "tracks": [{ "room": "트랙룸", "title": "왕초보 3D 게임도전기", "speaker": "정진호 대표 | J비주얼스쿨" }, { "room": "펀치룸", "title": "", "speaker": "이진명 | 인디게임 개발자, 전 NX3GAMES 로드나인 PM, 전 크래프톤 Special Project 2 리드" }] },
+          { "time": "15:00 ~ 15:50", "tracks": [{ "room": "트랙룸", "title": "내 금쪽이 코딩 에이전트를 안전하게 다루는 방법: 샌드박싱", "speaker": "Justin Yoo | Microsoft" }, { "room": "펀치룸", "title": "", "speaker": "이진명 | 인디게임 개발자, 전 NX3GAMES 로드나인 PM, 전 크래프톤 Special Project 2 리드" }] },
+          { "time": "16:00 ~ 16:50", "tracks": [{ "room": "트랙룸", "title": "", "speaker": "김혜일 이사 | 카카오 DAO(Digital Accessibility Officer)" }, { "room": "펀치룸", "title": "3년간 AI 소식을 전하며 배운 기획과 확산", "speaker": "CHOI | Creator(@choi.openai), OpenAI Codex Ambassador" }] },
+          { "time": "17:00 ~ 17:50", "tracks": [{ "room": "트랙룸", "title": "", "speaker": "김혜일 이사 | 카카오 DAO(Digital Accessibility Officer)" }, { "room": "펀치룸", "title": "Solar Works가 만들어갈 엔터프라이즈 AI 에이전트", "speaker": "주상원 | 업스테이지" }] }
         ]
       },
       {
@@ -53,9 +55,9 @@
         "time": "18:00 종료",
         "sessions": [
           { "time": "12:30 ~ 13:00", "tracks": [{ "room": "J-SPACE 라운지", "title": "Conference 안내 및 등록", "speaker": "" }] },
-          { "time": "13:00 ~ 13:50", "tracks": [{ "room": "트랙룸", "title": "안전한 비즈니스 AX를 위한 첫걸음: AI 에이전트 보안 사고 사례와 대응", "speaker": "김일도 대표 | 캐피탈레터" }, { "room": "펀치룸", "title": "AX시대를 대비하기 위한 AX 기본 이론 및 사례", "speaker": "김진환 | 위니브, 고려대학교 빅데이터사이언스 학부" }] },
-          { "time": "14:00 ~ 14:50", "tracks": [{ "room": "트랙룸", "title": "3년간 AI 소식을 전하며 배운 기획과 확산", "speaker": "CHOI | Creator(@choi.openai)" }, { "room": "펀치룸", "title": "", "speaker": "이진명 | 인디게임 개발자" }] },
-          { "time": "15:00 ~ 15:50", "tracks": [{ "room": "트랙룸", "title": "AI 샌드박싱 핸즈온 워크샵", "speaker": "Justin Yoo | Microsoft", "note": "노트북 지참" }, { "room": "펀치룸", "title": "", "speaker": "이진명 | 인디게임 개발자" }] },
+          { "time": "13:00 ~ 13:50", "tracks": [{ "room": "트랙룸", "title": "안전한 비즈니스 AX를 위한 첫걸음: AI 에이전트 보안 사고 사례와 대응", "speaker": "김일도 대표 | 캐피탈레터" }, { "room": "펀치룸", "title": "AX시대를 대비하기 위한 AX 기본 이론 및 사례", "speaker": "김진환 | 위니브, 고려대학교 국가통계·빅데이터 전공 겸임교수" }] },
+          { "time": "14:00 ~ 14:50", "tracks": [{ "room": "트랙룸", "title": "3년간 AI 소식을 전하며 배운 기획과 확산", "speaker": "CHOI | Creator(@choi.openai), OpenAI Codex Ambassador" }, { "room": "펀치룸", "title": "", "speaker": "이진명 | 인디게임 개발자, 전 NX3GAMES 로드나인 PM, 전 크래프톤 Special Project 2 리드" }] },
+          { "time": "15:00 ~ 15:50", "tracks": [{ "room": "트랙룸", "title": "AI 샌드박싱 핸즈온 워크샵", "speaker": "Justin Yoo | Microsoft", "note": "노트북 지참" }, { "room": "펀치룸", "title": "", "speaker": "이진명 | 인디게임 개발자, 전 NX3GAMES 로드나인 PM, 전 크래프톤 Special Project 2 리드" }] },
           { "time": "16:00 ~ 16:50", "tracks": [{ "room": "트랙룸", "title": "AI 샌드박싱 핸즈온 워크샵", "speaker": "Justin Yoo | Microsoft", "note": "노트북 지참" }, { "room": "펀치룸", "title": "", "speaker": "고재훈 대표 | 랜티처" }] },
           { "time": "17:00 ~ 17:50", "tracks": [{ "room": "트랙룸", "title": "AI 상담 영업플랫폼 사례", "speaker": "양일석 대표 | 어니스트마케팅" }, { "room": "펀치룸", "title": "바이브 코딩을 활용한 제주 문제해결", "speaker": "강승희, 오채은, 김채원, 오승예 | 제주중앙여자고등학교" }] }
         ]

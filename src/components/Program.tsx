@@ -1,6 +1,3 @@
-"use client";
-import { useState } from "react";
-import clsx from "clsx";
 import styles from "./Program.module.scss";
 
 interface Track {
@@ -28,34 +25,24 @@ interface ProgramProps {
   notice: string;
 }
 
-// 날짜 탭을 고르면 그날의 시간대별 세션을 트랙끼리 나란히 보여 준다
-export const Program = ({ days, comingSoon, empty, notice }: ProgramProps) => {
-  const [active, setActive] = useState(0);
-  const day = days[active];
-
-  return (
-    <div className={styles.program}>
-      <div className={styles.tabs} role="tablist" aria-label="행사 날짜">
-        {days.map(({ label }, i) => (
-          <button
-            key={label}
-            type="button"
-            role="tab"
-            id={`program-tab-${i}`}
-            aria-selected={i === active}
-            aria-controls="program-panel"
-            className={clsx(styles.tab, i === active && styles.tabActive)}
-            onClick={() => setActive(i)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      <div id="program-panel" role="tabpanel" aria-labelledby={`program-tab-${active}`}>
-        {day.sessions.length ? (
+// 날짜를 고르지 않아도 둘째 날까지 보이도록 모든 날을 세로로 이어 보여 준다.
+// 날마다 따로 쓰게 해서 스크롤해 그날이 화면에 들어올 때 적힌다
+export const Program = ({ days, comingSoon, empty, notice }: ProgramProps) => (
+  <div className={styles.program}>
+    {days.map(({ label, time: dayTime, sessions }, dayIndex) => (
+      <section
+        key={label}
+        className={styles.day}
+        aria-labelledby={`program-day-${dayIndex}`}
+        data-build={`${label} 프로그램`}
+      >
+        <h3 id={`program-day-${dayIndex}`} className={styles.dayTitle}>
+          <span className={styles.dayNumber}>Day {dayIndex + 1}</span>
+          {label}
+        </h3>
+        {sessions.length ? (
           <ol className={styles.sessions}>
-            {day.sessions.map(({ time, tracks }) => (
+            {sessions.map(({ time, tracks }) => (
               <li key={time}>
                 <span className={styles.time}>{time}</span>
                 <div className={styles.tracks}>
@@ -78,13 +65,17 @@ export const Program = ({ days, comingSoon, empty, notice }: ProgramProps) => {
           </ol>
         ) : (
           <div className={styles.empty}>
-            <strong>{day.time}</strong>
+            <strong>{dayTime}</strong>
             <p>{empty}</p>
           </div>
         )}
-      </div>
+      </section>
+    ))}
 
-      {notice && <p className={styles.notice}>{notice}</p>}
-    </div>
-  );
-};
+    {notice && (
+      <p className={styles.notice} data-build="안내">
+        {notice}
+      </p>
+    )}
+  </div>
+);

@@ -72,6 +72,7 @@ export default function Home() {
       <main className={styles.main}>
         <section id="top" className={styles.hero} data-prompt={prompts.opening}>
           <p className={styles.eyebrow} data-build="상태">
+            <span className={styles.edition}>{hero.edition}</span>
             {hero.eyebrow}
             <Dday date={data.eventStart} />
           </p>
@@ -118,6 +119,10 @@ export default function Home() {
           <p className={styles.body} data-build="설명">
             {about.body}
           </p>
+          <p className={styles.history} data-build="연혁">
+            <span className={styles.edition}>{hero.edition}</span>
+            {about.history}
+          </p>
         </section>
 
         <section
@@ -127,10 +132,7 @@ export default function Home() {
         >
           <PromptLine text={prompts.program} />
           <h2 data-build="제목">프로그램 안내</h2>
-          {/* 탭을 바꿔도 같은 요소라 한 번 적힌 뒤로는 다시 숨지 않는다 */}
-          <div data-build="프로그램">
-            <Program {...program} />
-          </div>
+          <Program {...program} />
         </section>
 
         <section

@@ -5,34 +5,25 @@ $muted: rgba(238, 240, 250, 0.6);
 $line: rgba(238, 240, 250, 0.16);
 $warn: #ffc533;
 
-.tabs {
+.day + .day {
+  margin-top: 6.4rem;
+}
+
+.dayTitle {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-  margin-bottom: 3.2rem;
+  align-items: baseline;
+  gap: 1.2rem;
+  margin-bottom: 2.4rem;
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-.tab {
-  min-height: 4rem;
-  padding: 0 1.6rem;
-  border: 1px solid rgba($mint, 0.6);
-  border-radius: 5rem;
+.dayNumber {
   color: $mint;
-  font-size: 1.4rem;
-  font-weight: 500;
-  transition: background-color 0.2s, color 0.2s;
-
-  &:hover {
-    background-color: rgba($mint, 0.12);
-  }
-}
-
-.tabActive,
-.tabActive:hover {
-  border-color: $mint;
-  background-color: $mint;
-  color: $ink;
+  font-size: 1.6rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .sessions li {
@@ -122,6 +113,15 @@ $warn: #ffc533;
 }
 
 @media screen and (max-width: 767px) {
+  .day + .day {
+    margin-top: 4.8rem;
+  }
+
+  .dayTitle {
+    margin-bottom: 1.6rem;
+    font-size: 2.4rem;
+  }
+
   .sessions li {
     grid-template-columns: 9.6rem 1fr;
     gap: 1.6rem;

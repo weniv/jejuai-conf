@@ -234,6 +234,31 @@ $gutter-mobile: 2rem;
   line-height: 1.7;
 }
 
+// 2022년 제주 웹 컨퍼런스부터 이어 온 회차를 히어로와 소개에 작은 표식으로 단다
+.edition {
+  display: inline-flex;
+  align-items: center;
+  height: 1.8em;
+  padding: 0 0.7em;
+  border: 1px solid $mint;
+  border-radius: 5rem;
+  color: $mint;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.history {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem 1.2rem;
+  margin-top: 2.4rem;
+  font-size: 1.8rem;
+  line-height: 1.7;
+}
+
 // 지난 행사에서 주차로 불편했다는 의견이 있어 지도 바로 아래에 미리 알린다
 .parking {
   margin-top: 1.6rem;
