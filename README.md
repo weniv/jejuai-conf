@@ -23,7 +23,7 @@ yarn build
 `src/data/data.json`에서 다음 값을 바꾸면 화면이 함께 바뀝니다.
 
 - `registration.url`: 비어 있으면 헤더와 히어로의 버튼이 "참가 신청 준비중"으로 표시되고, 주소를 넣으면 "참가 신청하기" 링크가 됩니다.
-- `hero.edition`, `about.history`: 회차 표식(3rd)과 연혁 문구입니다. 표식은 히어로의 행사명 위와 행사 소개의 연혁 줄 앞에 붙습니다.
+- `hero.edition`: 회차 표식(3rd)입니다. 히어로의 행사명 위에 붙습니다.
 - `program.days`: 날짜 탭 없이 모든 날을 `Day 1`, `Day 2` 제목과 함께 세로로 이어 보여 줍니다.
 - `program.days[].sessions`: 시간대별 세션입니다. `title`이 비어 있는 칸은 `program.comingSoon`(Coming soon)으로 표시되고, `room`·`speaker`가 비어 있으면 그 줄을 숨깁니다. 같은 시간대에 트랙을 여러 개 넣으면 나란히 표시됩니다. `note`(생략 가능)는 준비물 같은 안내로, 연사 아래에 작게 표시됩니다. 세션 배열 자체를 비우면 그날의 시작·종료 시각과 `program.empty` 문구를 보여 주고, `program.notice`를 채우면 표 아래에 작은 안내 문구가 나옵니다.
 

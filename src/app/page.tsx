@@ -119,10 +119,6 @@ export default function Home() {
           <p className={styles.body} data-build="설명">
             {about.body}
           </p>
-          <p className={styles.history} data-build="연혁">
-            <span className={styles.edition}>{hero.edition}</span>
-            {about.history}
-          </p>
         </section>
 
         <section
