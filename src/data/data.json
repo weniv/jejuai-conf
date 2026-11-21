@@ -58,7 +58,7 @@
           { "time": "14:00 ~ 14:50", "tracks": [{ "room": "트랙룸", "title": "3년간 AI 소식을 전하며 배운 기획과 확산", "speaker": "CHOI | Creator(@choi.openai), OpenAI Codex Ambassador" }, { "room": "펀치룸", "title": "입사 1일차, 사수가 퇴사했다", "speaker": "김태곤 | 글로벌 기업 C사 수석 프론트엔드 엔지니어(Staff Frontend Engineer)" }] },
           { "time": "15:00 ~ 15:50", "tracks": [{ "room": "트랙룸", "title": "AI 샌드박싱 핸즈온 워크샵", "speaker": "Justin Yoo | Microsoft", "note": "노트북 지참" }, { "room": "펀치룸", "title": "AI 워크플로우 파이프라인 구축", "speaker": "이호준 대표 | 위니브" }] },
           { "time": "16:00 ~ 16:50", "tracks": [{ "room": "트랙룸", "title": "AI 샌드박싱 핸즈온 워크샵", "speaker": "Justin Yoo | Microsoft", "note": "노트북 지참" }, { "room": "펀치룸", "title": "기록을 근거로 일하는 AI: 젠스파크 세컨드 브레인으로 지난 기록을 다음 일에 쓰는 법", "speaker": "고재훈 대표 | 랜티처, Genspark Genius Ambassador" }] },
-          { "time": "17:00 ~ 17:50", "tracks": [{ "room": "트랙룸", "title": "AI 상담 영업플랫폼 사례", "speaker": "양일석 대표 | 어니스트마케팅" }, { "room": "펀치룸", "title": "바이브 코딩을 활용한 제주 문제해결", "speaker": "강승희, 오채은, 김채원, 오승예 | 제주중앙여자고등학교" }] }
+          { "time": "17:00 ~ 17:50", "tracks": [{ "room": "트랙룸", "title": "AI 상담 영업플랫폼 사례", "speaker": "양일석 대표 | 어니스트마케팅" }, { "room": "펀치룸", "title": "바이브 코딩을 활용한 제주 문제해결", "speaker": "강승희, 오채은, 김채원, 오승예, 양수은 | 제주중앙여자고등학교" }] }
         ]
       }
     ],
