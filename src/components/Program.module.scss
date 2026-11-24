@@ -26,31 +26,43 @@ $warn: #ffc533;
   letter-spacing: 0.02em;
 }
 
-.sessions li {
+// 하루 전체를 한 그리드로 깔아 시간과 트랙 칸이 같은 줄에 놓이게 한다.
+// 구분선은 칸마다 위쪽에 그어서, 두 시간 이어지는 세션처럼 여러 줄에 걸친 칸 안에는 선이 생기지 않는다
+.sessions {
   display: grid;
-  grid-template-columns: 12rem 1fr;
-  gap: 2.4rem;
-  padding: 2.4rem 0;
-  border-top: 1px solid $line;
+  grid-template-columns: 12rem repeat(var(--columns), 1fr);
+  column-gap: 3.2rem;
 
-  &:last-child {
-    border-bottom: 1px solid $line;
+  li {
+    display: contents;
   }
 }
 
 .time {
+  grid-row: var(--row);
+  grid-column: 1;
+  padding: 2.4rem 0;
+  border-top: 1px solid $line;
   color: $muted;
   font-size: 1.6rem;
   line-height: 2.2rem;
 }
 
+// 칸 사이를 띄운 만큼 맨 아래 선도 한 줄로 긋지 않고 마지막 줄에 닿는 칸마다 긋는다
+.time[data-last],
+.track[data-last] {
+  border-bottom: 1px solid $line;
+}
+
 .tracks {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
-  gap: 2rem 3.2rem;
+  display: contents;
 }
 
 .track {
+  grid-row: var(--row);
+  grid-column: var(--col);
+  padding: 2.4rem 0;
+  border-top: 1px solid $line;
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
@@ -67,6 +79,12 @@ $warn: #ffc533;
   font-size: 1.4rem;
 }
 
+// 여러 시간에 걸친 세션은 칸이 합쳐진 이유가 보이도록 전체 진행 시간을 적는다
+.span {
+  color: $muted;
+  font-size: 1.4rem;
+  line-height: 2rem;
+}
 
 .speaker {
   color: $muted;
@@ -122,10 +140,32 @@ $warn: #ffc533;
     font-size: 2.4rem;
   }
 
-  .sessions li {
-    grid-template-columns: 9.6rem 1fr;
-    gap: 1.6rem;
-    padding: 2rem 0;
+  // 좁은 화면에서는 트랙을 세로로 쌓기 때문에 칸을 줄에 걸칠 수 없다.
+  // 시간대마다 한 줄씩 쓰고, 합친 세션은 처음 시간대에만 한 번 보여 준다
+  .sessions {
+    display: block;
+
+    li {
+      display: grid;
+      grid-template-columns: 9.6rem 1fr;
+      gap: 1.6rem;
+      padding: 2rem 0;
+      border-top: 1px solid $line;
+
+      &:last-child {
+        border-bottom: 1px solid $line;
+      }
+    }
+  }
+
+  .time,
+  .track,
+  .time[data-last],
+  .track[data-last] {
+    grid-row: auto;
+    grid-column: auto;
+    padding: 0;
+    border: 0;
   }
 
   .time {
@@ -137,6 +177,7 @@ $warn: #ffc533;
   }
 
   .tracks {
-    grid-template-columns: 1fr;
+    display: grid;
+    gap: 2rem;
   }
 }
