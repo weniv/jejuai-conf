@@ -9,7 +9,7 @@ import { VenueMap } from "@/components/VenueMap";
 import { Program } from "@/components/Program";
 import { Partners } from "@/components/Partners";
 
-const { hero, about, program, location, partners, faq, prompts, registration } = data;
+const { hero, about, program, location, partners, faq, contact, prompts, registration } = data;
 
 const SITE = "https://jejuai.kr";
 
@@ -170,6 +170,9 @@ export default function Home() {
           <p>2026 제주 AI 컨퍼런스</p>
           <div className={styles.footerLinks}>
             <Replay className={styles.replay} />
+            <a href={contact.url} target="_blank" rel="noopener noreferrer">
+              {contact.text} <span aria-hidden="true">↗</span>
+            </a>
             <a href="#top">맨 위로 <span aria-hidden="true">↑</span></a>
           </div>
         </div>

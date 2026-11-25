@@ -7,13 +7,14 @@ const OPTIONS = { duration: 340, easing: "cubic-bezier(0.22, 1, 0.36, 1)" };
 interface FaqEntry {
   question: string;
   answer: string;
+  link?: { url: string; text: string };
 }
 
 interface FaqItemProps extends FaqEntry {
   order: number;
 }
 
-const FaqItem = ({ question, answer, order }: FaqItemProps) => {
+const FaqItem = ({ question, answer, link, order }: FaqItemProps) => {
   const itemRef = useRef<HTMLDetailsElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<Animation | null>(null);
@@ -59,6 +60,11 @@ const FaqItem = ({ question, answer, order }: FaqItemProps) => {
       </summary>
       <div ref={bodyRef} className={styles.body}>
         <p>{answer}</p>
+        {link && (
+          <a href={link.url} target="_blank" rel="noopener noreferrer">
+            {link.text} <span aria-hidden="true">↗</span>
+          </a>
+        )}
       </div>
     </details>
   );

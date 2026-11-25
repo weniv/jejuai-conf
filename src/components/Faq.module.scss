@@ -69,6 +69,20 @@ $mint: #6df2cc;
     font-size: 1.6rem;
     line-height: 1.7;
   }
+
+  // 답 아래에 붙는 바깥 링크 (문의하기 등)
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 4.4rem;
+    margin: -1.2rem 0 1.2rem;
+    color: $mint;
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.4rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

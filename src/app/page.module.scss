@@ -308,8 +308,10 @@ $gutter-mobile: 2rem;
 // 오프닝 다시 보기는 화면에 띄우지 않고 푸터의 링크로만 둔다
 .footerLinks {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: center;
-  gap: 2.4rem;
+  column-gap: 2.4rem;
 }
 
 .replay {
