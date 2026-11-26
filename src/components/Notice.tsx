@@ -1,6 +1,13 @@
 "use client";
 import { MouseEvent, useEffect, useRef } from "react";
 import styles from "./Notice.module.scss";
+import { NOTICE_CLOSED_ATTR, NOTICE_CLOSED_EVENT } from "./stage/constants";
+
+// 팝업이 없어지면 첫 화면 짓기(커서 애니메이션)를 시작하게 알린다
+const notifyClosed = () => {
+  document.documentElement.setAttribute(NOTICE_CLOSED_ATTR, "");
+  window.dispatchEvent(new Event(NOTICE_CLOSED_EVENT));
+};
 
 export interface NoticeContent {
   title: string[];
@@ -16,17 +23,23 @@ export const Notice = ({ title, body, close, hide }: NoticeContent) => {
   const hiddenKey = `notice-hidden:${title.join(" ")}`;
 
   useEffect(() => {
+    let isHidden = false;
     try {
-      if (localStorage.getItem(hiddenKey)) return;
+      isHidden = !!localStorage.getItem(hiddenKey);
     } catch {}
     const dialog = dialogRef.current;
-    if (!dialog || dialog.open) return;
+    if (isHidden || !dialog) {
+      notifyClosed();
+      return;
+    }
+    if (dialog.open) return;
     dialog.showModal();
     // 첫 단추에 초점 테두리가 생기지 않게 창 자체에 초점을 둔다 (Tab을 누르면 단추로 간다)
     dialog.focus();
   }, [hiddenKey]);
 
   const onClose = () => {
+    notifyClosed();
     if (dialogRef.current?.returnValue !== "hide") return;
     try {
       localStorage.setItem(hiddenKey, "y");

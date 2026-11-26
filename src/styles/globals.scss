@@ -317,3 +317,9 @@ html[data-build-on] [data-build] {
   color: $color;
   font-weight: 600;
 }
+
+// 공지 팝업이 떠 있는 동안 뒤 페이지가 스크롤되지 않게 한다
+html:has(dialog[open]) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}

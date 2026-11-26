@@ -65,6 +65,8 @@ export interface StageOptions {
   terrain: HTMLCanvasElement;
   agents: HTMLCanvasElement;
   capsuleText: HTMLElement;
+  // true면 release()를 부를 때까지 짓기를 시작하지 않는다 (공지 팝업이 떠 있는 동안)
+  held: boolean;
   onBuilt: () => void;
 }
 
@@ -204,7 +206,7 @@ export const createStage = (options: StageOptions) => {
   const { terrain, agents: agentCanvas } = options;
   const groundCtx = terrain.getContext("2d");
   const ctx = agentCanvas.getContext("2d");
-  if (!groundCtx || !ctx) return { stop: () => {}, destroy: () => {} };
+  if (!groundCtx || !ctx) return { stop: () => {}, destroy: () => {}, release: () => {} };
 
   const isMobile = window.innerWidth < MOBILE_WIDTH;
   const sprite = createSprite(MINT);
@@ -233,6 +235,7 @@ export const createStage = (options: StageOptions) => {
   let cameraScroll = 0;
   let isStopped = false;
   let cycle: Cycle = "ready";
+  let isHeld = options.held;
   let chargeStart = 0;
   let lastFrame = 0;
   let lastScrollY = window.scrollY;
@@ -510,6 +513,7 @@ export const createStage = (options: StageOptions) => {
   };
 
   const updateCycle = (now: number) => {
+    if (isHeld) return;
     updateWrites(now);
 
     if (cycle === "charging") {
@@ -524,6 +528,7 @@ export const createStage = (options: StageOptions) => {
 
   // 일손이 끝내 닿지 못한 내용은 오래 숨겨 두지 않는다
   const forceReveal = (now: number) => {
+    if (isHeld) return;
     visible.forEach((seenAt, el) => {
       if (el.hasAttribute("data-writing")) return;
       if (now - seenAt >= FORCE_AFTER) finishElement(el);
@@ -666,7 +671,15 @@ export const createStage = (options: StageOptions) => {
     document.removeEventListener("visibilitychange", onVisibility);
   };
 
-  return { stop, destroy };
+  // 기다리는 동안 보인 요소도 이때부터 시간을 잰다
+  const release = () => {
+    if (!isHeld) return;
+    isHeld = false;
+    const now = performance.now();
+    visible.forEach((_, el) => visible.set(el, now));
+  };
+
+  return { stop, destroy, release };
 };
 
 // 움직임을 줄인 환경에서는 지형을 한 번만 그린다

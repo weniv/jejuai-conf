@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import styles from "./Stage.module.scss";
+import { NOTICE_CLOSED_ATTR, NOTICE_CLOSED_EVENT } from "./constants";
 import { createStage, drawStill } from "./engine";
 
 interface StageProps {
@@ -42,28 +43,40 @@ export const Stage = ({ opening }: StageProps) => {
     }
 
     const html = document.documentElement;
+    const hero = document.getElementById("top");
 
-    // 첫 화면은 그대로 보여 주고, 스크롤해서 들어오는 곳부터 짓는다
-    capsuleText.textContent = opening;
+    // 첫 화면(히어로)만 커서가 짓고, 아래 섹션은 처음부터 다 보여 준다
     document.querySelectorAll<HTMLElement>("[data-build]").forEach((el) => {
-      const { top, bottom } = el.getBoundingClientRect();
-      if (bottom > 0 && top < window.innerHeight) el.dataset.built = "static";
+      if (!hero?.contains(el)) el.dataset.built = "static";
+    });
+    document.querySelectorAll<HTMLElement>("[data-prompt-line]").forEach((line) => {
+      line.textContent = line.closest<HTMLElement>("[data-prompt]")?.dataset.prompt ?? "";
+      if (line.parentElement) line.parentElement.dataset.done = "";
     });
     html.setAttribute("data-build-on", "");
+    html.setAttribute("data-build-ready", "");
     capsule.classList.add(styles.dock);
 
     const stage = createStage({
       terrain,
       agents,
       capsuleText,
+      held: !html.hasAttribute(NOTICE_CLOSED_ATTR),
       // 에이전트를 끄면 마지막 움직임이 끝난 뒤에 해제한다
       onBuilt: () => {
+        capsuleText.textContent = opening;
         window.setTimeout(() => html.removeAttribute("data-build-on"), 800);
       },
     });
 
+    // 공지 팝업을 닫으면 그때 첫 화면을 짓는다
+    window.addEventListener(NOTICE_CLOSED_EVENT, stage.release);
+
     stopRef.current = stage.stop;
-    return stage.destroy;
+    return () => {
+      window.removeEventListener(NOTICE_CLOSED_EVENT, stage.release);
+      stage.destroy();
+    };
   }, [opening]);
 
   // 본문을 읽는 구간에서는 프롬프트가 글자를 가리지 않게 비켜난다
