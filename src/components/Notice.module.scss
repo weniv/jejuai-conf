@@ -1,0 +1,109 @@
+$ink: #120f2a;
+$paper: #eef0fa;
+$muted: rgba(238, 240, 250, 0.6);
+$line: rgba(238, 240, 250, 0.16);
+$mint: #6df2cc;
+
+.notice {
+  box-sizing: border-box;
+  width: calc(100% - 4rem);
+  max-width: 44rem;
+  padding: 0;
+  border: 1px solid $line;
+  border-radius: 1.6rem;
+  background-color: $ink;
+  color: $paper;
+  word-break: keep-all;
+
+  &:focus {
+    outline: none;
+  }
+
+  &[open] {
+    animation: notice-in 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &::backdrop {
+    background-color: rgba(8, 6, 20, 0.72);
+    backdrop-filter: blur(4px);
+  }
+}
+
+.box {
+  padding: 3.2rem;
+  text-align: center;
+
+  h2 {
+    color: $mint;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  h2 span,
+  p span {
+    display: block;
+  }
+
+  p {
+    margin-top: 1.2rem;
+    color: $muted;
+    font-size: 1.6rem;
+    line-height: 1.7;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 2.8rem;
+
+  button {
+    flex: 1;
+    height: 5.2rem;
+    border-radius: 1.2rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+  }
+}
+
+.hide {
+  border: 1px solid $line;
+  color: $muted;
+
+  &:hover {
+    background-color: rgba(238, 240, 250, 0.08);
+    color: $paper;
+  }
+}
+
+.close {
+  background-color: $mint;
+  color: $ink;
+
+  &:hover {
+    background-color: #3fd6ae;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .box {
+    padding: 2.8rem 2.4rem 2.4rem;
+
+    h2 { font-size: 2rem; }
+  }
+}
+
+@keyframes notice-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notice[open] { animation: none; }
+}

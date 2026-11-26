@@ -4,12 +4,13 @@ import { Stage } from "@/components/stage/Stage";
 import { Dday } from "@/components/stage/Controls";
 import { Faq } from "@/components/Faq";
 import { Header } from "@/components/Header";
+import { Notice } from "@/components/Notice";
 import { RegisterButton } from "@/components/RegisterButton";
 import { VenueMap } from "@/components/VenueMap";
 import { Program } from "@/components/Program";
 import { Partners } from "@/components/Partners";
 
-const { hero, about, program, location, partners, faq, contact, prompts, registration } = data;
+const { hero, about, program, location, partners, faq, contact, prompts, registration, notice } = data;
 
 const SITE = "https://jejuai.kr";
 
@@ -44,9 +45,11 @@ const eventData = {
     price: 0,
     priceCurrency: "KRW",
     url: registration.url || SITE,
-    availability: registration.url
-      ? "https://schema.org/InStock"
-      : "https://schema.org/PreOrder",
+    availability: registration.closed
+      ? "https://schema.org/SoldOut"
+      : registration.url
+        ? "https://schema.org/InStock"
+        : "https://schema.org/PreOrder",
   },
 };
 
@@ -68,6 +71,7 @@ export default function Home() {
       <Stage opening={prompts.opening} />
 
       <Header registration={registration} />
+      <Notice {...notice} />
 
       <main className={styles.main}>
         <section id="top" className={styles.hero} data-prompt={prompts.opening}>

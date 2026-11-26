@@ -5,6 +5,7 @@ export interface Registration {
   url: string;
   open: string;
   pending: string;
+  closed?: string;
 }
 
 interface RegisterButtonProps {
@@ -13,13 +14,17 @@ interface RegisterButtonProps {
   className?: string;
 }
 
-// 신청 링크가 생기기 전에는 누를 수 없는 안내로만 보여 준다
+// 신청 링크가 생기기 전이나 마감한 뒤에는 누를 수 없는 안내로만 보여 준다
 export const RegisterButton = ({
   registration,
   size = "small",
   className,
 }: RegisterButtonProps) =>
-  registration.url ? (
+  registration.closed ? (
+    <span className={clsx(styles.button, styles[size], styles.pending, className)}>
+      {registration.closed}
+    </span>
+  ) : registration.url ? (
     <a
       className={clsx(styles.button, styles[size], styles.open, className)}
       href={registration.url}
