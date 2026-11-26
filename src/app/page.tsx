@@ -1,7 +1,7 @@
 import data from "@/data/data.json";
 import styles from "./page.module.scss";
 import { Stage } from "@/components/stage/Stage";
-import { Dday, Replay } from "@/components/stage/Controls";
+import { Dday } from "@/components/stage/Controls";
 import { Faq } from "@/components/Faq";
 import { Header } from "@/components/Header";
 import { RegisterButton } from "@/components/RegisterButton";
@@ -169,7 +169,6 @@ export default function Home() {
         <div className={styles.footerBottom}>
           <p>2026 제주 AI 컨퍼런스</p>
           <div className={styles.footerLinks}>
-            <Replay className={styles.replay} />
             <a href={contact.url} target="_blank" rel="noopener noreferrer">
               {contact.text} <span aria-hidden="true">↗</span>
             </a>

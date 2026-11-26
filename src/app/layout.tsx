@@ -2,7 +2,6 @@ import "../styles/globals.scss";
 import localFont from "next/font/local";
 import type { Metadata, Viewport } from "next";
 import { ReactNode } from "react";
-import { BUILD_SCRIPT } from "../components/stage/constants";
 
 const TITLE = "2026 제주 AI 컨퍼런스";
 const DESCRIPTION =
@@ -89,9 +88,6 @@ export default function RootLayout({
       className={pretendard.className}
       suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: BUILD_SCRIPT }} />
-      </head>
       <body>{children}</body>
     </html>
   );

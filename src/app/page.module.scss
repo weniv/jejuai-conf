@@ -305,35 +305,12 @@ $gutter-mobile: 2rem;
   }
 }
 
-// 오프닝 다시 보기는 화면에 띄우지 않고 푸터의 링크로만 둔다
 .footerLinks {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   align-items: center;
   column-gap: 2.4rem;
-}
-
-.replay {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  min-height: 4.4rem;
-  color: inherit;
-  font-size: inherit;
-  transition: color 0.2s;
-
-  i {
-    font-style: normal;
-  }
-
-  &:hover {
-    color: $mint;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    display: none;
-  }
 }
 
 @media screen and (max-width: 1199px) {

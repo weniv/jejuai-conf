@@ -13,29 +13,22 @@ const INK = "#120f2a";
 const ARROW_PATH = "M0 0 L0 15.5 L4.8 11.2 L12 11 Z";
 const SPRITE = { w: 26, h: 32 };
 
-const COUNT = { pc: 10, mobile: 6 };
-const COLORS = [MINT, "#b4f9e4", "#3fd6ae", "#eef0fa"];
-
-// 오프닝(ms): 프롬프트 등장 → 타이핑 → 글자가 커서로 흩어짐
-const TYPE_DELAY = 420;
-const TYPE_TIME = 560;
-const CHARGE_AT = 1080;
-const BLAST_AT = 1300;
-const GLYPH_TIME = 300;
+// 커서는 적게, 한 색으로 두어 화면이 어수선하지 않게 한다
+const COUNT = { pc: 4, mobile: 3 };
 
 // 작업(ms): 프롬프트 입력 → 출동 → 글자 쓰기 → 정상으로 귀환
 const PROMPT_TIME = 360;
 const FLIGHT = 460;
-const LAUNCH_GAP = 22;
+const LAUNCH_GAP = 120;
 const NEXT_JOB = 170;
 const RETURN = 440;
 const WRITE_SPEED = 2.4;
 const WRITE_MIN = 220;
 const WRITE_MAX = 850;
-const FORCE_AFTER = 2600;
+const FORCE_AFTER = 4000;
 
 type AgentState = "inside" | "flight" | "write" | "return";
-type Cycle = "opening" | "ready" | "charging";
+type Cycle = "ready" | "charging";
 
 interface Line {
   left: number;
@@ -54,20 +47,16 @@ interface Job {
 
 interface Agent {
   name: string;
-  index: number;
   color: string;
   state: AgentState;
   x: number;
   y: number;
   scale: number;
-  rot: number;
   fromX: number;
   fromY: number;
   fromScale: number;
   start: number;
   duration: number;
-  spin: number;
-  glyph?: string;
   jobs: Job[];
   labelAlpha: number;
 }
@@ -75,12 +64,7 @@ interface Agent {
 export interface StageOptions {
   terrain: HTMLCanvasElement;
   agents: HTMLCanvasElement;
-  opening: string;
-  isBuilding: boolean;
   capsuleText: HTMLElement;
-  getGlyphs: () => { glyph: string; x: number; y: number }[];
-  onCharge: () => void;
-  onBlast: () => void;
   onBuilt: () => void;
 }
 
@@ -217,13 +201,13 @@ const createSprite = (color: string) => {
 };
 
 export const createStage = (options: StageOptions) => {
-  const { terrain, agents: agentCanvas, opening } = options;
+  const { terrain, agents: agentCanvas } = options;
   const groundCtx = terrain.getContext("2d");
   const ctx = agentCanvas.getContext("2d");
   if (!groundCtx || !ctx) return { stop: () => {}, destroy: () => {} };
 
   const isMobile = window.innerWidth < MOBILE_WIDTH;
-  const sprites = COLORS.map(createSprite);
+  const sprite = createSprite(MINT);
   const font = pageFont();
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const crater = { x: 0, y: 0 };
@@ -248,9 +232,7 @@ export const createStage = (options: StageOptions) => {
   let frame = 0;
   let cameraScroll = 0;
   let isStopped = false;
-  let reveal = options.isBuilding ? 0 : 9;
-  let startTime = 0;
-  let cycle: Cycle = options.isBuilding ? "opening" : "ready";
+  let cycle: Cycle = "ready";
   let chargeStart = 0;
   let lastFrame = 0;
   let lastScrollY = window.scrollY;
@@ -261,19 +243,16 @@ export const createStage = (options: StageOptions) => {
     { length: isMobile ? COUNT.mobile : COUNT.pc },
     (_, i) => ({
       name: `Agent ${i + 1}`,
-      index: i,
-      color: COLORS[i % COLORS.length],
+      color: MINT,
       state: "inside",
       x: 0,
       y: 0,
       scale: 0,
-      rot: 0,
       fromX: 0,
       fromY: 0,
       fromScale: 1,
       start: 0,
       duration: FLIGHT,
-      spin: 0,
       jobs: [],
       labelAlpha: 0,
     })
@@ -324,18 +303,7 @@ export const createStage = (options: StageOptions) => {
       if (now - ripples[i] > RIPPLE_TIME) ripples.splice(i, 1);
     }
 
-    if (raster) {
-      // 오프닝에서는 분화구를 중심으로 둥글게 번지며 드러난다
-      groundCtx.save();
-      if (reveal < 9) {
-        const r = reveal * rect.w;
-        groundCtx.beginPath();
-        groundCtx.ellipse(crater.x, crater.y, r, r * 0.62, 0, 0, Math.PI * 2);
-        groundCtx.clip();
-      }
-      drawColumns(groundCtx, raster, rect, now, ripples);
-      groundCtx.restore();
-    }
+    if (raster) drawColumns(groundCtx, raster, rect, now, ripples);
     groundCtx.globalAlpha = 1;
 
     // 본문 구간에서는 글자 쪽 섬을 지워 읽기 방해를 없앤다
@@ -396,7 +364,6 @@ export const createStage = (options: StageOptions) => {
     agent.fromY = agent.y;
     agent.start = now + delay;
     agent.duration = FLIGHT;
-    agent.spin = (Math.random() < 0.5 ? -1 : 1) * (0.3 + Math.random() * 0.3);
   };
 
   // 일을 마친 커서는 곧장 분화구로 돌아가 다음 출동까지 쉰다
@@ -445,27 +412,6 @@ export const createStage = (options: StageOptions) => {
     addRipple(now);
   };
 
-  // 프롬프트의 글자가 커서로 변해, 일을 받은 커서는 글로 가고 나머지는 분화구로 들어간다
-  const blast = (now: number) => {
-    const glyphs = options.getGlyphs();
-    const step = Math.max(glyphs.length / workers.length, 1);
-    const jobs = takeJobs(now);
-    jobs.forEach((job, i) => workers[i % workers.length].jobs.push(job));
-    workers.forEach((agent, i) => {
-      const glyph = glyphs[Math.floor(i * step)];
-      agent.x = glyph?.x ?? width / 2;
-      agent.y = glyph?.y ?? height / 2;
-      agent.glyph = glyph?.glyph;
-      agent.scale = 1;
-      if (agent.jobs.length) fly(agent, now, 0);
-      else goHome(agent, now);
-    });
-
-    addRipple(now);
-    options.onBlast();
-    cycle = "ready";
-  };
-
   const updateFlight = (agent: Agent, now: number, p: number) => {
     const job = agent.jobs[0];
     if (!job) {
@@ -476,18 +422,16 @@ export const createStage = (options: StageOptions) => {
     const { line } = penAt(job, 0);
     const tx = line.left;
     const ty = (line.top + line.bottom) / 2 - window.scrollY;
-    const apex = Math.min(agent.fromY, ty) - height * 0.16;
+    // 낮은 곡선으로 곧게 날아가 글 앞에 내려앉는다
+    const apex = Math.min(agent.fromY, ty) - height * 0.04;
     const e = 1 - Math.pow(1 - p, 3);
     const midX = (agent.fromX + tx) / 2;
 
     agent.x = (1 - e) * (1 - e) * agent.fromX + 2 * (1 - e) * e * midX + e * e * tx;
     agent.y = (1 - e) * (1 - e) * agent.fromY + 2 * (1 - e) * e * apex + e * e * ty;
-    agent.scale = 1 + Math.sin(p * Math.PI) * 0.25;
-    agent.rot = (1 - p) * agent.spin;
+    agent.scale = 1;
 
     if (p >= 1) {
-      agent.rot = 0;
-      agent.scale = 1;
       agent.state = "write";
       agent.start = now;
       agent.duration = Math.min(
@@ -521,7 +465,7 @@ export const createStage = (options: StageOptions) => {
   const updateReturn = (agent: Agent, p: number) => {
     // 분화구로 빨려 들어가듯 끝으로 갈수록 빨라진다
     const e = p * p * p;
-    const midY = Math.min(agent.fromY, crater.y) - height * 0.12;
+    const midY = Math.min(agent.fromY, crater.y) - height * 0.04;
     const midX = (agent.fromX + crater.x) / 2;
     agent.x =
       (1 - e) * (1 - e) * agent.fromX + 2 * (1 - e) * e * midX + e * e * crater.x;
@@ -566,20 +510,6 @@ export const createStage = (options: StageOptions) => {
   };
 
   const updateCycle = (now: number) => {
-    const t = now - startTime;
-
-    if (cycle === "opening") {
-      const p = clamp((t - TYPE_DELAY) / TYPE_TIME);
-      options.capsuleText.textContent = opening.slice(
-        0,
-        Math.ceil(p * opening.length)
-      );
-      if (t >= CHARGE_AT) options.onCharge();
-      if (t >= BLAST_AT) blast(now);
-      return;
-    }
-
-    if (reveal < 9) reveal += 0.03 * frameDelta;
     updateWrites(now);
 
     if (cycle === "charging") {
@@ -594,7 +524,6 @@ export const createStage = (options: StageOptions) => {
 
   // 일손이 끝내 닿지 못한 내용은 오래 숨겨 두지 않는다
   const forceReveal = (now: number) => {
-    if (cycle === "opening") return;
     visible.forEach((seenAt, el) => {
       if (el.hasAttribute("data-writing")) return;
       if (now - seenAt >= FORCE_AFTER) finishElement(el);
@@ -604,32 +533,12 @@ export const createStage = (options: StageOptions) => {
   const drawAgent = (agent: Agent, now: number) => {
     if (agent.state === "inside" || now < agent.start) return;
 
-    const turn = agent.rot * 0.4;
-    const squeeze = Math.max(Math.abs(Math.cos(agent.rot)), 0.14);
     const size = agent.scale * dpr;
-    ctx.setTransform(
-      Math.cos(turn) * squeeze * size,
-      Math.sin(turn) * squeeze * size,
-      -Math.sin(turn) * size,
-      Math.cos(turn) * size,
-      agent.x * dpr,
-      agent.y * dpr
-    );
+    ctx.setTransform(size, 0, 0, size, agent.x * dpr, agent.y * dpr);
 
-    const glyph = agent.glyph
-      ? 1 - clamp((now - agent.start) / GLYPH_TIME)
-      : 0;
-    if (glyph > 0) {
-      ctx.globalAlpha = glyph;
-      ctx.fillStyle = "#ffffff";
-      ctx.font = `700 22px ${font}`;
-      ctx.fillText(agent.glyph as string, -9, 8);
-    } else {
-      agent.glyph = undefined;
-    }
     const quiet = width < MOBILE_WIDTH && cameraScroll > 0.3 && !agent.jobs.length;
-    ctx.globalAlpha = (1 - glyph) * (quiet ? 0.38 : 1);
-    ctx.drawImage(sprites[agent.index % COLORS.length], -1, -1, SPRITE.w, SPRITE.h);
+    ctx.globalAlpha = quiet ? 0.38 : 1;
+    ctx.drawImage(sprite, -1, -1, SPRITE.w, SPRITE.h);
     ctx.globalAlpha = 1;
   };
 
@@ -669,7 +578,6 @@ export const createStage = (options: StageOptions) => {
 
   const tick = (now: number) => {
     frame = requestAnimationFrame(tick);
-    if (!startTime) startTime = now;
     frameDelta = lastFrame ? Math.min((now - lastFrame) / (1000 / 60), 2) : 1;
     lastFrame = now;
 
@@ -734,7 +642,6 @@ export const createStage = (options: StageOptions) => {
 
   const stop = () => {
     isStopped = true;
-    reveal = 9;
     observer.disconnect();
     buildable.forEach((el) => {
       clearWriting(el);

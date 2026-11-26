@@ -62,30 +62,6 @@ $mint: #6df2cc;
     }
   }
 
-  // 오프닝: 화면 정중앙에 프롬프트가 조용히 나타난다
-  &.center {
-    bottom: 50%;
-    min-width: 40rem;
-    opacity: 1;
-    transform: translate(-50%, 50%) scale(1.3);
-    transition: none;
-    animation: prompt-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-
-    @media screen and (max-width: 767px) {
-      min-width: 0;
-      transform: translate(-50%, 50%) scale(1.05);
-    }
-
-    button {
-      visibility: hidden;
-    }
-  }
-
-  // 입력이 끝나면 테두리만 민트로 바꿔 실행을 알린다
-  &.center.charge {
-    border-color: $mint;
-  }
-
   &.dock {
     opacity: 1;
 
@@ -131,14 +107,6 @@ $mint: #6df2cc;
 
 @media (prefers-reduced-motion: reduce) {
   .caret { animation: none; }
-}
-
-@keyframes prompt-in {
-  from {
-    opacity: 0;
-    filter: blur(10px);
-    transform: translate(-50%, 50%) scale(1.5);
-  }
 }
 
 .mark {

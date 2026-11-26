@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import styles from "./Stage.module.scss";
-import { SEEN_KEY } from "./constants";
 import { createStage, drawStill } from "./engine";
 
 interface StageProps {
@@ -43,53 +42,20 @@ export const Stage = ({ opening }: StageProps) => {
     }
 
     const html = document.documentElement;
-    let isSeen = false;
-    try {
-      isSeen = !!sessionStorage.getItem(SEEN_KEY);
-    } catch {}
-    const isBuilding = !isSeen && html.hasAttribute("data-build-on");
 
-    // 재방문은 지금 보이는 화면을 그대로 두고, 스크롤하는 곳부터 짓는다
-    if (!isBuilding) {
-      capsuleText.textContent = opening;
-      document.querySelectorAll<HTMLElement>("[data-build]").forEach((el) => {
-        const { top, bottom } = el.getBoundingClientRect();
-        if (bottom > 0 && top < window.innerHeight) el.dataset.built = "static";
-      });
-      html.setAttribute("data-build-on", "");
-    }
-    html.setAttribute("data-build-ready", "");
-    capsule.classList.add(isBuilding ? styles.center : styles.dock);
-
-    // 프롬프트 글자 위치를 재서 그 자리에서 커서가 태어나게 한다
-    const getGlyphs = () => {
-      const node = textRef.current?.firstChild;
-      if (!node) return [];
-      const range = document.createRange();
-      return opening.split("").flatMap((glyph, i) => {
-        if (glyph === " ") return [];
-        range.setStart(node, i);
-        range.setEnd(node, i + 1);
-        const { left, top, width, height } = range.getBoundingClientRect();
-        return [{ glyph, x: left + width / 2, y: top + height / 2 }];
-      });
-    };
+    // 첫 화면은 그대로 보여 주고, 스크롤해서 들어오는 곳부터 짓는다
+    capsuleText.textContent = opening;
+    document.querySelectorAll<HTMLElement>("[data-build]").forEach((el) => {
+      const { top, bottom } = el.getBoundingClientRect();
+      if (bottom > 0 && top < window.innerHeight) el.dataset.built = "static";
+    });
+    html.setAttribute("data-build-on", "");
+    capsule.classList.add(styles.dock);
 
     const stage = createStage({
       terrain,
       agents,
-      opening,
-      isBuilding,
       capsuleText,
-      getGlyphs,
-      onCharge: () => capsule.classList.add(styles.charge),
-      onBlast: () => {
-        capsule.classList.remove(styles.center, styles.charge);
-        capsule.classList.add(styles.dock);
-        try {
-          sessionStorage.setItem(SEEN_KEY, "y");
-        } catch {}
-      },
       // 에이전트를 끄면 마지막 움직임이 끝난 뒤에 해제한다
       onBuilt: () => {
         window.setTimeout(() => html.removeAttribute("data-build-on"), 800);
